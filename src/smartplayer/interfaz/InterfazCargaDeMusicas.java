@@ -43,7 +43,7 @@ public class InterfazCargaDeMusicas extends javax.swing.JDialog {
 
             },
             new String [] {
-                "Nombre", "Artista", "Album", "Genero", "Duracion", "Tamaño", "Ruta", "Año"
+                "Nombre", "Artista", "Album", "Genero", "Duracion", "Tamaño", "Ruta", "Año", "Portada"
             }
         ));
         jScrollPane1.setViewportView(tblMusicasCargadas);
