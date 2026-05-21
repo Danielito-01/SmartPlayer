@@ -4,6 +4,10 @@
  */
 package smartplayer.interfaz;
 
+import clase.Administrador;
+import java.io.File;
+import java.util.List;
+
 /**
  *
  * @author dcuyu
@@ -49,6 +53,7 @@ public class InterfazCargaDeMusicas extends javax.swing.JDialog {
         jScrollPane1.setViewportView(tblMusicasCargadas);
 
         btnCargar.setText("Cargar");
+        btnCargar.addActionListener(this::btnCargarActionPerformed);
 
         btnGuardar.setText("Guardar");
 
@@ -80,6 +85,11 @@ public class InterfazCargaDeMusicas extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnCargarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCargarActionPerformed
+        List<File> mp3s = Administrador.seleccionarArchivos(this);
+        
+    }//GEN-LAST:event_btnCargarActionPerformed
 
     /**
      * @param args the command line arguments

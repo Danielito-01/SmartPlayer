@@ -30,21 +30,21 @@ public class InterfazPrincipal extends javax.swing.JFrame {
 
         panPlaylist = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblPlaylist = new javax.swing.JTable();
         panCanciones = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblMusicas = new javax.swing.JTable();
         panReproduccion = new javax.swing.JPanel();
-        jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        jmbMenu = new javax.swing.JMenuBar();
+        menuAdministrador = new javax.swing.JMenu();
+        jmiCargarMusicas = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         panPlaylist.setBackground(new java.awt.Color(204, 255, 255));
 
-        jTable1.setBackground(new java.awt.Color(255, 255, 204));
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblPlaylist.setBackground(new java.awt.Color(255, 255, 204));
+        tblPlaylist.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -52,7 +52,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
                 "Playlist"
             }
         ));
-        jScrollPane2.setViewportView(jTable1);
+        jScrollPane2.setViewportView(tblPlaylist);
 
         javax.swing.GroupLayout panPlaylistLayout = new javax.swing.GroupLayout(panPlaylist);
         panPlaylist.setLayout(panPlaylistLayout);
@@ -114,15 +114,15 @@ public class InterfazPrincipal extends javax.swing.JFrame {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        jMenu1.setText("Administrador");
+        menuAdministrador.setText("Administrador");
 
-        jMenuItem1.setText("Cargar musicas");
-        jMenuItem1.addActionListener(this::jMenuItem1ActionPerformed);
-        jMenu1.add(jMenuItem1);
+        jmiCargarMusicas.setText("Cargar musicas");
+        jmiCargarMusicas.addActionListener(this::jmiCargarMusicasActionPerformed);
+        menuAdministrador.add(jmiCargarMusicas);
 
-        jMenuBar1.add(jMenu1);
+        jmbMenu.add(menuAdministrador);
 
-        setJMenuBar(jMenuBar1);
+        setJMenuBar(jmbMenu);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -151,10 +151,10 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void jmiCargarMusicasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiCargarMusicasActionPerformed
         InterfazCargaDeMusicas interfaz = new InterfazCargaDeMusicas(this, true);
         interfaz.setVisible(true);
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_jmiCargarMusicasActionPerformed
 
     /**
      * @param args the command line arguments
@@ -182,15 +182,15 @@ public class InterfazPrincipal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JMenuBar jmbMenu;
+    private javax.swing.JMenuItem jmiCargarMusicas;
+    private javax.swing.JMenu menuAdministrador;
     private javax.swing.JPanel panCanciones;
     private javax.swing.JPanel panPlaylist;
     private javax.swing.JPanel panReproduccion;
     private javax.swing.JTable tblMusicas;
+    private javax.swing.JTable tblPlaylist;
     // End of variables declaration//GEN-END:variables
 }
