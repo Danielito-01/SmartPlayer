@@ -5,6 +5,7 @@
 package smartplayer.interfaz;
 
 import clase.Administrador;
+import clase.Musica;
 import java.io.File;
 import java.util.List;
 
@@ -49,13 +50,23 @@ public class InterfazCargaDeMusicas extends javax.swing.JDialog {
             new String [] {
                 "Nombre", "Artista", "Album", "Genero", "Duracion", "Tamaño", "Ruta", "Año", "Portada"
             }
-        ));
+        ){
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                if(columnIndex == 8){
+                    return javax.swing.ImageIcon.class;
+                }
+                return Object.class;
+            }
+        });
+        tblMusicasCargadas.setRowHeight(100);
         jScrollPane1.setViewportView(tblMusicasCargadas);
 
         btnCargar.setText("Cargar");
         btnCargar.addActionListener(this::btnCargarActionPerformed);
 
         btnGuardar.setText("Guardar");
+        btnGuardar.addActionListener(this::btnGuardarActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -88,8 +99,13 @@ public class InterfazCargaDeMusicas extends javax.swing.JDialog {
 
     private void btnCargarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCargarActionPerformed
         List<File> mp3s = Administrador.seleccionarArchivos(this);
-        
+        List<Musica> musicas = Administrador.extraerMusicasTemporales(mp3s);
+        Administrador.mostrarMusicasEnTabla(musicas, tblMusicasCargadas);
     }//GEN-LAST:event_btnCargarActionPerformed
+
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
+        
+    }//GEN-LAST:event_btnGuardarActionPerformed
 
     /**
      * @param args the command line arguments
