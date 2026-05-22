@@ -4,6 +4,11 @@
  */
 package smartplayer.interfaz;
 
+import clase.Biblioteca;
+import clase.Musica;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author dcuyu
@@ -17,6 +22,8 @@ public class InterfazPrincipal extends javax.swing.JFrame {
      */
     public InterfazPrincipal() {
         initComponents();
+        mostrarBibliotecaGeneral();
+        tblMusicas.getColumnModel().getColumn(0).setMaxWidth(30);
     }
 
     /**
@@ -31,6 +38,9 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         panPlaylist = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblPlaylist = new javax.swing.JTable();
+        btnBiblioteca = new javax.swing.JButton();
+        btnNuevaPlaylist = new javax.swing.JButton();
+        btnEditarPlaylist = new javax.swing.JButton();
         panCanciones = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblMusicas = new javax.swing.JTable();
@@ -41,47 +51,48 @@ public class InterfazPrincipal extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        panPlaylist.setBackground(new java.awt.Color(204, 255, 255));
+        panPlaylist.setBackground(new java.awt.Color(153, 204, 255));
+        panPlaylist.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        tblPlaylist.setBackground(new java.awt.Color(255, 255, 204));
+        tblPlaylist.setBackground(new java.awt.Color(121, 245, 248));
         tblPlaylist.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Playlist"
+                "Playlists", "No."
             }
         ));
         jScrollPane2.setViewportView(tblPlaylist);
 
-        javax.swing.GroupLayout panPlaylistLayout = new javax.swing.GroupLayout(panPlaylist);
-        panPlaylist.setLayout(panPlaylistLayout);
-        panPlaylistLayout.setHorizontalGroup(
-            panPlaylistLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panPlaylistLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 268, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        panPlaylistLayout.setVerticalGroup(
-            panPlaylistLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panPlaylistLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2)
-                .addContainerGap())
-        );
+        panPlaylist.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, 230, 480));
 
-        panCanciones.setBackground(new java.awt.Color(204, 255, 204));
+        btnBiblioteca.setBackground(new java.awt.Color(124, 163, 238));
+        btnBiblioteca.setFont(new java.awt.Font("Segoe UI", 3, 24)); // NOI18N
+        btnBiblioteca.setText("Biblioteca");
+        btnBiblioteca.setOpaque(true);
+        btnBiblioteca.addActionListener(this::btnBibliotecaActionPerformed);
+        panPlaylist.add(btnBiblioteca, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 230, 40));
 
-        tblMusicas.setBackground(new java.awt.Color(255, 204, 255));
+        btnNuevaPlaylist.setText("Nueva");
+        btnNuevaPlaylist.addActionListener(this::btnNuevaPlaylistActionPerformed);
+        panPlaylist.add(btnNuevaPlaylist, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 550, 110, -1));
+
+        btnEditarPlaylist.setText("Editar");
+        panPlaylist.add(btnEditarPlaylist, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 550, 110, -1));
+
+        panCanciones.setBackground(new java.awt.Color(153, 204, 255));
+
+        tblMusicas.setBackground(new java.awt.Color(255, 255, 224));
         tblMusicas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Musicas"
+                "No.", "Musica"
             }
         ));
+        tblMusicas.getColumnModel().getColumn(0).setResizable(false);
         jScrollPane1.setViewportView(tblMusicas);
 
         javax.swing.GroupLayout panCancionesLayout = new javax.swing.GroupLayout(panCanciones);
@@ -89,25 +100,25 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         panCancionesLayout.setHorizontalGroup(
             panCancionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panCancionesLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 268, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGap(14, 14, 14)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(15, Short.MAX_VALUE))
         );
         panCancionesLayout.setVerticalGroup(
             panCancionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panCancionesLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 576, Short.MAX_VALUE)
+                .addComponent(jScrollPane1)
                 .addContainerGap())
         );
 
-        panReproduccion.setBackground(new java.awt.Color(255, 204, 204));
+        panReproduccion.setBackground(new java.awt.Color(73, 134, 190));
 
         javax.swing.GroupLayout panReproduccionLayout = new javax.swing.GroupLayout(panReproduccion);
         panReproduccion.setLayout(panReproduccionLayout);
         panReproduccionLayout.setHorizontalGroup(
             panReproduccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 446, Short.MAX_VALUE)
+            .addGap(0, 437, Short.MAX_VALUE)
         );
         panReproduccionLayout.setVerticalGroup(
             panReproduccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -134,8 +145,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panReproduccion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(panPlaylist, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(panPlaylist, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -143,18 +153,42 @@ public class InterfazPrincipal extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(panCanciones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(panPlaylist, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(panPlaylist, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
                     .addComponent(panReproduccion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    private void cargarEnTablaMusicas(List<Musica> musicas) {
+        DefaultTableModel modelo = (DefaultTableModel) tblMusicas.getModel();
+        modelo.setRowCount(0);
+        int no = 1;
+        for (Musica m : musicas) {
+            modelo.addRow(new Object[]{ no++, m.toString() });
+        }
+    }
 
+    private void mostrarBibliotecaGeneral() {
+        cargarEnTablaMusicas(
+            Biblioteca.getInstance().getListaGeneral().toListAdelante()
+        );
+    }
+    
     private void jmiCargarMusicasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiCargarMusicasActionPerformed
         InterfazCargaDeMusicas interfaz = new InterfazCargaDeMusicas(this, true);
         interfaz.setVisible(true);
+        mostrarBibliotecaGeneral();
     }//GEN-LAST:event_jmiCargarMusicasActionPerformed
+
+    private void btnBibliotecaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBibliotecaActionPerformed
+        mostrarBibliotecaGeneral();
+    }//GEN-LAST:event_btnBibliotecaActionPerformed
+
+    private void btnNuevaPlaylistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevaPlaylistActionPerformed
+        InterfazNuevaPlaylist interfaz = new InterfazNuevaPlaylist(this, true);
+        interfaz.setVisible(true);
+    }//GEN-LAST:event_btnNuevaPlaylistActionPerformed
 
     /**
      * @param args the command line arguments
@@ -182,6 +216,9 @@ public class InterfazPrincipal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBiblioteca;
+    private javax.swing.JButton btnEditarPlaylist;
+    private javax.swing.JButton btnNuevaPlaylist;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JMenuBar jmbMenu;

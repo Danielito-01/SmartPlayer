@@ -25,6 +25,11 @@ public class InterfazCargaDeMusicas extends javax.swing.JDialog {
     public InterfazCargaDeMusicas(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        tblMusicasCargadas.getColumnModel().getColumn(0).setMaxWidth(30);
+        tblMusicasCargadas.getColumnModel().getColumn(4).setMaxWidth(100);
+        tblMusicasCargadas.getColumnModel().getColumn(5).setMaxWidth(65);
+        tblMusicasCargadas.getColumnModel().getColumn(6).setMaxWidth(55);
+        tblMusicasCargadas.getColumnModel().getColumn(8).setMaxWidth(50);
     }
 
     /**
@@ -50,7 +55,7 @@ public class InterfazCargaDeMusicas extends javax.swing.JDialog {
 
             },
             new String [] {
-                "No", "Nombre", "Artista", "Album", "Genero", "Duracion", "Tamaño", "Ruta", "Año", "Portada"
+                "No.", "Nombre", "Artista", "Album", "Genero", "Duracion", "Tamaño", "Ruta", "Año", "Portada"
             }
         ){
             @Override
@@ -62,6 +67,7 @@ public class InterfazCargaDeMusicas extends javax.swing.JDialog {
             }
         });
         tblMusicasCargadas.setRowHeight(100);
+        tblMusicasCargadas.getColumnModel().getColumn(0).setResizable(false);
         jScrollPane1.setViewportView(tblMusicasCargadas);
 
         btnCargar.setText("Cargar");
