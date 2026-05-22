@@ -8,13 +8,15 @@ import clase.Administrador;
 import clase.Musica;
 import java.io.File;
 import java.util.List;
+import clase.Biblioteca;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author dcuyu
  */
 public class InterfazCargaDeMusicas extends javax.swing.JDialog {
-    
+    private List<Musica> musicasTemporales = new java.util.ArrayList<>();
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(InterfazCargaDeMusicas.class.getName());
 
     /**
@@ -48,12 +50,12 @@ public class InterfazCargaDeMusicas extends javax.swing.JDialog {
 
             },
             new String [] {
-                "Nombre", "Artista", "Album", "Genero", "Duracion", "Tamaño", "Ruta", "Año", "Portada"
+                "No", "Nombre", "Artista", "Album", "Genero", "Duracion", "Tamaño", "Ruta", "Año", "Portada"
             }
         ){
             @Override
             public Class<?> getColumnClass(int columnIndex) {
-                if(columnIndex == 8){
+                if(columnIndex == 9){
                     return javax.swing.ImageIcon.class;
                 }
                 return Object.class;
@@ -85,7 +87,7 @@ public class InterfazCargaDeMusicas extends javax.swing.JDialog {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(23, Short.MAX_VALUE)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCargar)
                     .addComponent(btnGuardar))
@@ -99,12 +101,17 @@ public class InterfazCargaDeMusicas extends javax.swing.JDialog {
 
     private void btnCargarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCargarActionPerformed
         List<File> mp3s = Administrador.seleccionarArchivos(this);
-        List<Musica> musicas = Administrador.extraerMusicasTemporales(mp3s);
-        Administrador.mostrarMusicasEnTabla(musicas, tblMusicasCargadas);
+        musicasTemporales = Administrador.extraerMusicasTemporales(mp3s);
+        Administrador.mostrarMusicasEnTabla(musicasTemporales, tblMusicasCargadas);
     }//GEN-LAST:event_btnCargarActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        
+        int agregadas = Biblioteca.getInstance().agregarSinRepetir(musicasTemporales);
+        JOptionPane.showMessageDialog(this,
+                "Guardadas: " + agregadas,
+                "Biblioteca",
+                JOptionPane.INFORMATION_MESSAGE);
+        dispose(); // cerrar el dialog
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     /**

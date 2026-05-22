@@ -3,6 +3,7 @@ package clase;
 import javax.swing.ImageIcon;
 
 public class Musica {
+    private int id;
     private String nombre;
     private String artista;
     private String album;
@@ -12,14 +13,12 @@ public class Musica {
     private String ruta;
     private int anio;
     private ImageIcon portada;
-    private Musica siguiente;
-    private Musica anterior;
-    
+
     public Musica() {
-        
     }
 
-    public Musica(String nombre, String artista, String album, String genero, long duracion, long tamanio, String ruta, int anio, ImageIcon portada) {
+    public Musica(int id, String nombre, String artista, String album, String genero, long duracion, long tamanio, String ruta, int anio, ImageIcon portada) {
+        this.id = id;
         this.nombre = nombre;
         this.artista = artista;
         this.album = album;
@@ -29,8 +28,14 @@ public class Musica {
         this.ruta = ruta;
         this.anio = anio;
         this.portada = portada;
-        this.siguiente = null;
-        this.anterior = null;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getNombre() {
@@ -105,22 +110,6 @@ public class Musica {
         this.portada = portada;
     }
 
-    public Musica getSiguiente() {
-        return siguiente;
-    }
-
-    public void setSiguiente(Musica siguiente) {
-        this.siguiente = siguiente;
-    }
-
-    public Musica getAnterior() {
-        return anterior;
-    }
-
-    public void setAnterior(Musica anterior) {
-        this.anterior = anterior;
-    }
-    
     @Override
     public String toString() {
         return nombre + " - " + artista;

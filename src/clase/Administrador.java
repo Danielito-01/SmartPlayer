@@ -75,7 +75,6 @@ public class Administrador {
         File[] archivos = directorio.listFiles(); // Obtiene el contenido de la carpeta
      
         if (archivos == null) {// Si no puede leerla
-
             return;
         }
 
@@ -138,9 +137,9 @@ public class Administrador {
                 if (tag != null) {// Si tiene metadata
                     // Obtiene campos
                     nombre = valorSeguro(tag.getFirst(FieldKey.TITLE), nombre);
-                    artista = valorSeguro(tag.getFirst(FieldKey.ARTIST), "");
-                    album = valorSeguro(tag.getFirst(FieldKey.ALBUM), "");
-                    genero = valorSeguro(tag.getFirst(FieldKey.GENRE), "");
+                    artista = valorSeguro(tag.getFirst(FieldKey.ARTIST), "Desconocido");
+                    album = valorSeguro(tag.getFirst(FieldKey.ALBUM), "Desconocido");
+                    genero = valorSeguro(tag.getFirst(FieldKey.GENRE), "Desconocido");
 
                     String anioTexto = tag.getFirst(FieldKey.YEAR);// Obtiene año
 
@@ -156,19 +155,15 @@ public class Administrador {
                     }
                     portada = extraerPortada(tag);// Obtiene portada
                 }
-
-                Musica musica = new Musica(nombre, artista, album, genero, duracion, tamanio, rutaCanonica, anio, portada); // Crea objeto musica
+                
+                Musica musica = new Musica(0, nombre, artista, album, genero, duracion, tamanio, rutaCanonica, anio, portada); // Crea objeto musica
                 musicas.add(musica);// Agrega a lista
-            }
-
-            catch (CannotReadException |
+            }catch (CannotReadException |
                    IOException |
                    TagException |
                    ReadOnlyFileException |
                    InvalidAudioFrameException e) {
-                System.err.println("Error leyendo archivo:");
-                System.err.println(archivo.getAbsolutePath());
-                e.printStackTrace();
+                System.err.println("No se pudo leer: " + archivo.getAbsolutePath());
             }
         }
         return musicas;
@@ -221,12 +216,14 @@ public class Administrador {
     }
 
     public static void mostrarMusicasEnTabla(List<Musica> musicas, JTable tabla) {
+        int no = 1;
         DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
         modelo.setRowCount(0);
         tabla.setRowHeight(100);
 
         for (Musica musica : musicas) {
             modelo.addRow(new Object[]{
+                no++,
                 musica.getNombre(),
                 musica.getArtista(),
                 musica.getAlbum(),
@@ -234,7 +231,7 @@ public class Administrador {
                 formatearDuracion(musica.getDuracion()), // 03:45
                 formatearTamanio(musica.getTamanio()), // 5.2 MB
                 musica.getRuta(),
-                musica.getAnio(),
+                anioDesconocido(musica.getAnio()),
                 musica.getPortada() // ImageIcon real
             });
         }
@@ -280,5 +277,14 @@ public class Administrador {
             return String.format("%.2f KB", kb);
         }
         return bytes + " B";
+    }
+    
+    public static String anioDesconocido(int anio){
+        if (anio == 0) {
+            return "Desconocido";
+        }else {
+            String anioReal= String.valueOf(anio);
+            return anioReal;
+        }
     }
 }
