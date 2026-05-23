@@ -198,7 +198,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         modelo.setRowCount(0);
         int no = 1;
         for (Musica m : musicas) {
-            modelo.addRow(new Object[]{ no++, m.toString() });
+            modelo.addRow(new Object[]{ no++, m.toString(), m.getId() });
         }
     }
 
@@ -255,7 +255,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
 
         int no = 1;
         for (Musica m : canciones) {
-            modelo.addRow(new Object[]{ no++, m.toString() });
+            modelo.addRow(new Object[]{ no++, m.toString(), m.getId() });
         }
     }
     
