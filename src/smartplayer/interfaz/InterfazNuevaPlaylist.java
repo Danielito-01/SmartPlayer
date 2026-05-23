@@ -4,22 +4,39 @@
  */
 package smartplayer.interfaz;
 
+import clase.Biblioteca;
+import clase.Playlist;
+import javax.swing.JOptionPane;
+import clase.Musica;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author dcuyu
  */
 public class InterfazNuevaPlaylist extends javax.swing.JDialog {
+    private final String nombrePlaylist;
+    private final java.util.List<Musica> seleccionadas = new java.util.ArrayList<>();
+    private final java.util.Set<Integer> idsSeleccionadas = new java.util.HashSet<>();
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(InterfazNuevaPlaylist.class.getName());
 
     /**
      * Creates new form InterfazNuevaPlaylist
      */
-    public InterfazNuevaPlaylist(java.awt.Frame parent, boolean modal) {
+    public InterfazNuevaPlaylist(java.awt.Frame parent, boolean modal, String nombrePlaylist) {
         super(parent, modal);
         initComponents();
+        // Ocultar columna ID (última, índice 5)
+        tblMusicas.getColumnModel().getColumn(5).setMinWidth(0);
+        tblMusicas.getColumnModel().getColumn(5).setMaxWidth(0);
+        tblMusicas.getColumnModel().getColumn(5).setPreferredWidth(0);
+        this.nombrePlaylist = nombrePlaylist;
+        lblNombrePlaylist.setText(nombrePlaylist);
+        cargarBibliotecaEnTabla();
+        cargarSeleccionadasEnTabla();
     }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -70,7 +87,7 @@ public class InterfazNuevaPlaylist extends javax.swing.JDialog {
 
             },
             new String [] {
-                "No.", "Nombre", "Artista", "Album", "Genero"
+                "No.", "Nombre", "Artista", "Album", "Genero", "Id"
             }
         ));
         jScrollPane3.setViewportView(tblMusicas);
@@ -78,8 +95,10 @@ public class InterfazNuevaPlaylist extends javax.swing.JDialog {
         btnBuscar.setText("Buscar");
 
         btnAgregar.setText("Agregar");
+        btnAgregar.addActionListener(this::btnAgregarActionPerformed);
 
         btnGuardar.setText("Guardar");
+        btnGuardar.addActionListener(this::btnGuardarActionPerformed);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -161,42 +180,84 @@ public class InterfazNuevaPlaylist extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void cargarSeleccionadasEnTabla() {
+        DefaultTableModel modelo = (DefaultTableModel) tblMusicasPlaylist.getModel();
+        modelo.setRowCount(0);
+
+        int no = 1;
+        for (Musica m : seleccionadas) {
+            modelo.addRow(new Object[]{ no++, m.getNombre() });
+        }
+    }
+    
+    private void cargarBibliotecaEnTabla() {
+        DefaultTableModel modelo = (DefaultTableModel) tblMusicas.getModel();
+        modelo.setRowCount(0);
+        List<Musica> musicas = Biblioteca.getInstance().getListaGeneral().toListAdelante();
+        int no = 1;
+        for (Musica m : musicas) {
+            modelo.addRow(new Object[]{
+                no++,
+                m.getNombre(),
+                m.getArtista(),
+                m.getAlbum(),
+                m.getGenero(),
+                m.getId()     // <- aquí va el ID oculto
+            });
+        }
+    }
+    
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
+        if (seleccionadas.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Agrega al menos una música antes de guardar.");
+            return;
+        }
+        Playlist p = Biblioteca.getInstance().crearPlaylist(nombrePlaylist);
+        if (p == null) {
+            // por seguridad: por si se creó en otra parte o el nombre se volvió inválido
+            JOptionPane.showMessageDialog(this, "No se pudo crear: nombre inválido o duplicado.");
+            return;
+        }
+        for (Musica m : seleccionadas) {
+            p.agregarSiNoExiste(m); // extra seguridad (aunque ya evitamos duplicados)
+        }
+        dispose();
+    }//GEN-LAST:event_btnGuardarActionPerformed
+
+    private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
+        int fila = tblMusicas.getSelectedRow();
+        if (fila < 0) {
+            JOptionPane.showMessageDialog(this, "Selecciona una musica de la biblioteca.");
+            return;
+        }
+        
+        Object val = tblMusicas.getValueAt(fila, 5);// Leer el id oculto (columna 5)
+        int id = Integer.parseInt(val.toString());
+
+        Musica seleccionada = null;  // Buscar la música por id en la biblioteca general
+        for (Musica x : Biblioteca.getInstance().getListaGeneral().toListAdelante()) {
+            if (x.getId() == id) {
+                seleccionada = x;
+                break;
+            }
+        }
+
+        if (seleccionada == null) {
+            JOptionPane.showMessageDialog(this, "No se encontro la musica (id=" + id + ").");
+            return;
+        }
+        
+        if (!idsSeleccionadas.add(seleccionada.getId())) {// Evitar duplicado por id
+            JOptionPane.showMessageDialog(this, "Esa musica ya esta agregada.");
+            return;
+        }
+        seleccionadas.add(seleccionada);
+        cargarSeleccionadasEnTabla();
+    }//GEN-LAST:event_btnAgregarActionPerformed
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the dialog */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                InterfazNuevaPlaylist dialog = new InterfazNuevaPlaylist(new javax.swing.JFrame(), true);
-                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
-                    @Override
-                    public void windowClosing(java.awt.event.WindowEvent e) {
-                        System.exit(0);
-                    }
-                });
-                dialog.setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregar;

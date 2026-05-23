@@ -8,6 +8,8 @@ import clase.Biblioteca;
 import clase.Musica;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
+import clase.Playlist;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -23,6 +25,8 @@ public class InterfazPrincipal extends javax.swing.JFrame {
     public InterfazPrincipal() {
         initComponents();
         mostrarBibliotecaGeneral();
+        refrescarTablaPlaylists();
+        tblPlaylist.getColumnModel().getColumn(0).setMaxWidth(40);
         tblMusicas.getColumnModel().getColumn(0).setMaxWidth(30);
     }
 
@@ -60,7 +64,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Playlists", "No."
+                "No.", "Playlist"
             }
         ));
         jScrollPane2.setViewportView(tblPlaylist);
@@ -160,6 +164,17 @@ public class InterfazPrincipal extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    private void refrescarTablaPlaylists() {
+        DefaultTableModel modelo = (DefaultTableModel) tblPlaylist.getModel();
+        modelo.setRowCount(0);
+
+        List<Playlist> playlists = Biblioteca.getInstance().getPlaylists();
+        int no = 1;
+        for (Playlist p : playlists) {
+            modelo.addRow(new Object[]{ no++, p.getNombre() });
+        }
+    }
+    
     private void cargarEnTablaMusicas(List<Musica> musicas) {
         DefaultTableModel modelo = (DefaultTableModel) tblMusicas.getModel();
         modelo.setRowCount(0);
@@ -186,34 +201,25 @@ public class InterfazPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBibliotecaActionPerformed
 
     private void btnNuevaPlaylistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevaPlaylistActionPerformed
-        InterfazNuevaPlaylist interfaz = new InterfazNuevaPlaylist(this, true);
+        String nombre = JOptionPane.showInputDialog(this, "Nombre de la playlist:");
+        if (nombre == null) return; // canceló
+        nombre = nombre.trim();
+        if (nombre.isBlank()) {
+            JOptionPane.showMessageDialog(this, "Nombre inválido.");
+            return;
+        }
+        if (Biblioteca.getInstance().existePlaylist(nombre)) {
+            JOptionPane.showMessageDialog(this, "Ya existe una playlist con ese nombre.");
+            return;
+        }
+        InterfazNuevaPlaylist interfaz = new InterfazNuevaPlaylist(this, true, nombre);
         interfaz.setVisible(true);
+        refrescarTablaPlaylists();
     }//GEN-LAST:event_btnNuevaPlaylistActionPerformed
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new InterfazPrincipal().setVisible(true));
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBiblioteca;
