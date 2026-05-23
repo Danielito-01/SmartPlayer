@@ -51,6 +51,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         panCanciones = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblMusicas = new javax.swing.JTable();
+        lblTituloMusicas = new javax.swing.JLabel();
         panReproduccion = new javax.swing.JPanel();
         jmbMenu = new javax.swing.JMenuBar();
         menuAdministrador = new javax.swing.JMenu();
@@ -87,6 +88,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         btnBiblioteca.setBackground(new java.awt.Color(124, 163, 238));
         btnBiblioteca.setFont(new java.awt.Font("Segoe UI", 3, 24)); // NOI18N
         btnBiblioteca.setText("Biblioteca");
+        btnBiblioteca.setToolTipText("");
         btnBiblioteca.setOpaque(true);
         btnBiblioteca.addActionListener(this::btnBibliotecaActionPerformed);
         panPlaylist.add(btnBiblioteca, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 230, 40));
@@ -117,20 +119,29 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         tblMusicas.getColumnModel().getColumn(0).setResizable(false);
         jScrollPane1.setViewportView(tblMusicas);
 
+        lblTituloMusicas.setBackground(new java.awt.Color(204, 255, 255));
+        lblTituloMusicas.setFont(new java.awt.Font("Segoe UI", 3, 24)); // NOI18N
+        lblTituloMusicas.setText("Nombre");
+        lblTituloMusicas.setOpaque(true);
+
         javax.swing.GroupLayout panCancionesLayout = new javax.swing.GroupLayout(panCanciones);
         panCanciones.setLayout(panCancionesLayout);
         panCancionesLayout.setHorizontalGroup(
             panCancionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panCancionesLayout.createSequentialGroup()
                 .addGap(14, 14, 14)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(panCancionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE)
+                    .addComponent(lblTituloMusicas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(15, Short.MAX_VALUE))
         );
         panCancionesLayout.setVerticalGroup(
             panCancionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panCancionesLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panCancionesLayout.createSequentialGroup()
+                .addContainerGap(12, Short.MAX_VALUE)
+                .addComponent(lblTituloMusicas)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 538, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -175,7 +186,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(panCanciones, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(panPlaylist, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
+                    .addComponent(panPlaylist, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(panReproduccion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -196,6 +207,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
     private void cargarEnTablaMusicas(List<Musica> musicas) {
         DefaultTableModel modelo = (DefaultTableModel) tblMusicas.getModel();
         modelo.setRowCount(0);
+        lblTituloMusicas.setText("Biblioteca");
         int no = 1;
         for (Musica m : musicas) {
             modelo.addRow(new Object[]{ no++, m.toString(), m.getId() });
@@ -216,6 +228,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
 
     private void btnBibliotecaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBibliotecaActionPerformed
         mostrarBibliotecaGeneral();
+        tblPlaylist.clearSelection();
     }//GEN-LAST:event_btnBibliotecaActionPerformed
 
     private void btnNuevaPlaylistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevaPlaylistActionPerformed
@@ -252,7 +265,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         List<Musica> canciones = seleccionada.toList(); // Mostrar canciones de la playlist en la tabla de musicas
         DefaultTableModel modelo = (DefaultTableModel) tblMusicas.getModel();
         modelo.setRowCount(0);
-
+        lblTituloMusicas.setText("Playlist: " + seleccionada.getNombre());
         int no = 1;
         for (Musica m : canciones) {
             modelo.addRow(new Object[]{ no++, m.toString(), m.getId() });
@@ -278,6 +291,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JMenuBar jmbMenu;
     private javax.swing.JMenuItem jmiCargarMusicas;
+    private javax.swing.JLabel lblTituloMusicas;
     private javax.swing.JMenu menuAdministrador;
     private javax.swing.JPanel panCanciones;
     private javax.swing.JPanel panPlaylist;
