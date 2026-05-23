@@ -28,7 +28,9 @@ public class InterfazNuevaPlaylist extends javax.swing.JDialog {
     public InterfazNuevaPlaylist(java.awt.Frame parent, boolean modal, String nombrePlaylist) {
         super(parent, modal);
         initComponents();
-        // Ocultar columna ID (última, índice 5)
+        tblMusicas.getColumnModel().getColumn(0).setMaxWidth(30);
+        tblMusicasPlaylist.getColumnModel().getColumn(0).setMaxWidth(30);
+        // Ocultar columna ID (ultima, indice 5)
         tblMusicas.getColumnModel().getColumn(5).setMinWidth(0);
         tblMusicas.getColumnModel().getColumn(5).setMaxWidth(0);
         tblMusicas.getColumnModel().getColumn(5).setPreferredWidth(0);
@@ -76,7 +78,12 @@ public class InterfazNuevaPlaylist extends javax.swing.JDialog {
             new String [] {
                 "No.", "Nombre"
             }
-        ));
+        ){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        });
         jScrollPane1.setViewportView(tblMusicasPlaylist);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
@@ -89,7 +96,12 @@ public class InterfazNuevaPlaylist extends javax.swing.JDialog {
             new String [] {
                 "No.", "Nombre", "Artista", "Album", "Genero", "Id"
             }
-        ));
+        ){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        });
         jScrollPane3.setViewportView(tblMusicas);
 
         btnBuscar.setText("Buscar");
@@ -225,34 +237,49 @@ public class InterfazNuevaPlaylist extends javax.swing.JDialog {
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
-        int fila = tblMusicas.getSelectedRow();
-        if (fila < 0) {
-            JOptionPane.showMessageDialog(this, "Selecciona una musica de la biblioteca.");
+        int[] filas = tblMusicas.getSelectedRows();
+        if (filas.length == 0) {
+            JOptionPane.showMessageDialog(this, "Selecciona una o mas musicas de la biblioteca.");
             return;
         }
-        
-        Object val = tblMusicas.getValueAt(fila, 5);// Leer el id oculto (columna 5)
-        int id = Integer.parseInt(val.toString());
 
-        Musica seleccionada = null;  // Buscar la música por id en la biblioteca general
-        for (Musica x : Biblioteca.getInstance().getListaGeneral().toListAdelante()) {
-            if (x.getId() == id) {
-                seleccionada = x;
-                break;
+        List<Musica> biblioteca = Biblioteca.getInstance().getListaGeneral().toListAdelante();// Para no recorrer la biblioteca por cada fila, la convertimos una sola vez
+        int agregadas = 0;
+        int repetidas = 0;
+        int noEncontradas = 0;
+
+        for (int fila : filas) {
+            Object val = tblMusicas.getValueAt(fila, 5); // id oculto
+            int id = Integer.parseInt(val.toString());
+            Musica seleccionada = null;
+            for (Musica x : biblioteca) {
+                if (x.getId() == id) {
+                    seleccionada = x;
+                    break;
+                }
             }
-        }
 
-        if (seleccionada == null) {
-            JOptionPane.showMessageDialog(this, "No se encontro la musica (id=" + id + ").");
-            return;
+            if (seleccionada == null) {
+                noEncontradas++;
+                continue;
+            }
+
+            if (!idsSeleccionadas.add(seleccionada.getId())) {
+                repetidas++;
+                continue;
+            }
+
+            seleccionadas.add(seleccionada);
+            agregadas++;
         }
-        
-        if (!idsSeleccionadas.add(seleccionada.getId())) {// Evitar duplicado por id
-            JOptionPane.showMessageDialog(this, "Esa musica ya esta agregada.");
-            return;
-        }
-        seleccionadas.add(seleccionada);
         cargarSeleccionadasEnTabla();
+        
+        if (repetidas > 0 || noEncontradas > 0) {
+            JOptionPane.showMessageDialog(this,
+                    "Agregadas: " + agregadas +
+                    "\nRepetidas ignoradas: " + repetidas +
+                    "\nNo encontradas: " + noEncontradas);
+        }
     }//GEN-LAST:event_btnAgregarActionPerformed
 
     /**

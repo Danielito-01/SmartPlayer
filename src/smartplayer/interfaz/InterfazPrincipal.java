@@ -26,7 +26,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         initComponents();
         mostrarBibliotecaGeneral();
         refrescarTablaPlaylists();
-        tblPlaylist.getColumnModel().getColumn(0).setMaxWidth(40);
+        tblPlaylist.getColumnModel().getColumn(0).setMaxWidth(30);
         tblMusicas.getColumnModel().getColumn(0).setMaxWidth(30);
     }
 
@@ -66,7 +66,17 @@ public class InterfazPrincipal extends javax.swing.JFrame {
             new String [] {
                 "No.", "Playlist"
             }
-        ));
+        ){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        });
+        tblPlaylist.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblPlaylistMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(tblPlaylist);
 
         panPlaylist.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, 230, 480));
@@ -95,7 +105,12 @@ public class InterfazPrincipal extends javax.swing.JFrame {
             new String [] {
                 "No.", "Musica"
             }
-        ));
+        ){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        });
         tblMusicas.getColumnModel().getColumn(0).setResizable(false);
         jScrollPane1.setViewportView(tblMusicas);
 
@@ -216,6 +231,37 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         interfaz.setVisible(true);
         refrescarTablaPlaylists();
     }//GEN-LAST:event_btnNuevaPlaylistActionPerformed
+
+    private void abrirPlaylistSeleccionada() {
+        int fila = tblPlaylist.getSelectedRow();
+        if (fila < 0) return;
+        String nombre = tblPlaylist.getValueAt(fila, 1).toString();
+
+        Playlist seleccionada = null;
+        for (Playlist p : Biblioteca.getInstance().getPlaylists()) {
+            if (p.getNombre().equalsIgnoreCase(nombre)) {
+                seleccionada = p;
+                break;
+            }
+        }
+        if (seleccionada == null) return;
+
+        List<Musica> canciones = seleccionada.toList(); // Mostrar canciones de la playlist en la tabla de musicas
+        DefaultTableModel modelo = (DefaultTableModel) tblMusicas.getModel();
+        modelo.setRowCount(0);
+
+        int no = 1;
+        for (Musica m : canciones) {
+            modelo.addRow(new Object[]{ no++, m.toString() });
+        }
+    }
+    
+    private void tblPlaylistMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPlaylistMouseClicked
+        if (evt.getClickCount() == 2 && !evt.isConsumed()) {
+            evt.consume();
+            abrirPlaylistSeleccionada();
+        }
+    }//GEN-LAST:event_tblPlaylistMouseClicked
 
     /**
      * @param args the command line arguments

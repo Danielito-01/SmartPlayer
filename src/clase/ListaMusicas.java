@@ -32,9 +32,8 @@ public class ListaMusicas {
     public int size() {
         return size;
     }
-
-    // Agrega al final (cola)
-    public void agregar(Musica musica) {
+    
+    public void agregar(Musica musica) {// Agrega al final (cola)
         if (musica == null) return;
 
         NMusica nuevo = new NMusica(musica);
@@ -49,9 +48,8 @@ public class ListaMusicas {
         }
         size++;
     }
-
-    // Recorrer hacia adelante: devuelve una lista (para mostrar en tablas fácil)
-    public List<Musica> toListAdelante() {
+ 
+    public List<Musica> toListAdelante() {   // Recorrer hacia adelante: devuelve una lista (para mostrar en tablas fácil)
         List<Musica> resultado = new ArrayList<>();
         NMusica actual = primera;
         while (actual != null) {
