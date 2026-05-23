@@ -28,6 +28,8 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         refrescarTablaPlaylists();
         tblMusicas.getColumnModel().getColumn(2).setMinWidth(0);
         tblMusicas.getColumnModel().getColumn(2).setMaxWidth(0);
+        tblPlaylist.getColumnModel().getColumn(2).setMinWidth(0);
+        tblPlaylist.getColumnModel().getColumn(2).setMaxWidth(0);
         tblMusicas.getColumnModel().getColumn(2).setPreferredWidth(0);
         tblPlaylist.getColumnModel().getColumn(0).setMaxWidth(30);
         tblMusicas.getColumnModel().getColumn(0).setMaxWidth(30);
@@ -68,7 +70,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
 
             },
             new String [] {
-                "No.", "Playlist"
+                "No.", "Playlist", "Id"
             }
         ){
             @Override
@@ -193,6 +195,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    
     private void refrescarTablaPlaylists() {
         DefaultTableModel modelo = (DefaultTableModel) tblPlaylist.getModel();
         modelo.setRowCount(0);
@@ -200,7 +203,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         List<Playlist> playlists = Biblioteca.getInstance().getPlaylists();
         int no = 1;
         for (Playlist p : playlists) {
-            modelo.addRow(new Object[]{ no++, p.getNombre() });
+            modelo.addRow(new Object[]{ no++, p.getNombre(), p.getId() });
         }
     }
     
@@ -251,11 +254,11 @@ public class InterfazPrincipal extends javax.swing.JFrame {
     private void abrirPlaylistSeleccionada() {
         int fila = tblPlaylist.getSelectedRow();
         if (fila < 0) return;
-        String nombre = tblPlaylist.getValueAt(fila, 1).toString();
+        int id = (Integer) tblPlaylist.getValueAt(fila, 2);
 
         Playlist seleccionada = null;
         for (Playlist p : Biblioteca.getInstance().getPlaylists()) {
-            if (p.getNombre().equalsIgnoreCase(nombre)) {
+            if (p.getId() == id) {
                 seleccionada = p;
                 break;
             }
