@@ -26,6 +26,9 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         initComponents();
         mostrarBibliotecaGeneral();
         refrescarTablaPlaylists();
+        tblMusicas.getColumnModel().getColumn(2).setMinWidth(0);
+        tblMusicas.getColumnModel().getColumn(2).setMaxWidth(0);
+        tblMusicas.getColumnModel().getColumn(2).setPreferredWidth(0);
         tblPlaylist.getColumnModel().getColumn(0).setMaxWidth(30);
         tblMusicas.getColumnModel().getColumn(0).setMaxWidth(30);
     }
@@ -103,7 +106,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
 
             },
             new String [] {
-                "No.", "Musica"
+                "No.", "Musica", "Id"
             }
         ){
             @Override
@@ -220,7 +223,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         if (nombre == null) return; // canceló
         nombre = nombre.trim();
         if (nombre.isBlank()) {
-            JOptionPane.showMessageDialog(this, "Nombre inválido.");
+            JOptionPane.showMessageDialog(this, "Nombre invalido.");
             return;
         }
         if (Biblioteca.getInstance().existePlaylist(nombre)) {

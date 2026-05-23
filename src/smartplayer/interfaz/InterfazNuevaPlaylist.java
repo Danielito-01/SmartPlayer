@@ -133,13 +133,15 @@ public class InterfazNuevaPlaylist extends javax.swing.JDialog {
                                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(4, 4, 4)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel1)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                            .addGap(99, 99, 99)
                             .addComponent(btnGuardar)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(14, 14, 14)))
+                            .addGap(14, 14, 14)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -214,20 +216,20 @@ public class InterfazNuevaPlaylist extends javax.swing.JDialog {
                 m.getArtista(),
                 m.getAlbum(),
                 m.getGenero(),
-                m.getId()     // <- aquí va el ID oculto
+                m.getId()     // <- aqui va el ID oculto
             });
         }
     }
     
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         if (seleccionadas.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Agrega al menos una música antes de guardar.");
+            JOptionPane.showMessageDialog(this, "Agrega al menos una musica antes de guardar.");
             return;
         }
         Playlist p = Biblioteca.getInstance().crearPlaylist(nombrePlaylist);
         if (p == null) {
             // por seguridad: por si se creó en otra parte o el nombre se volvió inválido
-            JOptionPane.showMessageDialog(this, "No se pudo crear: nombre inválido o duplicado.");
+            JOptionPane.showMessageDialog(this, "No se pudo crear: nombre invalido o duplicado.");
             return;
         }
         for (Musica m : seleccionadas) {
