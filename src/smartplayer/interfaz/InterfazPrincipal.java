@@ -57,7 +57,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblMusicas = new javax.swing.JTable();
         lblTituloMusicas = new javax.swing.JLabel();
-        btnReproducirTodo = new javax.swing.JButton();
+        btnReproducirLista = new javax.swing.JButton();
         panReproduccion = new javax.swing.JPanel();
         lblNombreMusica = new javax.swing.JLabel();
         lblArtista = new javax.swing.JLabel();
@@ -142,10 +142,10 @@ public class InterfazPrincipal extends javax.swing.JFrame {
         lblTituloMusicas.setText("Nombre");
         lblTituloMusicas.setOpaque(true);
 
-        btnReproducirTodo.setBackground(new java.awt.Color(204, 255, 204));
-        btnReproducirTodo.setFont(new java.awt.Font("Segoe UI Symbol", 1, 18)); // NOI18N
-        btnReproducirTodo.setText("▶ Reproducir");
-        btnReproducirTodo.setOpaque(true);
+        btnReproducirLista.setBackground(new java.awt.Color(204, 255, 204));
+        btnReproducirLista.setFont(new java.awt.Font("Segoe UI Symbol", 1, 18)); // NOI18N
+        btnReproducirLista.setText("↳ Reproducir lista ▶");
+        btnReproducirLista.setOpaque(true);
 
         javax.swing.GroupLayout panCancionesLayout = new javax.swing.GroupLayout(panCanciones);
         panCanciones.setLayout(panCancionesLayout);
@@ -154,7 +154,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
             .addGroup(panCancionesLayout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addGroup(panCancionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnReproducirTodo, javax.swing.GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE)
+                    .addComponent(btnReproducirLista, javax.swing.GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE)
                     .addGroup(panCancionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE)
                         .addComponent(lblTituloMusicas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
@@ -168,7 +168,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 482, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnReproducirTodo, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnReproducirLista, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(14, 14, 14))
         );
 
@@ -449,7 +449,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton btnNuevaPlaylist;
     private javax.swing.JButton btnPlayPausa;
     private javax.swing.JButton btnRepetir;
-    private javax.swing.JButton btnReproducirTodo;
+    private javax.swing.JButton btnReproducirLista;
     private javax.swing.JButton btnSiguiente;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;

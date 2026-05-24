@@ -173,7 +173,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="btnReproducirTodo" pref="251" max="32767" attributes="0"/>
+                      <Component id="btnReproducirLista" pref="251" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="jScrollPane1" pref="251" max="32767" attributes="0"/>
                           <Component id="lblTituloMusicas" max="32767" attributes="0"/>
@@ -191,7 +191,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jScrollPane1" min="-2" pref="482" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="btnReproducirTodo" min="-2" pref="42" max="-2" attributes="0"/>
+                  <Component id="btnReproducirLista" min="-2" pref="42" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="14" max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -249,7 +249,7 @@
             <Property name="opaque" type="boolean" value="true"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JButton" name="btnReproducirTodo">
+        <Component class="javax.swing.JButton" name="btnReproducirLista">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="cc" green="ff" red="cc" type="rgb"/>
@@ -257,7 +257,7 @@
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI Symbol" size="18" style="1"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="&#x25b6; Reproducir"/>
+            <Property name="text" type="java.lang.String" value="&#x21b3; Reproducir lista &#x25b6;"/>
             <Property name="opaque" type="boolean" value="true"/>
           </Properties>
         </Component>
