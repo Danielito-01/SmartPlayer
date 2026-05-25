@@ -37,14 +37,14 @@ public final class Biblioteca {
     public int agregarSinRepetir(List<Musica> nuevas) {
         if (nuevas == null) return 0;
         int agregadas = 0;
-        for (Musica m : nuevas) {
-            if (m == null || m.getRuta() == null || m.getRuta().isBlank()) continue;
-            String key = normalizarRuta(m.getRuta());
+        for (Musica musica : nuevas) {
+            if (musica == null || musica.getRuta() == null || musica.getRuta().isBlank()) continue;
+            String key = normalizarRuta(musica.getRuta());
             if (!rutas.add(key)) continue; // ya existe en biblioteca general
-            if (m.getId() <= 0) {
-                m.setId(nextId++);
+            if (musica.getId() <= 0) {
+                musica.setId(nextId++);
             }
-            biblioteca.agregarMusica(m);
+            biblioteca.agregarMusica(musica);
             agregadas++;
         }
         return agregadas;

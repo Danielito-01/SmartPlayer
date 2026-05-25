@@ -28,16 +28,16 @@ import org.jaudiotagger.tag.images.Artwork;
 public class Administrador {
 
     public static List<File> seleccionarArchivos(java.awt.Component parent) {
-        JFileChooser chooser = new JFileChooser(); // Crea el explorador
-        chooser.setDialogTitle("Selecciona archivos MP3 o carpetas"); // Titulo
-        chooser.setMultiSelectionEnabled(true); // Permite seleccionar varios
-        chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES); // Acepta carpetas y archivos
-        chooser.setAcceptAllFileFilterUsed(false); // Oculta "Todos los archivos"
-        chooser.setFileFilter(new FileFilter() {// Filtro personalizado
+        JFileChooser explorador = new JFileChooser(); // Crea el explorador
+        explorador.setDialogTitle("Selecciona archivos MP3 o carpetas"); // Titulo
+        explorador.setMultiSelectionEnabled(true); // Permite seleccionar varios
+        explorador.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES); // Acepta carpetas y archivos
+        explorador.setAcceptAllFileFilterUsed(false); // Oculta "Todos los archivos"
+        explorador.setFileFilter(new FileFilter() {// Filtro personalizado
 
             @Override
-            public boolean accept(File f) {
-                return f.isDirectory() || esMp3(f); // Muestra carpetas o archivos mp3
+            public boolean accept(File archivo) {
+                return archivo.isDirectory() || esMp3(archivo);
             }
 
             @Override
@@ -46,16 +46,15 @@ public class Administrador {
             }
         });
 
-        int resultado = chooser.showOpenDialog(parent);// Abre la ventana
+        int resultado = explorador.showOpenDialog(parent);// Abre la ventana
         if (resultado != JFileChooser.APPROVE_OPTION) { // Si cancela
-
             return new ArrayList<>();
         }
 
         Set<String> rutasUnicas = new LinkedHashSet<>(); // Evita duplicados
-        File[] seleccionados = chooser.getSelectedFiles(); // Archivos seleccionados
+        File[] archivosSeleccionados = explorador.getSelectedFiles(); // Archivos archivosSeleccionados
 
-        for (File archivo : seleccionados) {// Recorre todo lo seleccionado
+        for (File archivo : archivosSeleccionados) {// Recorre todo lo seleccionado
             if (archivo.isDirectory()) { // Si es carpeta
 
                 buscarEnCarpetas(archivo, rutasUnicas);
@@ -88,12 +87,12 @@ public class Administrador {
         }
     }
 
-    private static void agregarRutaUnica(File archivo, Set<String> rutasUnicas) {
+    private static void agregarRutaUnica(File archivo, Set<String> rutas) {
         try {
             String rutaCanonica = archivo.getCanonicalPath();// Ruta real del archivo
-            rutasUnicas.add(rutaCanonica);
+            rutas.add(rutaCanonica);
         } catch (IOException e) {
-            rutasUnicas.add(archivo.getAbsolutePath());// Si falla usa absoluta
+            rutas.add(archivo.getAbsolutePath());// Si falla usa absoluta
         }
     }
 
@@ -102,15 +101,14 @@ public class Administrador {
                 && archivo.getName().toLowerCase().endsWith(".mp3");
     }
 
-    public static List<Musica> extraerMusicasTemporales(List<File> archivos) {
+    public static List<Musica> extraerDatosDeMusicas(List<File> archivos) {
         List<Musica> musicas = new ArrayList<>();
         Set<String> rutasUnicas = new LinkedHashSet<>();// Evita repetir canciones
         for (File archivo : archivos) {// Recorre archivos
-
             if (archivo == null || !archivo.isFile() || !esMp3(archivo)) {// Validaciones
                 continue;
             }
-            
+   
             try {
                 String rutaCanonica = archivo.getCanonicalPath();// Ruta unica
                 
@@ -118,8 +116,8 @@ public class Administrador {
                     continue;
                 }
                 
-                AudioFile audioFile = AudioFileIO.read(archivo);// Lee el archivo mp3
-                Tag tag = audioFile.getTag();// Obtiene metadata
+                AudioFile datosMusica = AudioFileIO.read(archivo);// Lee el archivo mp3
+                Tag audio = datosMusica.getTag();// Obtiene metadata
                 
                 String nombre = quitarExtension(archivo.getName());// Valores por defecto
                 String artista = "Desconocido";
@@ -130,33 +128,33 @@ public class Administrador {
                 long duracion = 0;
                 long tamanio = archivo.length();
 
-                if (audioFile.getAudioHeader() != null) {// Obtiene duración
-                    duracion = audioFile.getAudioHeader().getTrackLength();
+                if (datosMusica.getAudioHeader() != null) {// Obtiene duracion
+                    duracion = datosMusica.getAudioHeader().getTrackLength();
                 }
 
-                if (tag != null) {// Si tiene metadata
+                if (audio != null) {// Si tiene metadata
                     // Obtiene campos
-                    nombre = valorSeguro(tag.getFirst(FieldKey.TITLE), nombre);
-                    artista = valorSeguro(tag.getFirst(FieldKey.ARTIST), "Desconocido");
-                    album = valorSeguro(tag.getFirst(FieldKey.ALBUM), "Desconocido");
-                    genero = valorSeguro(tag.getFirst(FieldKey.GENRE), "Desconocido");
+                    nombre = valorSeguro(audio.getFirst(FieldKey.TITLE), nombre);
+                    artista = valorSeguro(audio.getFirst(FieldKey.ARTIST), "Desconocido");
+                    album = valorSeguro(audio.getFirst(FieldKey.ALBUM), "Desconocido");
+                    genero = valorSeguro(audio.getFirst(FieldKey.GENRE), "Desconocido");
 
-                    String anioTexto = tag.getFirst(FieldKey.YEAR);// Obtiene año
+                    String anioS = audio.getFirst(FieldKey.YEAR);// Obtiene año
 
-                    if (anioTexto != null && !anioTexto.isBlank()) {
+                    if (anioS != null && !anioS.isBlank()) {
                         try {
-                            anioTexto = anioTexto.replaceAll("[^0-9]", "");// Limpia caracteres raros
-                            if (!anioTexto.isBlank()) {// Convierte a entero
-                                anio = Integer.parseInt(anioTexto);
+                            anioS = anioS.replaceAll("[^0-9]", "");// Limpia caracteres raros
+                            if (!anioS.isBlank()) {// Convierte a entero
+                                anio = Integer.parseInt(anioS);
                             }
                         }catch (NumberFormatException e) {
                             anio = 0;
                         }
                     }
-                    portada = extraerPortada(tag);// Obtiene portada
+                    portada = extraerPortada(audio);// Obtiene portada
                 }
                 
-                Musica musica = new Musica(0, nombre, artista, album, genero, duracion, tamanio, rutaCanonica, anio, portada); // Crea objeto musica
+                Musica musica = new Musica(0, nombre, artista, album, genero, duracion, tamanio, rutaCanonica, anio, portada); // Crea objeto audio
                 musicas.add(musica);// Agrega a lista
             }catch (CannotReadException |
                    IOException |
@@ -171,21 +169,20 @@ public class Administrador {
 
     private static ImageIcon extraerPortada(Tag tag) {
         try {
-            Artwork artwork = tag.getFirstArtwork();
-            
-            if (artwork == null || artwork.getBinaryData() == null) {
+            Artwork imageBytes = tag.getFirstArtwork();
+            if (imageBytes == null || imageBytes.getBinaryData() == null) {
                 return obtenerPortadaPorDefecto();
             }
 
-            BufferedImage bufferedImage = ImageIO.read(// Convierte bytes a imagen
-                    new ByteArrayInputStream(artwork.getBinaryData())
+            BufferedImage imagen = ImageIO.read(// Convierte bytes a imagen
+                    new ByteArrayInputStream(imageBytes.getBinaryData())
             );
 
-            if (bufferedImage == null) {
+            if (imagen == null) {
                 return obtenerPortadaPorDefecto();
             }
 
-            Image imagenEscalada = bufferedImage.getScaledInstance(
+            Image imagenEscalada = imagen.getScaledInstance(
                     100,
                     100,
                     Image.SCALE_SMOOTH
@@ -199,7 +196,7 @@ public class Administrador {
     
     private static ImageIcon obtenerPortadaPorDefecto() {
         try {
-            BufferedImage imagen = ImageIO.read(// Carga imagen desde resources
+            BufferedImage imagen = ImageIO.read(
                     Administrador.class.getResource("/imagenes/SmartPlayerLogo.png")
             );
         
@@ -217,12 +214,12 @@ public class Administrador {
 
     public static void mostrarMusicasEnTabla(List<Musica> musicas, JTable tabla) {
         int no = 1;
-        DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
-        modelo.setRowCount(0);
+        DefaultTableModel tablaMusicas = (DefaultTableModel) tabla.getModel();
+        tablaMusicas.setRowCount(0);
         tabla.setRowHeight(100);
 
         for (Musica musica : musicas) {
-            modelo.addRow(new Object[]{
+            tablaMusicas.addRow(new Object[]{
                 no++,
                 musica.getNombre(),
                 musica.getArtista(),
@@ -238,7 +235,7 @@ public class Administrador {
     }
 
     private static String valorSeguro(String valor, String defecto) {
-        if (valor == null || valor.isBlank()) {// Si viene null o vacío
+        if (valor == null || valor.isBlank()) {// Si viene null o vacio
             return defecto;
         }
         return valor.trim();

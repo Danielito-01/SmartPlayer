@@ -175,7 +175,7 @@
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Component id="btnReproducirLista" pref="251" max="32767" attributes="0"/>
                       <Component id="jScrollPane1" pref="251" max="32767" attributes="0"/>
-                      <Component id="lblTituloMusicas" max="32767" attributes="0"/>
+                      <Component id="lblTituloLista" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace pref="15" max="32767" attributes="0"/>
               </Group>
@@ -185,7 +185,7 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="32767" attributes="0"/>
-                  <Component id="lblTituloMusicas" min="-2" max="-2" attributes="0"/>
+                  <Component id="lblTituloLista" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jScrollPane1" min="-2" pref="482" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
@@ -238,7 +238,7 @@
             </Component>
           </SubComponents>
         </Container>
-        <Component class="javax.swing.JLabel" name="lblTituloMusicas">
+        <Component class="javax.swing.JLabel" name="lblTituloLista">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" red="cc" type="rgb"/>

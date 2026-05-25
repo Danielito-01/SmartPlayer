@@ -17,7 +17,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class NuevaPlaylist extends javax.swing.JDialog {
     private final String nombrePlaylist;
-    private final java.util.List<Musica> seleccionadas = new java.util.ArrayList<>();
+    private final List<Musica> seleccionadas = new java.util.ArrayList<>();
     private final java.util.Set<Integer> idsSeleccionadas = new java.util.HashSet<>();
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(NuevaPlaylist.class.getName());
@@ -36,8 +36,8 @@ public class NuevaPlaylist extends javax.swing.JDialog {
         tblMusicas.getColumnModel().getColumn(5).setPreferredWidth(0);
         this.nombrePlaylist = nombrePlaylist;
         lblNombrePlaylist.setText(nombrePlaylist);
-        cargarBibliotecaEnTabla();
-        cargarSeleccionadasEnTabla();
+        cargarBiblioteca();
+        cargarMusicasSeleccionadas();
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -162,9 +162,9 @@ public class NuevaPlaylist extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 457, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAgregar)
-                    .addComponent(btnGuardar))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(btnGuardar)
+                    .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(12, Short.MAX_VALUE))
         );
 
@@ -194,29 +194,29 @@ public class NuevaPlaylist extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void cargarSeleccionadasEnTabla() {
-        DefaultTableModel modelo = (DefaultTableModel) tblMusicasPlaylist.getModel();
-        modelo.setRowCount(0);
+    private void cargarMusicasSeleccionadas() {
+        DefaultTableModel tabla = (DefaultTableModel) tblMusicasPlaylist.getModel();
+        tabla.setRowCount(0);
 
         int no = 1;
-        for (Musica m : seleccionadas) {
-            modelo.addRow(new Object[]{ no++, m.getNombre() });
+        for (Musica musica : seleccionadas) {
+            tabla.addRow(new Object[]{ no++, musica.getNombre() });
         }
     }
     
-    private void cargarBibliotecaEnTabla() {
-        DefaultTableModel modelo = (DefaultTableModel) tblMusicas.getModel();
-        modelo.setRowCount(0);
+    private void cargarBiblioteca() {
+        DefaultTableModel tabla = (DefaultTableModel) tblMusicas.getModel();
+        tabla.setRowCount(0);
         List<Musica> musicas = Biblioteca.getInstance().getBiblioteca().toListAdelante();
         int no = 1;
         for (Musica m : musicas) {
-            modelo.addRow(new Object[]{
+            tabla.addRow(new Object[]{
                 no++,
                 m.getNombre(),
                 m.getArtista(),
                 m.getAlbum(),
                 m.getGenero(),
-                m.getId()     // <- aqui va el ID oculto
+                m.getId()     
             });
         }
     }
@@ -226,14 +226,14 @@ public class NuevaPlaylist extends javax.swing.JDialog {
             JOptionPane.showMessageDialog(this, "Agrega al menos una musica antes de guardar.");
             return;
         }
-        Playlist p = Biblioteca.getInstance().crearPlaylist(nombrePlaylist);
-        if (p == null) {
-            // por seguridad: por si se creó en otra parte o el nombre se volvió inválido
+        Playlist playlist = Biblioteca.getInstance().crearPlaylist(nombrePlaylist);
+        if (playlist == null) {
+            // por seguridad: por si se creo en otra parte o el nombre se volvio invalido
             JOptionPane.showMessageDialog(this, "No se pudo crear: nombre invalido o duplicado.");
             return;
         }
-        for (Musica m : seleccionadas) {
-            p.agregarSiNoExiste(m); // extra seguridad (aunque ya evitamos duplicados)
+        for (Musica musica : seleccionadas) {
+            playlist.agregarMusica(musica); 
         }
         dispose();
     }//GEN-LAST:event_btnGuardarActionPerformed
@@ -254,32 +254,29 @@ public class NuevaPlaylist extends javax.swing.JDialog {
             Object val = tblMusicas.getValueAt(fila, 5); // id oculto
             int id = Integer.parseInt(val.toString());
             Musica seleccionada = null;
-            for (Musica x : biblioteca) {
-                if (x.getId() == id) {
-                    seleccionada = x;
+            for (Musica musica : biblioteca) {
+                if (musica.getId() == id) {
+                    seleccionada = musica;
                     break;
                 }
             }
-
             if (seleccionada == null) {
                 noEncontradas++;
                 continue;
             }
-
             if (!idsSeleccionadas.add(seleccionada.getId())) {
                 repetidas++;
                 continue;
             }
-
             seleccionadas.add(seleccionada);
             agregadas++;
         }
-        cargarSeleccionadasEnTabla();
         
+        cargarMusicasSeleccionadas();
         if (repetidas > 0 || noEncontradas > 0) {
             JOptionPane.showMessageDialog(this,
                     "Agregadas: " + agregadas +
-                    "\nRepetidas ignoradas: " + repetidas +
+                    "\nExisten ignoradas: " + repetidas +
                     "\nNo encontradas: " + noEncontradas);
         }
     }//GEN-LAST:event_btnAgregarActionPerformed

@@ -35,15 +35,19 @@ public class Playlist {
     }
 
    
-    public boolean agregarSiNoExiste(Musica musica) {
+    public boolean agregarMusica(Musica musica) {
         if (musica == null) {
             return false;
         }
-        if (playlist.tieneMusica(musica)) {
+        if (tieneMusica(musica)) {
             return false;
         }
         playlist.agregarMusica(musica);
         return true;
+    }
+    
+    public boolean tieneMusica(Musica musica) {
+        return playlist.tieneMusica(musica);
     }
 
     public List<Musica> toList() {

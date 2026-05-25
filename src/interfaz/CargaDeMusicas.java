@@ -16,8 +16,7 @@ import javax.swing.JOptionPane;
  * @author dcuyu
  */
 public class CargaDeMusicas extends javax.swing.JDialog {
-    private List<Musica> musicasTemporales = new java.util.ArrayList<>();
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CargaDeMusicas.class.getName());
+    private List<Musica> musicasCargadas = new java.util.ArrayList<>();
 
     /**
      * Creates new form InterfazCargaDeMusicas
@@ -113,17 +112,17 @@ public class CargaDeMusicas extends javax.swing.JDialog {
 
     private void btnCargarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCargarActionPerformed
         List<File> mp3s = Administrador.seleccionarArchivos(this);
-        musicasTemporales = Administrador.extraerMusicasTemporales(mp3s);
-        Administrador.mostrarMusicasEnTabla(musicasTemporales, tblMusicasCargadas);
+        musicasCargadas = Administrador.extraerDatosDeMusicas(mp3s);
+        Administrador.mostrarMusicasEnTabla(musicasCargadas, tblMusicasCargadas);
     }//GEN-LAST:event_btnCargarActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        int agregadas = Biblioteca.getInstance().agregarSinRepetir(musicasTemporales);
+        int agregadas = Biblioteca.getInstance().agregarSinRepetir(musicasCargadas);
         JOptionPane.showMessageDialog(this,
                 "Guardadas: " + agregadas,
                 "Biblioteca",
                 JOptionPane.INFORMATION_MESSAGE);
-        dispose(); // cerrar el dialog
+        dispose();
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     /**
