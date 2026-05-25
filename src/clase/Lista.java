@@ -49,6 +49,17 @@ public class Lista {
         }
         size++;
     }
+    
+    public Musica buscarPorId(int id) {
+        NMusica aux = primera;
+        while (aux != null) {
+            if (aux.musica.getId() == id) {
+                return aux.musica;
+            }
+            aux = aux.siguiente;
+        }
+        return null;
+    }
  
     public boolean tieneMusica(Musica musica) {
         if (musica == null) {
@@ -56,12 +67,12 @@ public class Lista {
         }
         NMusica aux = primera;
         while (aux != null) {
-            Musica actual = aux.musica;
+            Musica musicaActual = aux.musica;
            
-            if (actual.getId() > 0 && musica.getId() > 0 && actual.getId() == musica.getId()) {  // Comparar por ID
+            if (musicaActual.getId() > 0 && musica.getId() > 0 && musicaActual.getId() == musica.getId()) {  // Comparar por ID
                 return true;
             }  
-            if (actual.getRuta() != null && musica.getRuta() != null && actual.getRuta()
+            if (musicaActual.getRuta() != null && musica.getRuta() != null && musicaActual.getRuta()
                     .trim().equalsIgnoreCase(musica.getRuta().trim())) { // Comparar por ruta
                 return true;
             }
@@ -127,6 +138,14 @@ public class Lista {
             return actual.musica;
         }
         return null;
+    }
+    
+    public boolean tieneSiguiente() {
+        return actual != null && actual.siguiente != null;
+    }
+    
+    public boolean tieneAnterior() {
+        return actual != null && actual.anterior != null;
     }
     
     public Musica seleccionar(Musica musica) {
