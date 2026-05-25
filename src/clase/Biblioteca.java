@@ -9,7 +9,7 @@ public final class Biblioteca {
     private static final Biblioteca INSTANCE = new Biblioteca();
     
     private int nextId = 1;
-    private final ListaMusicas biblioteca = new ListaMusicas();
+    private final Lista biblioteca = new Lista();
     private final Set<String> rutas = new HashSet<>();
 
     private int nextPlaylistId = 1;
@@ -22,7 +22,7 @@ public final class Biblioteca {
         return INSTANCE;
     }
 
-    public ListaMusicas getBiblioteca() {
+    public Lista getBiblioteca() {
         return biblioteca;
     }
     

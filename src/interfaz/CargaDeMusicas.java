@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
  */
-package smartplayer.interfaz;
+package interfaz;
 
 import clase.Administrador;
 import clase.Musica;
@@ -15,14 +15,14 @@ import javax.swing.JOptionPane;
  *
  * @author dcuyu
  */
-public class InterfazCargaDeMusicas extends javax.swing.JDialog {
+public class CargaDeMusicas extends javax.swing.JDialog {
     private List<Musica> musicasTemporales = new java.util.ArrayList<>();
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(InterfazCargaDeMusicas.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(CargaDeMusicas.class.getName());
 
     /**
      * Creates new form InterfazCargaDeMusicas
      */
-    public InterfazCargaDeMusicas(java.awt.Frame parent, boolean modal) {
+    public CargaDeMusicas(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         tblMusicasCargadas.getColumnModel().getColumn(0).setMaxWidth(30);

@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JDialog.java to edit this template
  */
-package smartplayer.interfaz;
+package interfaz;
 
 import clase.Biblioteca;
 import clase.Playlist;
@@ -15,17 +15,17 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author dcuyu
  */
-public class InterfazNuevaPlaylist extends javax.swing.JDialog {
+public class NuevaPlaylist extends javax.swing.JDialog {
     private final String nombrePlaylist;
     private final java.util.List<Musica> seleccionadas = new java.util.ArrayList<>();
     private final java.util.Set<Integer> idsSeleccionadas = new java.util.HashSet<>();
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(InterfazNuevaPlaylist.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(NuevaPlaylist.class.getName());
 
     /**
      * Creates new form InterfazNuevaPlaylist
      */
-    public InterfazNuevaPlaylist(java.awt.Frame parent, boolean modal, String nombrePlaylist) {
+    public NuevaPlaylist(java.awt.Frame parent, boolean modal, String nombrePlaylist) {
         super(parent, modal);
         initComponents();
         tblMusicas.getColumnModel().getColumn(0).setMaxWidth(30);

@@ -3,7 +3,7 @@ package clase;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListaMusicas {
+public class Lista {
 
     private static class NMusica {
         Musica musica;
@@ -20,7 +20,7 @@ public class ListaMusicas {
     private NMusica actual;
     private int size;
 
-    public ListaMusicas() {
+    public Lista() {
         primera = null;
         ultima = null;
         size = 0;

@@ -5,7 +5,7 @@ import java.util.List;
 public class Playlist {
     private final int id;
     private String nombre;
-    private final ListaMusicas playlist = new ListaMusicas();
+    private final Lista playlist = new Lista();
 
     public Playlist(int id, String nombre) {
         this.id = id;
@@ -20,7 +20,7 @@ public class Playlist {
         return nombre;
     }
     
-    public ListaMusicas getPlaylist() {
+    public Lista getPlaylist() {
         return playlist;
     }
 

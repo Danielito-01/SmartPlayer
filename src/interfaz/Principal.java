@@ -2,10 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
-package smartplayer.interfaz;
+package interfaz;
 
 import clase.Biblioteca;
-import clase.ListaMusicas;
+import clase.Lista;
 import clase.Musica;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
@@ -20,15 +20,15 @@ import javax.swing.JOptionPane;
  *
  * @author dcuyu
  */
-public class InterfazPrincipal extends javax.swing.JFrame {
-    ListaMusicas listaActual;
+public class Principal extends javax.swing.JFrame {
+    Lista listaActual;
     
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(InterfazPrincipal.class.getName());
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Principal.class.getName());
 
     /**
      * Creates new form InterfazPrincipal
      */
-    public InterfazPrincipal() {
+    public Principal() {
         initComponents();
         mostrarBibliotecaGeneral();
         refrescarTablaPlaylists();
@@ -389,7 +389,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
     }
     
     private void jmiCargarMusicasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiCargarMusicasActionPerformed
-        InterfazCargaDeMusicas interfaz = new InterfazCargaDeMusicas(this, true);
+        CargaDeMusicas interfaz = new CargaDeMusicas(this, true);
         interfaz.setVisible(true);
         mostrarBibliotecaGeneral();
     }//GEN-LAST:event_jmiCargarMusicasActionPerformed
@@ -411,7 +411,7 @@ public class InterfazPrincipal extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Ya existe una playlist con ese nombre.");
             return;
         }
-        InterfazNuevaPlaylist interfaz = new InterfazNuevaPlaylist(this, true, nombre);
+        NuevaPlaylist interfaz = new NuevaPlaylist(this, true, nombre);
         interfaz.setVisible(true);
         refrescarTablaPlaylists();
     }//GEN-LAST:event_btnNuevaPlaylistActionPerformed
