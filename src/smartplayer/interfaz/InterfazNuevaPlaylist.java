@@ -207,7 +207,7 @@ public class InterfazNuevaPlaylist extends javax.swing.JDialog {
     private void cargarBibliotecaEnTabla() {
         DefaultTableModel modelo = (DefaultTableModel) tblMusicas.getModel();
         modelo.setRowCount(0);
-        List<Musica> musicas = Biblioteca.getInstance().getListaGeneral().toListAdelante();
+        List<Musica> musicas = Biblioteca.getInstance().getBiblioteca().toListAdelante();
         int no = 1;
         for (Musica m : musicas) {
             modelo.addRow(new Object[]{
@@ -245,7 +245,7 @@ public class InterfazNuevaPlaylist extends javax.swing.JDialog {
             return;
         }
 
-        List<Musica> biblioteca = Biblioteca.getInstance().getListaGeneral().toListAdelante();// Para no recorrer la biblioteca por cada fila, la convertimos una sola vez
+        List<Musica> biblioteca = Biblioteca.getInstance().getBiblioteca().toListAdelante();// Para no recorrer la biblioteca por cada fila, la convertimos una sola vez
         int agregadas = 0;
         int repetidas = 0;
         int noEncontradas = 0;

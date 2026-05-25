@@ -6,15 +6,15 @@ import java.util.List;
 import java.util.Set;
 
 public final class Biblioteca {
+    private static final Biblioteca INSTANCE = new Biblioteca();
+    
     private int nextId = 1;
-    private final ListaMusicas listaGeneral = new ListaMusicas();
+    private final ListaMusicas biblioteca = new ListaMusicas();
     private final Set<String> rutas = new HashSet<>();
 
     private int nextPlaylistId = 1;
     private final List<Playlist> playlists = new ArrayList<>();
     private final Set<String> nombresPlaylists = new HashSet<>();
-
-    private static final Biblioteca INSTANCE = new Biblioteca();
 
     private Biblioteca() {}
 
@@ -22,8 +22,16 @@ public final class Biblioteca {
         return INSTANCE;
     }
 
-    public ListaMusicas getListaGeneral() {
-        return listaGeneral;
+    public ListaMusicas getBiblioteca() {
+        return biblioteca;
+    }
+    
+    public List<Playlist> getPlaylists() {
+        return playlists;
+    }
+    
+    public String getNombre() {
+        return "Biblioteca";
     }
 
     public int agregarSinRepetir(List<Musica> nuevas) {
@@ -36,15 +44,11 @@ public final class Biblioteca {
             if (m.getId() <= 0) {
                 m.setId(nextId++);
             }
-            listaGeneral.agregar(m);
+            biblioteca.agregarMusica(m);
             agregadas++;
         }
         return agregadas;
-    }
-
-    public List<Playlist> getPlaylists() {
-        return playlists;
-    }
+    } 
 
     public Playlist crearPlaylist(String nombre) {
         String key = normalizarNombrePlaylist(nombre);
