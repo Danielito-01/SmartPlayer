@@ -154,8 +154,8 @@ public class Musica {
         }
     }
     
-    public ImageIcon getPortadaEscalada(int ancho, int alto) {
-        Image img = portada.getImage();
+    public ImageIcon getPortadaGrande(int ancho, int alto) {
+        Image img = this.portada.getImage();
         BufferedImage buffered = new BufferedImage(ancho, alto, BufferedImage.TYPE_INT_ARGB);
 
         Graphics2D g2d = buffered.createGraphics();
@@ -166,5 +166,16 @@ public class Musica {
         g2d.dispose();
 
         return new ImageIcon(buffered);
+    }
+    
+    public ImageIcon getPortadaPequenia() {
+        Image imagenOriginal = this.portada.getImage();
+
+        Image imagenEscalada = imagenOriginal.getScaledInstance(
+                45,
+                45,
+                Image.SCALE_SMOOTH
+        );
+        return new ImageIcon(imagenEscalada);
     }
 }

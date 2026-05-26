@@ -25,10 +25,10 @@ public class CargaDeMusicas extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         tblMusicasCargadas.getColumnModel().getColumn(0).setMaxWidth(30);
-        tblMusicasCargadas.getColumnModel().getColumn(4).setMaxWidth(100);
         tblMusicasCargadas.getColumnModel().getColumn(5).setMaxWidth(65);
         tblMusicasCargadas.getColumnModel().getColumn(6).setMaxWidth(55);
-        tblMusicasCargadas.getColumnModel().getColumn(8).setMaxWidth(50);
+        tblMusicasCargadas.getColumnModel().getColumn(8).setMaxWidth(80);
+        tblMusicasCargadas.getColumnModel().getColumn(9).setMaxWidth(60);
     }
 
     /**

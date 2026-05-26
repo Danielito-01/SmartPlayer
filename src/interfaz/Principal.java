@@ -13,7 +13,9 @@ import clase.Playlist;
 import clase.Reproductor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.RenderingHints;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 /**
@@ -209,8 +211,21 @@ public class Principal extends javax.swing.JFrame {
         lblTxtAnio.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         lblTxtAnio.setText("Año:");
 
-        lblPortada.setText(".");
         lblPortada.setOpaque(true);
+        ImageIcon originalIcon = new ImageIcon(getClass().getResource("/imagen/SmartPlayerLogo.png"));
+        Image originalImage = originalIcon.getImage();
+
+        lblPortada.addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentResized(java.awt.event.ComponentEvent e) {
+                int w = lblPortada.getWidth();
+                int h = lblPortada.getHeight();
+                if (w > 0 && h > 0) {
+                    Image scaled = originalImage.getScaledInstance(w, h, Image.SCALE_SMOOTH);
+                    lblPortada.setIcon(new ImageIcon(scaled));
+                }
+            }
+        });
 
         sldReproduccion.setUI(new javax.swing.plaf.basic.BasicSliderUI(sldReproduccion) {
             @Override
@@ -348,14 +363,11 @@ public class Principal extends javax.swing.JFrame {
                 .addComponent(lblPortada, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(panReproduccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panReproduccionLayout.createSequentialGroup()
-                        .addGroup(panReproduccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lblDuracion)
-                            .addComponent(lblTiempoActual))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panReproduccionLayout.createSequentialGroup()
-                        .addComponent(sldReproduccion, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(panReproduccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(lblDuracion)
+                        .addComponent(lblTiempoActual))
+                    .addComponent(sldReproduccion, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(panReproduccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panReproduccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnPlayPausa, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
@@ -521,7 +533,7 @@ public class Principal extends javax.swing.JFrame {
         lblGenero.setText("<html><div style='width:70px;'>" + musica.getGenero() + "</div></html>");
         lblAnio.setText("<html><div style='width:40px;'>" + musica.anioReal() + "</div></html>");
         lblTamanio.setText("<html><div style='width:50px;'>" + musica.formatearTamanio() + "</div></html>");
-        lblPortada.setIcon(musica.getPortadaEscalada(lblPortada.getWidth(), lblPortada.getHeight()));
+        lblPortada.setIcon(musica.getPortadaGrande(lblPortada.getWidth(), lblPortada.getHeight()));
     }
     
     public boolean seleccionarMusicaEnTabla(int id) {

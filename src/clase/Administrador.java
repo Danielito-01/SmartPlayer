@@ -151,9 +151,8 @@ public class Administrador {
                             anio = 0;
                         }
                     }
-                    portada = extraerPortada(audio);// Obtiene portada
                 }
-                
+                portada = extraerPortada(audio);// Obtiene portada
                 Musica musica = new Musica(0, nombre, artista, album, genero, duracion, tamanio, rutaCanonica, anio, portada); // Crea objeto audio
                 musicas.add(musica);// Agrega a lista
             }catch (CannotReadException |
@@ -177,19 +176,13 @@ public class Administrador {
             BufferedImage imagen = ImageIO.read(// Convierte bytes a imagen
                     new ByteArrayInputStream(imageBytes.getBinaryData())
             );
-
             if (imagen == null) {
                 return obtenerPortadaPorDefecto();
             }
-
-            Image imagenEscalada = imagen.getScaledInstance(
-                    100,
-                    100,
-                    Image.SCALE_SMOOTH
-            );
-            return new ImageIcon(imagenEscalada);
-        }
-        catch (Exception e) {
+            
+            return new ImageIcon(imagen);
+            
+        }catch (Exception e) {
             return obtenerPortadaPorDefecto();
         }
     }
@@ -199,15 +192,8 @@ public class Administrador {
             BufferedImage imagen = ImageIO.read(
                     Administrador.class.getResource("/imagen/SmartPlayerLogo.png")
             );
-        
-            Image imagenEscalada = imagen.getScaledInstance(
-                    100,
-                    100,
-                    Image.SCALE_SMOOTH
-            );
-            return new ImageIcon(imagenEscalada);
-        }
-        catch (Exception e) {
+            return new ImageIcon(imagen);
+        }catch (Exception e) {
             return null;
         }
     }
@@ -216,7 +202,7 @@ public class Administrador {
         int no = 1;
         DefaultTableModel tablaMusicas = (DefaultTableModel) tabla.getModel();
         tablaMusicas.setRowCount(0);
-        tabla.setRowHeight(100);
+        tabla.setRowHeight(50);
 
         for (Musica musica : musicas) {
             tablaMusicas.addRow(new Object[]{
@@ -229,7 +215,7 @@ public class Administrador {
                 musica.formatearTamanio(), // 5.2 MB
                 musica.getRuta(),
                 musica.anioReal(),
-                musica.getPortada() // ImageIcon real
+                musica.getPortadaPequenia()
             });
         }
     }

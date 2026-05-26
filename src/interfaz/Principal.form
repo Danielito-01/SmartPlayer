@@ -456,9 +456,11 @@
         </Component>
         <Component class="javax.swing.JLabel" name="lblPortada">
           <Properties>
-            <Property name="text" type="java.lang.String" value="."/>
             <Property name="opaque" type="boolean" value="true"/>
           </Properties>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_InitCodePost" type="java.lang.String" value="ImageIcon originalIcon = new ImageIcon(getClass().getResource(&quot;/imagen/SmartPlayerLogo.png&quot;));&#xa;Image originalImage = originalIcon.getImage();&#xa;&#xa;lblPortada.addComponentListener(new java.awt.event.ComponentAdapter() {&#xa;    @Override&#xa;    public void componentResized(java.awt.event.ComponentEvent e) {&#xa;        int w = lblPortada.getWidth();&#xa;        int h = lblPortada.getHeight();&#xa;        if (w &gt; 0 &amp;&amp; h &gt; 0) {&#xa;            Image scaled = originalImage.getScaledInstance(w, h, Image.SCALE_SMOOTH);&#xa;            lblPortada.setIcon(new ImageIcon(scaled));&#xa;        }&#xa;    }&#xa;});"/>
+          </AuxValues>
         </Component>
         <Component class="javax.swing.JSlider" name="sldReproduccion">
           <AuxValues>
