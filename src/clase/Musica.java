@@ -114,4 +114,39 @@ public class Musica {
     public String toString() {
         return nombre + " - " + artista;
     }
+    
+    public String formatearDuracion() {
+        long minutos = duracion / 60;
+        long segundosRestantes = duracion % 60;
+        return String.format(
+                "%02d:%02d",
+                minutos,
+                segundosRestantes
+        );
+    }
+    
+    public String formatearTamanio() {
+        double kb = tamanio / 1024.0;
+        double mb = kb / 1024.0;
+        double gb = mb / 1024.0;
+        if (gb >= 1) {
+            return String.format("%.2f GB", gb);
+        }
+        if (mb >= 1) {
+            return String.format("%.2f MB", mb);
+        }
+        if (kb >= 1) {
+            return String.format("%.2f KB", kb);
+        }
+        return tamanio + " B";
+    }
+    
+    public String anioReal(){
+        if (anio <= 0) {
+            return "Desconocido";
+        }else {
+            String anioReal = String.valueOf(anio);
+            return anioReal;
+        }
+    }
 }

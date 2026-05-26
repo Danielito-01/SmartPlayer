@@ -197,7 +197,7 @@ public class Administrador {
     private static ImageIcon obtenerPortadaPorDefecto() {
         try {
             BufferedImage imagen = ImageIO.read(
-                    Administrador.class.getResource("/imagenes/SmartPlayerLogo.png")
+                    Administrador.class.getResource("/imagen/SmartPlayerLogo.png")
             );
         
             Image imagenEscalada = imagen.getScaledInstance(
@@ -225,10 +225,10 @@ public class Administrador {
                 musica.getArtista(),
                 musica.getAlbum(),
                 musica.getGenero(),
-                formatearDuracion(musica.getDuracion()), // 03:45
-                formatearTamanio(musica.getTamanio()), // 5.2 MB
+                musica.formatearDuracion(), // 03:45
+                musica.formatearTamanio(), // 5.2 MB
                 musica.getRuta(),
-                anioDesconocido(musica.getAnio()),
+                musica.anioReal(),
                 musica.getPortada() // ImageIcon real
             });
         }
@@ -248,40 +248,5 @@ public class Administrador {
             return nombreArchivo.substring(0, punto);
         }
         return nombreArchivo;
-    }
-    
-    private static String formatearDuracion(long segundos) {
-        long minutos = segundos / 60;
-        long segundosRestantes = segundos % 60;
-        return String.format(
-                "%02d:%02d",
-                minutos,
-                segundosRestantes
-        );
-    }
-    
-    private static String formatearTamanio(long bytes) {
-        double kb = bytes / 1024.0;
-        double mb = kb / 1024.0;
-        double gb = mb / 1024.0;
-        if (gb >= 1) {
-            return String.format("%.2f GB", gb);
-        }
-        if (mb >= 1) {
-            return String.format("%.2f MB", mb);
-        }
-        if (kb >= 1) {
-            return String.format("%.2f KB", kb);
-        }
-        return bytes + " B";
-    }
-    
-    public static String anioDesconocido(int anio){
-        if (anio == 0) {
-            return "Desconocido";
-        }else {
-            String anioReal= String.valueOf(anio);
-            return anioReal;
-        }
     }
 }
