@@ -1,5 +1,9 @@
 package clase;
 
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
 
 public class Musica {
@@ -148,5 +152,19 @@ public class Musica {
             String anioReal = String.valueOf(anio);
             return anioReal;
         }
+    }
+    
+    public ImageIcon getPortadaEscalada(int ancho, int alto) {
+        Image img = portada.getImage();
+        BufferedImage buffered = new BufferedImage(ancho, alto, BufferedImage.TYPE_INT_ARGB);
+
+        Graphics2D g2d = buffered.createGraphics();
+        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2d.drawImage(img, 0, 0, ancho, alto, null);
+        g2d.dispose();
+
+        return new ImageIcon(buffered);
     }
 }
