@@ -359,15 +359,15 @@
                   </Group>
                   <EmptySpace min="6" pref="6" max="-2" attributes="0"/>
                   <Component id="lblPortada" min="-2" pref="344" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="14" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="103" alignment="0" groupAlignment="3" attributes="0">
+                      <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="lblDuracion" alignment="3" min="-2" max="-2" attributes="0"/>
                           <Component id="lblTiempoActual" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="sldReproduccion" alignment="0" min="-2" pref="24" max="-2" attributes="0"/>
+                      <Component id="sldReproduccion" alignment="0" min="-2" pref="18" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="14" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="103" alignment="1" groupAlignment="3" attributes="0">
                           <Component id="btnPlayPausa" alignment="3" pref="0" max="32767" attributes="0"/>
@@ -376,7 +376,7 @@
                       </Group>
                       <Group type="102" attributes="0">
                           <Component id="btnRepetir" min="-2" pref="25" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="8" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>

@@ -361,13 +361,13 @@ public class Principal extends javax.swing.JFrame {
                             .addComponent(lblTxtTamanio))))
                 .addGap(6, 6, 6)
                 .addComponent(lblPortada, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
                 .addGroup(panReproduccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panReproduccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(lblDuracion)
                         .addComponent(lblTiempoActual))
-                    .addComponent(sldReproduccion, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(sldReproduccion, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
                 .addGroup(panReproduccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panReproduccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(btnPlayPausa, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
@@ -375,7 +375,7 @@ public class Principal extends javax.swing.JFrame {
                         .addComponent(btnSiguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                     .addGroup(panReproduccionLayout.createSequentialGroup()
                         .addComponent(btnRepetir, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 8, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -534,6 +534,7 @@ public class Principal extends javax.swing.JFrame {
         lblAnio.setText("<html><div style='width:40px;'>" + musica.anioReal() + "</div></html>");
         lblTamanio.setText("<html><div style='width:50px;'>" + musica.formatearTamanio() + "</div></html>");
         lblPortada.setIcon(musica.getPortadaGrande(lblPortada.getWidth(), lblPortada.getHeight()));
+        lblDuracion.setText(musica.formatearDuracion());
     }
     
     public boolean seleccionarMusicaEnTabla(int id) {
@@ -582,6 +583,78 @@ public class Principal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_tblPlaylistMouseClicked
 
+    private void tblMusicasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblMusicasMouseClicked
+        if (evt.getClickCount() == 2 && !evt.isConsumed()) {
+            evt.consume();
+
+            Musica musica = musicaSeleccionada();
+            if (musica == null || listaActualSeleccionada == null) {
+                return;
+            }
+
+            Musica seleccionada = listaActualSeleccionada.seleccionar(musica);
+            if (seleccionada == null) {
+                return;
+            }
+
+            musicaActualSeleccionada = seleccionada;
+            musicaActualReproduciendo = seleccionada;
+            listaActualReproduciendo = listaActualSeleccionada;
+
+            reproductor.Play(seleccionada);
+            btnPlayPausa.setText("⏸️");
+            mostrarDatosDeMusica();
+        }
+    }//GEN-LAST:event_tblMusicasMouseClicked
+
+    private void btnAnteriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnteriorActionPerformed
+        if (listaActualReproduciendo == null) {
+            return;
+        }
+
+        if (listaActualReproduciendo.tieneAnterior()) {
+            Musica anterior = listaActualReproduciendo.anterior();
+            musicaActualReproduciendo = anterior;
+            musicaActualSeleccionada = anterior;
+            reproductor.Play(anterior);
+
+            if (listaActualSeleccionada == listaActualReproduciendo) {
+                seleccionarMusicaEnTabla(anterior.getId());
+            }
+
+            mostrarDatosDeMusica();
+            btnPlayPausa.setText("⏸️");
+            return;
+        } else {
+            reproductor.Stop();
+            btnPlayPausa.setText("▶");
+        }
+    }//GEN-LAST:event_btnAnteriorActionPerformed
+
+    private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
+        if (listaActualReproduciendo == null) {
+            return;
+        }
+
+        if (listaActualReproduciendo.tieneSiguiente()) {
+            Musica siguiente = listaActualReproduciendo.siguiente();
+            musicaActualReproduciendo = siguiente;
+            musicaActualSeleccionada = siguiente;
+            reproductor.Play(siguiente);
+
+            if (listaActualSeleccionada == listaActualReproduciendo) {
+                seleccionarMusicaEnTabla(siguiente.getId());
+            }
+
+            mostrarDatosDeMusica();
+            btnPlayPausa.setText("⏸️");
+            return;
+        } else {
+            reproductor.Stop();
+            btnPlayPausa.setText("▶");
+        }
+    }//GEN-LAST:event_btnSiguienteActionPerformed
+
     private void btnPlayPausaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlayPausaActionPerformed
         if (!reproductor.Reproduciendo() && !reproductor.Pausado()) {
             Musica musica = musicaSeleccionada();
@@ -615,78 +688,6 @@ public class Principal extends javax.swing.JFrame {
             btnPlayPausa.setText("⏸️");
         }
     }//GEN-LAST:event_btnPlayPausaActionPerformed
-
-    private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
-        if (listaActualReproduciendo == null) {
-        return;
-        }
-
-        if (listaActualReproduciendo.tieneSiguiente()) {
-            Musica siguiente = listaActualReproduciendo.siguiente();
-            musicaActualReproduciendo = siguiente;
-            musicaActualSeleccionada = siguiente;
-            reproductor.Play(siguiente);
-
-            if (listaActualSeleccionada == listaActualReproduciendo) {
-                seleccionarMusicaEnTabla(siguiente.getId());
-            }
-
-            mostrarDatosDeMusica();
-            btnPlayPausa.setText("⏸️");
-            return;
-        } else {
-            reproductor.Stop();
-            btnPlayPausa.setText("▶");
-        }
-    }//GEN-LAST:event_btnSiguienteActionPerformed
-
-    private void btnAnteriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnteriorActionPerformed
-        if (listaActualReproduciendo == null) {
-            return;
-        }
-
-        if (listaActualReproduciendo.tieneAnterior()) {
-            Musica anterior = listaActualReproduciendo.anterior();
-            musicaActualReproduciendo = anterior;
-            musicaActualSeleccionada = anterior;
-            reproductor.Play(anterior);
-
-            if (listaActualSeleccionada == listaActualReproduciendo) {
-                seleccionarMusicaEnTabla(anterior.getId());
-            }
-
-            mostrarDatosDeMusica();
-            btnPlayPausa.setText("⏸️");
-            return;
-        } else {
-            reproductor.Stop();
-            btnPlayPausa.setText("▶");
-        }
-    }//GEN-LAST:event_btnAnteriorActionPerformed
-
-    private void tblMusicasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblMusicasMouseClicked
-        if (evt.getClickCount() == 2 && !evt.isConsumed()) {
-            evt.consume();
-
-            Musica musica = musicaSeleccionada();
-            if (musica == null || listaActualSeleccionada == null) {
-                return;
-            }
-
-            Musica seleccionada = listaActualSeleccionada.seleccionar(musica);
-            if (seleccionada == null) {
-                return;
-            }
-
-            musicaActualSeleccionada = seleccionada;
-            musicaActualReproduciendo = seleccionada;
-            listaActualReproduciendo = listaActualSeleccionada;
-
-            reproductor.Play(seleccionada);
-            btnPlayPausa.setText("⏸️");
-            mostrarDatosDeMusica();
-        }
-    }//GEN-LAST:event_tblMusicasMouseClicked
 
     /**
      * @param args the command line arguments
