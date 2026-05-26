@@ -159,6 +159,7 @@ public class Principal extends javax.swing.JFrame {
         btnReproducirLista.setFont(new java.awt.Font("Segoe UI Symbol", 1, 18)); // NOI18N
         btnReproducirLista.setText("↳ Reproducir lista ▶");
         btnReproducirLista.setOpaque(true);
+        btnReproducirLista.addActionListener(this::btnReproducirListaActionPerformed);
 
         javax.swing.GroupLayout panCancionesLayout = new javax.swing.GroupLayout(panCanciones);
         panCanciones.setLayout(panCancionesLayout);
@@ -396,7 +397,7 @@ public class Principal extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(panCanciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(panReproduccion, javax.swing.GroupLayout.PREFERRED_SIZE, 443, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(panReproduccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(panPlaylist, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(9, Short.MAX_VALUE))
@@ -688,6 +689,22 @@ public class Principal extends javax.swing.JFrame {
             btnPlayPausa.setText("⏸️");
         }
     }//GEN-LAST:event_btnPlayPausaActionPerformed
+
+    private void btnReproducirListaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReproducirListaActionPerformed
+        if (listaActualSeleccionada == null) {
+            return;
+        }
+
+        listaActualReproduciendo = listaActualSeleccionada;
+        reproductor.Play(listaActualReproduciendo.primera());
+        musicaActualReproduciendo = listaActualSeleccionada.getActual();
+        btnPlayPausa.setText("⏸️");
+        mostrarDatosDeMusica();
+        
+        if (listaActualReproduciendo == listaActualSeleccionada && musicaActualReproduciendo != null) {
+            seleccionarMusicaEnTabla(musicaActualReproduciendo.getId());
+        }
+    }//GEN-LAST:event_btnReproducirListaActionPerformed
 
     /**
      * @param args the command line arguments

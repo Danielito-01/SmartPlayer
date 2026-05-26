@@ -160,7 +160,6 @@ public class Administrador {
                    TagException |
                    ReadOnlyFileException |
                    InvalidAudioFrameException e) {
-                System.err.println("No se pudo leer: " + archivo.getAbsolutePath());
             }
         }
         return musicas;
