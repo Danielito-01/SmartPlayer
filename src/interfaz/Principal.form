@@ -49,7 +49,7 @@
               <EmptySpace max="32767" attributes="0"/>
               <Component id="panCanciones" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
-              <Component id="panReproduccion" min="-2" max="-2" attributes="0"/>
+              <Component id="panReproduccion" min="-2" pref="443" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
               <Component id="panPlaylist" min="-2" pref="250" max="-2" attributes="0"/>
               <EmptySpace pref="9" max="32767" attributes="0"/>
@@ -125,6 +125,11 @@
             </Property>
             <Property name="text" type="java.lang.String" value="Biblioteca"/>
             <Property name="toolTipText" type="java.lang.String" value=""/>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.BevelBorderInfo">
+                <BevelBorder/>
+              </Border>
+            </Property>
             <Property name="opaque" type="boolean" value="true"/>
           </Properties>
           <Events>
@@ -176,7 +181,7 @@
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                       <Component id="btnReproducirLista" pref="251" max="32767" attributes="0"/>
                       <Component id="jScrollPane1" pref="251" max="32767" attributes="0"/>
-                      <Component id="lblTituloLista" max="32767" attributes="0"/>
+                      <Component id="lblTituloLista" min="-2" pref="250" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace pref="15" max="32767" attributes="0"/>
               </Group>
@@ -186,8 +191,8 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="32767" attributes="0"/>
-                  <Component id="lblTituloLista" min="-2" pref="42" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <Component id="lblTituloLista" min="-2" pref="45" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" max="32767" attributes="0"/>
                   <Component id="jScrollPane1" min="-2" pref="502" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="btnReproducirLista" min="-2" pref="42" max="-2" attributes="0"/>
@@ -248,6 +253,15 @@
               <Font name="Segoe UI" size="18" style="3"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Nombre"/>
+            <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[250, 45]"/>
+            </Property>
+            <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[250, 45]"/>
+            </Property>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[250, 45]"/>
+            </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="btnReproducirLista">

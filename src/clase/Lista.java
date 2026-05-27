@@ -87,13 +87,15 @@ public class Lista {
     
     public List<Musica> toListAdelante() {
         List<Musica> resultado = new ArrayList<>();
+        if (estaVacia()) {
+            return resultado;
+        }
         NMusica aux = primera;
-        
         if (circular) {
             do {
             resultado.add(aux.musica);
             aux = aux.siguiente;
-            } while (aux != primera); // se detiene al volver al inicio
+            } while (aux != null && aux != primera); // se detiene al volver al inicio
         } else {
             while (aux != null) {
             resultado.add(aux.musica);
@@ -105,13 +107,16 @@ public class Lista {
 
     public List<Musica> toListAtras() {
         List<Musica> resultado = new ArrayList<>();
-        NMusica aux = ultima;
+        if (estaVacia()) {
+            return resultado;
+        }
         
+        NMusica aux = ultima;
         if (circular) {
             do {
             resultado.add(aux.musica);
             aux = aux.anterior;
-            } while (aux != ultima);  // se detiene al volver al final
+            } while (aux != null && aux != ultima);  // se detiene al volver al final
         } else {
             while (aux != null) {
             resultado.add(aux.musica);
@@ -183,6 +188,9 @@ public class Lista {
     } 
     
     public void Circular(boolean estado) {
+        if (estaVacia()) {
+            return;
+        }
         this.circular = estado;
         if (estado == true) {
             primera.anterior = ultima;

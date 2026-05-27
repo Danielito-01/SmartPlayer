@@ -7,7 +7,7 @@ import interfaz.Principal;
 public class SmartPlayer {
 
     public static void main(String[] args) {
-        Logger.getLogger("org.jaudiotagger").setLevel(Level.WARNING);
+        Logger.getLogger("org.jaudiotagger").setLevel(Level.SEVERE);
         Principal interfazPrincipal = new Principal();
         interfazPrincipal.setVisible(true);
     }

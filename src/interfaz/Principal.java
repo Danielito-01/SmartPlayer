@@ -116,6 +116,7 @@ public class Principal extends javax.swing.JFrame {
         btnBiblioteca.setFont(new java.awt.Font("Segoe UI", 3, 24)); // NOI18N
         btnBiblioteca.setText("Biblioteca");
         btnBiblioteca.setToolTipText("");
+        btnBiblioteca.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         btnBiblioteca.setOpaque(true);
         btnBiblioteca.addActionListener(this::btnBibliotecaActionPerformed);
         panPlaylist.add(btnBiblioteca, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 10, 230, 40));
@@ -154,6 +155,9 @@ public class Principal extends javax.swing.JFrame {
         lblTituloLista.setBackground(new java.awt.Color(204, 255, 255));
         lblTituloLista.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
         lblTituloLista.setText("Nombre");
+        lblTituloLista.setMaximumSize(new java.awt.Dimension(250, 45));
+        lblTituloLista.setMinimumSize(new java.awt.Dimension(250, 45));
+        lblTituloLista.setPreferredSize(new java.awt.Dimension(250, 45));
 
         btnReproducirLista.setBackground(new java.awt.Color(204, 255, 204));
         btnReproducirLista.setFont(new java.awt.Font("Segoe UI Symbol", 1, 18)); // NOI18N
@@ -170,15 +174,15 @@ public class Principal extends javax.swing.JFrame {
                 .addGroup(panCancionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnReproducirLista, javax.swing.GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 251, Short.MAX_VALUE)
-                    .addComponent(lblTituloLista, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(lblTituloLista, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(15, Short.MAX_VALUE))
         );
         panCancionesLayout.setVerticalGroup(
             panCancionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panCancionesLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lblTituloLista, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblTituloLista, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 502, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnReproducirLista, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -395,7 +399,7 @@ public class Principal extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(panCanciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(panReproduccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(panReproduccion, javax.swing.GroupLayout.PREFERRED_SIZE, 443, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(panPlaylist, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(9, Short.MAX_VALUE))
@@ -475,6 +479,7 @@ public class Principal extends javax.swing.JFrame {
         listaActualSeleccionada = playlistSeleccionada.getPlaylist();
         lblTituloLista.setText("Playlist: " + playlistSeleccionada.getNombre());
 
+
         if (listaActualReproduciendo == listaActualSeleccionada && musicaActualReproduciendo != null) {
             seleccionarMusicaEnTabla(musicaActualReproduciendo.getId());
         }
@@ -495,7 +500,6 @@ public class Principal extends javax.swing.JFrame {
             for (Playlist playlist : biblioteca.getPlaylists()) {
                 if (playlist.getId() == idPlaylist) {
                     if (playlist.getPlaylist() == listaActualReproduciendo) {
-                        System.out.println("llego");
                         tblPlaylist.setRowSelectionInterval(fila, fila);
                         return;
                     }
@@ -563,11 +567,11 @@ public class Principal extends javax.swing.JFrame {
         if (nombre == null) return; // cancelo
         nombre = nombre.trim();
         if (nombre.isBlank()) {
-            JOptionPane.showMessageDialog(this, "Nombre invalido.");
+            JOptionPane.showMessageDialog(this, "Nombre invalido");
             return;
         }
         if (biblioteca.existePlaylist(nombre)) {
-            JOptionPane.showMessageDialog(this, "Ya existe una playlist con ese nombre.");
+            JOptionPane.showMessageDialog(this, "Ya existe una playlist con ese nombre");
             return;
         }
         NuevaPlaylist interfazNuevaPlaylist = new NuevaPlaylist(this, true, nombre);
@@ -603,11 +607,15 @@ public class Principal extends javax.swing.JFrame {
             reproductor.Play(seleccionada);
             btnPlayPausa.setText("⏸️");
             mostrarDatosDeMusica();
+            if (listaActualReproduciendo == biblioteca.getBiblioteca()) {
+                tblPlaylist.clearSelection();
+            }
         }
     }//GEN-LAST:event_tblMusicasMouseClicked
 
     private void btnAnteriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnteriorActionPerformed
         if (listaActualReproduciendo == null) {
+            JOptionPane.showMessageDialog(this, "No hay una lista reproduciendose");
             return;
         }
 
@@ -632,6 +640,7 @@ public class Principal extends javax.swing.JFrame {
 
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
         if (listaActualReproduciendo == null) {
+            JOptionPane.showMessageDialog(this, "No hay una lista reproduciendose");
             return;
         }
 
@@ -656,11 +665,17 @@ public class Principal extends javax.swing.JFrame {
 
     private void btnPlayPausaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlayPausaActionPerformed
         if (!reproductor.Reproduciendo() && !reproductor.Pausado()) {
-            Musica musica = musicaSeleccionada();
-            if (musica == null || listaActualSeleccionada == null) {
+            if (listaActualSeleccionada == null) {
+                JOptionPane.showMessageDialog(this, "No hay lista seleccionada");
                 return;
             }
-
+            
+            Musica musica = musicaSeleccionada();
+            if (musica == null) {
+                JOptionPane.showMessageDialog(this, "Selecciona una mUsica para reproducir");
+                return;
+            }
+            
             Musica seleccionada = listaActualSeleccionada.seleccionar(musica);
             if (seleccionada == null) {
                 return;
@@ -689,16 +704,30 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnPlayPausaActionPerformed
 
     private void btnReproducirListaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReproducirListaActionPerformed
-        if (listaActualSeleccionada == null || musicaActualSeleccionada == null) {
+        if (listaActualSeleccionada == null) {
+            JOptionPane.showMessageDialog(this, "No hay lista seleccionada");
             return;
         }
-
+        
+        if (listaActualSeleccionada.estaVacia()) {
+            JOptionPane.showMessageDialog(this, "No hay musicas para reproducir");
+            return;
+        }
+            
         listaActualReproduciendo = listaActualSeleccionada;
+        if (listaActualReproduciendo.primera() == null) {
+            JOptionPane.showMessageDialog(this, "No se pudo iniciar le reproduccion");
+            return;
+        }
+        
+        musicaActualReproduciendo = listaActualReproduciendo.getActual();
+        musicaActualSeleccionada = listaActualReproduciendo.getActual();
         reproductor.Play(listaActualReproduciendo.primera());
-        musicaActualReproduciendo = listaActualSeleccionada.getActual();
         btnPlayPausa.setText("⏸️");
         mostrarDatosDeMusica();
-        
+        if (listaActualReproduciendo == biblioteca.getBiblioteca()) {
+            tblPlaylist.clearSelection();
+        }
         seleccionarMusicaEnTabla(musicaActualReproduciendo.getId());
     }//GEN-LAST:event_btnReproducirListaActionPerformed
 

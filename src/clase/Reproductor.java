@@ -155,8 +155,4 @@ public class Reproductor {
     public boolean Finalizada() {
         return finalizada;
     }
-
-    public Musica getMusicaActual() {
-        return musicaActual;
-    }
 }
