@@ -12,17 +12,21 @@ public class Lista {
 
         NMusica(Musica musica) {
             this.musica = musica;
+            this.siguiente = null;
+            this.anterior = null;
         }
     }
 
     private NMusica primera;
     private NMusica ultima;
     private NMusica actual;
+    private boolean circular;
     private int size;
 
     public Lista() {
         primera = null;
         ultima = null;
+        circular = false;
         size = 0;
     }
 
@@ -81,23 +85,38 @@ public class Lista {
         return false;
     }
     
-    public List<Musica> toListAdelante() {   // Recorrer hacia adelante: devuelve una lista (para mostrar en tablas fácil)
+    public List<Musica> toListAdelante() {
         List<Musica> resultado = new ArrayList<>();
-        NMusica actual = primera;
-        while (actual != null) {
-            resultado.add(actual.musica);
-            actual = actual.siguiente;
+        NMusica aux = primera;
+        
+        if (circular) {
+            do {
+            resultado.add(aux.musica);
+            aux = aux.siguiente;
+            } while (aux != primera); // se detiene al volver al inicio
+        } else {
+            while (aux != null) {
+            resultado.add(aux.musica);
+            aux = aux.siguiente;
+            }            
         }
         return resultado;
     }
 
-    // Recorrer hacia atrás: devuelve una lista desde el final
     public List<Musica> toListAtras() {
         List<Musica> resultado = new ArrayList<>();
-        NMusica actual = ultima;
-        while (actual != null) {
-            resultado.add(actual.musica);
-            actual = actual.anterior;
+        NMusica aux = ultima;
+        
+        if (circular) {
+            do {
+            resultado.add(aux.musica);
+            aux = aux.anterior;
+            } while (aux != ultima);  // se detiene al volver al final
+        } else {
+            while (aux != null) {
+            resultado.add(aux.musica);
+            aux = aux.anterior;
+            }
         }
         return resultado;
     }
@@ -162,6 +181,17 @@ public class Lista {
         }
         return null;
     } 
+    
+    public void Circular(boolean estado) {
+        this.circular = estado;
+        if (estado == true) {
+            primera.anterior = ultima;
+            ultima.siguiente = primera;
+        } else {
+            primera.anterior = null;
+            ultima.siguiente = null;
+        }
+    }
     
     public Musica getActual() {
         if (actual == null) {

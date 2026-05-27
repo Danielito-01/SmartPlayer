@@ -320,8 +320,8 @@
                           <Component id="btnPlayPausa" min="-2" pref="62" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="btnSiguiente" min="-2" pref="80" max="-2" attributes="0"/>
-                          <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="btnRepetir" min="-2" pref="43" max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Component id="tglCircular" min="-2" pref="48" max="-2" attributes="0"/>
                       </Group>
                       <Component id="lblPortada" min="-2" pref="431" max="-2" attributes="0"/>
                   </Group>
@@ -370,16 +370,11 @@
                       <Component id="sldReproduccion" alignment="0" min="-2" pref="18" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="32767" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="103" alignment="1" groupAlignment="3" attributes="0">
-                          <Component id="btnPlayPausa" alignment="3" pref="0" max="32767" attributes="0"/>
-                          <Component id="btnAnterior" alignment="3" pref="0" max="32767" attributes="0"/>
-                          <Component id="btnSiguiente" alignment="3" pref="0" max="32767" attributes="0"/>
-                      </Group>
-                      <Group type="102" attributes="0">
-                          <Component id="btnRepetir" min="-2" pref="25" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                      </Group>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="btnPlayPausa" alignment="3" pref="0" max="32767" attributes="0"/>
+                      <Component id="btnAnterior" alignment="3" pref="0" max="32767" attributes="0"/>
+                      <Component id="btnSiguiente" alignment="3" pref="0" max="32767" attributes="0"/>
+                      <Component id="tglCircular" alignment="3" min="-2" pref="35" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -503,14 +498,6 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAnteriorActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="btnRepetir">
-          <Properties>
-            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-              <Font name="Segoe UI Symbol" size="9" style="1"/>
-            </Property>
-            <Property name="text" type="java.lang.String" value="\ud83d\udd01" containsInvalidXMLChars="true"/>
-          </Properties>
-        </Component>
         <Component class="javax.swing.JLabel" name="lblTiempoActual">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
@@ -566,6 +553,17 @@
             </Property>
             <Property name="text" type="java.lang.String" value="0000"/>
           </Properties>
+        </Component>
+        <Component class="javax.swing.JToggleButton" name="tglCircular">
+          <Properties>
+            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+              <Font name="Segoe UI Symbol" size="10" style="1"/>
+            </Property>
+            <Property name="text" type="java.lang.String" value="\ud83d\udd01" containsInvalidXMLChars="true"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="tglCircularActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>
