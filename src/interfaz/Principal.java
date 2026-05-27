@@ -36,11 +36,13 @@ public class Principal extends javax.swing.JFrame {
      * Creates new form InterfazPrincipal
      */
     public Principal() {
-        
         initComponents();
         
+        inicializar();
+    }
+    
+    private void inicializar() {
         configurarTablas();
-        
         mostrarBiblioteca();
         mostrarPlaylists();
     }
@@ -488,17 +490,21 @@ public class Principal extends javax.swing.JFrame {
         }
     }
     
-    public void mostrarDatosDeMusica() {
+    private String textoHtml(String texto, int width) {
+        return "<html><div style='width:" + width + "px;'>" + texto + "</div></html>";
+    }
+    
+    private void mostrarDatosDeMusica() {
         Musica musica = musicaActualReproduciendo;
         if (musica == null) {
             return;
         }
-        lblNombreMusica.setText("<html><div style='width:300px;'>" + musica.getNombre() + "</div></html>");
-        lblArtista.setText("<html><div style='width:100px;'>" + musica.getArtista() + "</div></html>");
-        lblAlbum.setText("<html><div style='width:100px;'>" + musica.getAlbum() + "</div></html>");
-        lblGenero.setText("<html><div style='width:70px;'>" + musica.getGenero() + "</div></html>");
-        lblAnio.setText("<html><div style='width:40px;'>" + musica.anioReal() + "</div></html>");
-        lblTamanio.setText("<html><div style='width:50px;'>" + musica.formatearTamanio() + "</div></html>");
+        lblNombreMusica.setText(textoHtml(musica.getNombre(), 300));
+        lblArtista.setText(textoHtml(musica.getArtista(), 100));
+        lblAlbum.setText(textoHtml(musica.getAlbum(), 100));
+        lblGenero.setText(textoHtml(musica.getGenero(), 70));
+        lblAnio.setText(textoHtml(musica.anioReal(), 40));
+        lblTamanio.setText(textoHtml(musica.formatearTamanio(), 50));
         lblPortada.setIcon(musica.getPortadaGrande(lblPortada.getWidth(), lblPortada.getHeight()));
         lblDuracion.setText(musica.formatearDuracion());
     }
@@ -508,19 +514,12 @@ public class Principal extends javax.swing.JFrame {
         if (fila < 0) return;
         int id = (Integer) tblPlaylist.getValueAt(fila, 2);
 
-        Playlist playlistSeleccionada = null;
-        for (Playlist playlist : Biblioteca.getInstance().getPlaylists()) {
-            if (playlist.getId() == id) {
-                playlistSeleccionada = playlist;
-                break;
-            }
-        }
+        Playlist playlistSeleccionada = biblioteca.buscarPlaylistPorId(id);
         if (playlistSeleccionada == null) return;
 
         cargarMusicasEnTabla(playlistSeleccionada.toList());
         listaActualSeleccionada = playlistSeleccionada.getPlaylist();
         lblTituloLista.setText("Playlist: " + playlistSeleccionada.getNombre());
-
 
         if (listaActualReproduciendo == listaActualSeleccionada && musicaActualReproduciendo != null) {
             seleccionarMusicaEnTabla(musicaActualReproduciendo.getId());
@@ -552,7 +551,7 @@ public class Principal extends javax.swing.JFrame {
         tblPlaylist.clearSelection();
     }
     
-    public boolean seleccionarMusicaEnTabla(int id) {
+    private boolean seleccionarMusicaEnTabla(int id) {
         for (int fila = 0; fila < tblMusicas.getRowCount(); fila++) {
             Object valor = tblMusicas.getValueAt(fila, 2);
             if (valor != null && Integer.parseInt(valor.toString()) == id) {
@@ -563,7 +562,7 @@ public class Principal extends javax.swing.JFrame {
         return false;
     }
     
-    public int idMusicaSeleccionada() {
+    private int idMusicaSeleccionada() {
         int fila = tblMusicas.getSelectedRow();
         if (fila < 0) {
             return 0;
@@ -571,13 +570,30 @@ public class Principal extends javax.swing.JFrame {
         return (Integer) tblMusicas.getValueAt(fila, 2);
     }
     
-    public Musica musicaSeleccionada() {
+    private Musica musicaSeleccionada() {
         if (listaActualSeleccionada == null) {
             return null;
         }
         return listaActualSeleccionada.buscarPorId(idMusicaSeleccionada());
     }
    
+    private void reproducirMusicaSeleccionada() {
+        Musica musica = musicaSeleccionada();
+
+        if (musica == null || listaActualSeleccionada == null) {
+            return;
+        }
+
+        Musica seleccionada = listaActualSeleccionada.seleccionar(musica);
+
+        if (seleccionada == null) {
+            return;
+        }
+
+        listaActualReproduciendo = listaActualSeleccionada;
+        reproducirMusica(seleccionada);
+    }
+    
     private void reproducirMusica(Musica musica) {
         if (musica == null) {
             return;
@@ -603,6 +619,85 @@ public class Principal extends javax.swing.JFrame {
     private void detenerReproduccion() {
         reproductor.Stop();
         btnPlayPausa.setText("▶");
+    }
+    
+    private void manejarPlayPausa() {
+        if (!reproductor.Reproduciendo() && !reproductor.Pausado()) {
+            if (listaActualSeleccionada == null) {
+                JOptionPane.showMessageDialog(this, "No hay lista seleccionada");
+                return;
+            }
+            if (musicaSeleccionada() == null) {
+                JOptionPane.showMessageDialog(this, "Selecciona una musica para reproducir");
+                return;
+            }
+
+            reproducirMusicaSeleccionada();
+            return;
+        }
+
+        if (reproductor.Reproduciendo()) {
+            reproductor.Pausa();
+            btnPlayPausa.setText("▶");
+            return;
+        }
+
+        if (reproductor.Pausado()) {
+            reproductor.Reanudar();
+            btnPlayPausa.setText("⏸️");
+        }
+    }
+    
+    private void reproducirSiguiente() {
+        if (listaActualReproduciendo == null) {
+            JOptionPane.showMessageDialog(this, "No hay una lista reproduciendose");
+            return;
+        }
+        if (listaActualReproduciendo.tieneSiguiente()) {
+            Musica siguiente = listaActualReproduciendo.siguiente();
+            reproducirMusica(siguiente);
+            return;
+        }
+
+        detenerReproduccion();
+    }
+    
+    private void reproducirAnterior() {
+        if (listaActualReproduciendo == null) {
+            JOptionPane.showMessageDialog(this, "No hay una lista reproduciendose");
+            return;
+        }
+        if (listaActualReproduciendo.tieneAnterior()) {
+            Musica anterior = listaActualReproduciendo.anterior();
+            reproducirMusica(anterior);
+            return;
+        }
+        
+        detenerReproduccion();
+    }
+    
+    private void reproducirListaActual() {
+
+        if (listaActualSeleccionada == null) {
+            JOptionPane.showMessageDialog(this, "No hay lista seleccionada");
+            return;
+        }
+
+        if (listaActualSeleccionada.estaVacia()) {
+            JOptionPane.showMessageDialog(this, "No hay musicas para reproducir");
+            return;
+        }
+
+        listaActualReproduciendo = listaActualSeleccionada;
+
+        Musica primera = listaActualReproduciendo.primera();
+
+        if (primera == null) {
+            JOptionPane.showMessageDialog(this, "No se pudo iniciar la reproduccion");
+            return;
+        }
+
+        reproducirMusica(primera);
     }
     
     private void jmiCargarMusicasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiCargarMusicasActionPerformed
@@ -648,106 +743,24 @@ public class Principal extends javax.swing.JFrame {
         if (evt.getClickCount() == 2 && !evt.isConsumed()) {
             evt.consume();
 
-            Musica musica = musicaSeleccionada();
-            if (musica == null || listaActualSeleccionada == null) {
-                return;
-            }
-
-            Musica seleccionada = listaActualSeleccionada.seleccionar(musica);
-            if (seleccionada == null) {
-                return;
-            }
-
-            listaActualReproduciendo = listaActualSeleccionada;
-            reproducirMusica(seleccionada);
+            reproducirMusicaSeleccionada();
         }
     }//GEN-LAST:event_tblMusicasMouseClicked
 
     private void btnAnteriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnteriorActionPerformed
-        if (listaActualReproduciendo == null) {
-            JOptionPane.showMessageDialog(this, "No hay una lista reproduciendose");
-            return;
-        }
-
-        if (listaActualReproduciendo.tieneAnterior()) {
-            Musica anterior = listaActualReproduciendo.anterior();
-            reproducirMusica(anterior);
-            return;
-        } else {
-            detenerReproduccion();
-        }
+        reproducirAnterior();
     }//GEN-LAST:event_btnAnteriorActionPerformed
 
     private void btnSiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSiguienteActionPerformed
-        if (listaActualReproduciendo == null) {
-            JOptionPane.showMessageDialog(this, "No hay una lista reproduciendose");
-            return;
-        }
-
-        if (listaActualReproduciendo.tieneSiguiente()) {
-            Musica siguiente = listaActualReproduciendo.siguiente();
-            reproducirMusica(siguiente);
-            return;
-        } else {
-            detenerReproduccion();
-        }
+        reproducirSiguiente();
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
     private void btnPlayPausaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlayPausaActionPerformed
-        if (!reproductor.Reproduciendo() && !reproductor.Pausado()) {
-            if (listaActualSeleccionada == null) {
-                JOptionPane.showMessageDialog(this, "No hay lista seleccionada");
-                return;
-            }
-            
-            Musica musica = musicaSeleccionada();
-            if (musica == null) {
-                JOptionPane.showMessageDialog(this, "Selecciona una musica para reproducir");
-                return;
-            }
-            
-            Musica seleccionada = listaActualSeleccionada.seleccionar(musica);
-            if (seleccionada == null) {
-                return;
-            }
-
-            listaActualReproduciendo = listaActualSeleccionada;
-            reproducirMusica(seleccionada);
-            return;
-        }
-
-        if (reproductor.Reproduciendo()) {
-            reproductor.Pausa();
-            btnPlayPausa.setText("▶");
-            return;
-        }
-
-        if (reproductor.Pausado()) {
-            reproductor.Reanudar();
-            btnPlayPausa.setText("⏸️");
-        }
+        manejarPlayPausa();
     }//GEN-LAST:event_btnPlayPausaActionPerformed
 
     private void btnReproducirListaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReproducirListaActionPerformed
-        if (listaActualSeleccionada == null) {
-            JOptionPane.showMessageDialog(this, "No hay lista seleccionada");
-            return;
-        }
-        
-        if (listaActualSeleccionada.estaVacia()) {
-            JOptionPane.showMessageDialog(this, "No hay musicas para reproducir");
-            return;
-        }
-            
-        listaActualReproduciendo = listaActualSeleccionada;
-        Musica primera = listaActualReproduciendo.primera();
-
-        if (primera == null) {
-            JOptionPane.showMessageDialog(this, "No se pudo iniciar la reproduccion");
-            return;
-        }
-
-        reproducirMusica(primera);
+        reproducirListaActual();
     }//GEN-LAST:event_btnReproducirListaActionPerformed
 
     private void tglCircularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglCircularActionPerformed

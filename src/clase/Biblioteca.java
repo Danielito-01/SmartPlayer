@@ -64,6 +64,16 @@ public final class Biblioteca {
     public boolean existePlaylist(String nombre) {
         return nombresPlaylists.contains(normalizarNombrePlaylist(nombre));
     }
+    
+    public Playlist buscarPlaylistPorId(int id) {
+        for (Playlist playlist : playlists) {
+            if (playlist.getId() == id) {
+                return playlist;
+            }
+        }
+
+        return null;
+    }
 
     public boolean renombrarPlaylist(Playlist playlist, String nuevoNombre) {
         if (playlist == null) return false;
