@@ -434,7 +434,7 @@ public class Principal extends javax.swing.JFrame {
         if (listaActualReproduciendo == listaActualSeleccionada && musicaActualReproduciendo != null) {
             seleccionarMusicaEnTabla(musicaActualReproduciendo.getId());
         }
-        seleccionarPlaylistDeMusicaReproduciendo();
+        seleccionarPlaylistReproduciendo();
     }
     
     private void mostrarPlaylists() {
@@ -485,7 +485,7 @@ public class Principal extends javax.swing.JFrame {
         }
     }
 
-    private void seleccionarPlaylistDeMusicaReproduciendo() {
+    private void seleccionarPlaylistReproduciendo() {
         if (listaActualReproduciendo == null || musicaActualReproduciendo == null) {
             tblPlaylist.clearSelection();
             return;
@@ -551,6 +551,25 @@ public class Principal extends javax.swing.JFrame {
         return false;
     }
 
+    public void siguiente() {
+        if (listaActualReproduciendo.tieneSiguiente()) {
+            Musica siguiente = listaActualReproduciendo.siguiente();
+            musicaActualReproduciendo = siguiente;
+            musicaActualSeleccionada = siguiente;
+            reproductor.Play(siguiente);
+
+            if (listaActualSeleccionada == listaActualReproduciendo) {
+                seleccionarMusicaEnTabla(siguiente.getId());
+            }
+
+            mostrarDatosDeMusica();
+            btnPlayPausa.setText("⏸️");
+            return;
+        } else {
+            reproductor.Stop();
+            btnPlayPausa.setText("▶");
+        }
+    }
     
     private void jmiCargarMusicasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiCargarMusicasActionPerformed
         CargaDeMusicas interfazCargaDeMusicas = new CargaDeMusicas(this, true);
@@ -577,6 +596,11 @@ public class Principal extends javax.swing.JFrame {
         NuevaPlaylist interfazNuevaPlaylist = new NuevaPlaylist(this, true, nombre);
         interfazNuevaPlaylist.setVisible(true);
         mostrarPlaylists();
+        mostrarBiblioteca();
+        if (listaActualReproduciendo != biblioteca.getBiblioteca()) {
+            seleccionarPlaylistReproduciendo();
+            abrirPlaylist();
+        }
     }//GEN-LAST:event_btnNuevaPlaylistActionPerformed
     
     private void tblPlaylistMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblPlaylistMouseClicked
@@ -643,24 +667,8 @@ public class Principal extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "No hay una lista reproduciendose");
             return;
         }
-
-        if (listaActualReproduciendo.tieneSiguiente()) {
-            Musica siguiente = listaActualReproduciendo.siguiente();
-            musicaActualReproduciendo = siguiente;
-            musicaActualSeleccionada = siguiente;
-            reproductor.Play(siguiente);
-
-            if (listaActualSeleccionada == listaActualReproduciendo) {
-                seleccionarMusicaEnTabla(siguiente.getId());
-            }
-
-            mostrarDatosDeMusica();
-            btnPlayPausa.setText("⏸️");
-            return;
-        } else {
-            reproductor.Stop();
-            btnPlayPausa.setText("▶");
-        }
+        
+        siguiente();
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
     private void btnPlayPausaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlayPausaActionPerformed
@@ -672,7 +680,7 @@ public class Principal extends javax.swing.JFrame {
             
             Musica musica = musicaSeleccionada();
             if (musica == null) {
-                JOptionPane.showMessageDialog(this, "Selecciona una mUsica para reproducir");
+                JOptionPane.showMessageDialog(this, "Selecciona una musica para reproducir");
                 return;
             }
             
@@ -715,14 +723,17 @@ public class Principal extends javax.swing.JFrame {
         }
             
         listaActualReproduciendo = listaActualSeleccionada;
-        if (listaActualReproduciendo.primera() == null) {
-            JOptionPane.showMessageDialog(this, "No se pudo iniciar le reproduccion");
+        Musica primera = listaActualReproduciendo.primera();
+
+        if (primera == null) {
+            JOptionPane.showMessageDialog(this, "No se pudo iniciar la reproduccion");
             return;
         }
-        
-        musicaActualReproduciendo = listaActualReproduciendo.getActual();
-        musicaActualSeleccionada = listaActualReproduciendo.getActual();
-        reproductor.Play(listaActualReproduciendo.primera());
+
+        musicaActualReproduciendo = primera;
+        musicaActualSeleccionada = primera;
+
+        reproductor.Play(primera);
         btnPlayPausa.setText("⏸️");
         mostrarDatosDeMusica();
         if (listaActualReproduciendo == biblioteca.getBiblioteca()) {

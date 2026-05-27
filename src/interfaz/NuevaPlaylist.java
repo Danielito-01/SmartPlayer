@@ -223,13 +223,13 @@ public class NuevaPlaylist extends javax.swing.JDialog {
     
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         if (seleccionadas.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Agrega al menos una musica antes de guardar.");
+            JOptionPane.showMessageDialog(this, "Agrega al menos una musica antes de guardar");
             return;
         }
         Playlist playlist = Biblioteca.getInstance().crearPlaylist(nombrePlaylist);
         if (playlist == null) {
             // por seguridad: por si se creo en otra parte o el nombre se volvio invalido
-            JOptionPane.showMessageDialog(this, "No se pudo crear: nombre invalido o duplicado.");
+            JOptionPane.showMessageDialog(this, "No se pudo crear: nombre invalido o duplicado");
             return;
         }
         for (Musica musica : seleccionadas) {
@@ -241,7 +241,7 @@ public class NuevaPlaylist extends javax.swing.JDialog {
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
         int[] filas = tblMusicas.getSelectedRows();
         if (filas.length == 0) {
-            JOptionPane.showMessageDialog(this, "Selecciona una o mas musicas de la biblioteca.");
+            JOptionPane.showMessageDialog(this, "Selecciona una o mas musicas de la biblioteca");
             return;
         }
 

@@ -153,6 +153,10 @@ public class Reproductor {
     }
 
     public boolean Finalizada() {
-        return finalizada;
+        if (finalizada) {
+            finalizada = false;
+            return true;
+        }
+        return false;
     }
 }
