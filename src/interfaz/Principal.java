@@ -25,17 +25,22 @@ import javax.swing.JOptionPane;
 public class Principal extends javax.swing.JFrame {
     private final Biblioteca biblioteca = Biblioteca.getInstance();
     private final Reproductor reproductor = new Reproductor();
-    Lista listaActualSeleccionada;
-    Lista listaActualReproduciendo;
-    Musica musicaActualSeleccionada;
-    Musica musicaActualReproduciendo;
+   
+    private Lista listaActualSeleccionada;
+    private Lista listaActualReproduciendo;
+   
+    private Musica musicaActualSeleccionada;
+    private Musica musicaActualReproduciendo;
 
     /**
      * Creates new form InterfazPrincipal
      */
     public Principal() {
+        
         initComponents();
+        
         configurarTablas();
+        
         mostrarBiblioteca();
         mostrarPlaylists();
     }
@@ -193,8 +198,7 @@ public class Principal extends javax.swing.JFrame {
 
         lblNombreMusica.setBackground(new java.awt.Color(153, 204, 255));
         lblNombreMusica.setFont(new java.awt.Font("Segoe UI", 3, 24)); // NOI18N
-        lblNombreMusica.setText("Nombre Musica");
-        lblNombreMusica.setText("<html><div style='width:250px;'>Nombre Música</div></html>");
+        lblNombreMusica.setText("<html><div style='width:250px;'>Nombre Musica</div></html>");
 
         lblTxtArtista.setBackground(new java.awt.Color(0, 153, 255));
         lblTxtArtista.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -399,10 +403,10 @@ public class Principal extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(panCanciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(panReproduccion, javax.swing.GroupLayout.PREFERRED_SIZE, 443, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(panReproduccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(panPlaylist, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(9, Short.MAX_VALUE))
+                .addContainerGap(11, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -419,31 +423,54 @@ public class Principal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     
     private void configurarTablas() {
-        tblMusicas.getColumnModel().getColumn(2).setMinWidth(0);
-        tblMusicas.getColumnModel().getColumn(2).setMaxWidth(0);
-        tblPlaylist.getColumnModel().getColumn(2).setMinWidth(0);
-        tblPlaylist.getColumnModel().getColumn(2).setMaxWidth(0);
-        tblMusicas.getColumnModel().getColumn(2).setPreferredWidth(0);
-        tblPlaylist.getColumnModel().getColumn(0).setMaxWidth(30);
-        tblMusicas.getColumnModel().getColumn(0).setMaxWidth(30);
+        ocultarColumna(tblMusicas, 2);
+        ocultarColumna(tblPlaylist, 2);
+
+        establecerAnchoMaximo(tblPlaylist, 0, 30);
+        establecerAnchoMaximo(tblMusicas, 0, 30);
     }
+    
+    private void ocultarColumna(javax.swing.JTable tabla, int columna) {
+        tabla.getColumnModel().getColumn(columna).setMinWidth(0);
+        tabla.getColumnModel().getColumn(columna).setMaxWidth(0);
+        tabla.getColumnModel().getColumn(columna).setPreferredWidth(0);
+    }
+
+    private void establecerAnchoMaximo(javax.swing.JTable tabla, int columna, int ancho) {
+        tabla.getColumnModel().getColumn(columna).setMaxWidth(ancho);
+    }
+    
     private void mostrarBiblioteca() {
-        cargarMusicasEnTabla(biblioteca.getBiblioteca().toListAdelante());
-        listaActualSeleccionada = biblioteca.getBiblioteca();
+        Lista bibliotecaG = biblioteca.getBiblioteca();
+        
+        cargarMusicasEnTabla(bibliotecaG.toListAdelante());
+        
+        listaActualSeleccionada = bibliotecaG;
+        
         lblTituloLista.setText("Biblioteca");
-        if (listaActualReproduciendo == listaActualSeleccionada && musicaActualReproduciendo != null) {
+        
+        if (listaActualReproduciendo == listaActualSeleccionada
+                && musicaActualReproduciendo != null) {
             seleccionarMusicaEnTabla(musicaActualReproduciendo.getId());
         }
+        
         seleccionarPlaylistReproduciendo();
     }
     
     private void mostrarPlaylists() {
         DefaultTableModel tabla = (DefaultTableModel)tblPlaylist.getModel();
         tabla.setRowCount(0);
+       
         List<Playlist> playlists = biblioteca.getPlaylists();
+        
         int no = 1;
         for (Playlist playlist : playlists) {
-            tabla.addRow(new Object[]{ no++, playlist.getNombre(), playlist.getId() });
+            
+            tabla.addRow(new Object[]{
+                no++,
+                playlist.getNombre(),
+                playlist.getId()
+            });
         }
     }
     
@@ -459,6 +486,21 @@ public class Principal extends javax.swing.JFrame {
         for (Musica m : musicas) {
             tabla.addRow(new Object[]{ no++, m.toString(), m.getId() });
         }
+    }
+    
+    public void mostrarDatosDeMusica() {
+        Musica musica = musicaActualReproduciendo;
+        if (musica == null) {
+            return;
+        }
+        lblNombreMusica.setText("<html><div style='width:300px;'>" + musica.getNombre() + "</div></html>");
+        lblArtista.setText("<html><div style='width:100px;'>" + musica.getArtista() + "</div></html>");
+        lblAlbum.setText("<html><div style='width:100px;'>" + musica.getAlbum() + "</div></html>");
+        lblGenero.setText("<html><div style='width:70px;'>" + musica.getGenero() + "</div></html>");
+        lblAnio.setText("<html><div style='width:40px;'>" + musica.anioReal() + "</div></html>");
+        lblTamanio.setText("<html><div style='width:50px;'>" + musica.formatearTamanio() + "</div></html>");
+        lblPortada.setIcon(musica.getPortadaGrande(lblPortada.getWidth(), lblPortada.getHeight()));
+        lblDuracion.setText(musica.formatearDuracion());
     }
     
     private void abrirPlaylist() {
@@ -510,6 +552,17 @@ public class Principal extends javax.swing.JFrame {
         tblPlaylist.clearSelection();
     }
     
+    public boolean seleccionarMusicaEnTabla(int id) {
+        for (int fila = 0; fila < tblMusicas.getRowCount(); fila++) {
+            Object valor = tblMusicas.getValueAt(fila, 2);
+            if (valor != null && Integer.parseInt(valor.toString()) == id) {
+                tblMusicas.setRowSelectionInterval(fila, fila);
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public int idMusicaSeleccionada() {
         int fila = tblMusicas.getSelectedRow();
         if (fila < 0) {
@@ -524,51 +577,32 @@ public class Principal extends javax.swing.JFrame {
         }
         return listaActualSeleccionada.buscarPorId(idMusicaSeleccionada());
     }
-    
-    public void mostrarDatosDeMusica() {
-        Musica musica = musicaActualReproduciendo;
+   
+    private void reproducirMusica(Musica musica) {
         if (musica == null) {
             return;
         }
-        lblNombreMusica.setText("<html><div style='width:300px;'>" + musica.getNombre() + "</div></html>");
-        lblArtista.setText("<html><div style='width:100px;'>" + musica.getArtista() + "</div></html>");
-        lblAlbum.setText("<html><div style='width:100px;'>" + musica.getAlbum() + "</div></html>");
-        lblGenero.setText("<html><div style='width:70px;'>" + musica.getGenero() + "</div></html>");
-        lblAnio.setText("<html><div style='width:40px;'>" + musica.anioReal() + "</div></html>");
-        lblTamanio.setText("<html><div style='width:50px;'>" + musica.formatearTamanio() + "</div></html>");
-        lblPortada.setIcon(musica.getPortadaGrande(lblPortada.getWidth(), lblPortada.getHeight()));
-        lblDuracion.setText(musica.formatearDuracion());
-    }
-    
-    public boolean seleccionarMusicaEnTabla(int id) {
-        for (int fila = 0; fila < tblMusicas.getRowCount(); fila++) {
-            Object valor = tblMusicas.getValueAt(fila, 2);
-            if (valor != null && Integer.parseInt(valor.toString()) == id) {
-                tblMusicas.setRowSelectionInterval(fila, fila);
-                return true;
-            }
+        musicaActualReproduciendo = musica;
+        musicaActualSeleccionada = musica;
+
+        reproductor.Play(musica);
+
+        btnPlayPausa.setText("⏸️");
+
+        mostrarDatosDeMusica();
+
+        if (listaActualSeleccionada == listaActualReproduciendo) {
+            seleccionarMusicaEnTabla(musica.getId());
         }
-        return false;
+
+        if (listaActualReproduciendo == biblioteca.getBiblioteca()) {
+            tblPlaylist.clearSelection();
+        }
     }
 
-    public void siguiente() {
-        if (listaActualReproduciendo.tieneSiguiente()) {
-            Musica siguiente = listaActualReproduciendo.siguiente();
-            musicaActualReproduciendo = siguiente;
-            musicaActualSeleccionada = siguiente;
-            reproductor.Play(siguiente);
-
-            if (listaActualSeleccionada == listaActualReproduciendo) {
-                seleccionarMusicaEnTabla(siguiente.getId());
-            }
-
-            mostrarDatosDeMusica();
-            btnPlayPausa.setText("⏸️");
-            return;
-        } else {
-            reproductor.Stop();
-            btnPlayPausa.setText("▶");
-        }
+    private void detenerReproduccion() {
+        reproductor.Stop();
+        btnPlayPausa.setText("▶");
     }
     
     private void jmiCargarMusicasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiCargarMusicasActionPerformed
@@ -624,16 +658,8 @@ public class Principal extends javax.swing.JFrame {
                 return;
             }
 
-            musicaActualSeleccionada = seleccionada;
-            musicaActualReproduciendo = seleccionada;
             listaActualReproduciendo = listaActualSeleccionada;
-
-            reproductor.Play(seleccionada);
-            btnPlayPausa.setText("⏸️");
-            mostrarDatosDeMusica();
-            if (listaActualReproduciendo == biblioteca.getBiblioteca()) {
-                tblPlaylist.clearSelection();
-            }
+            reproducirMusica(seleccionada);
         }
     }//GEN-LAST:event_tblMusicasMouseClicked
 
@@ -645,20 +671,10 @@ public class Principal extends javax.swing.JFrame {
 
         if (listaActualReproduciendo.tieneAnterior()) {
             Musica anterior = listaActualReproduciendo.anterior();
-            musicaActualReproduciendo = anterior;
-            musicaActualSeleccionada = anterior;
-            reproductor.Play(anterior);
-
-            if (listaActualSeleccionada == listaActualReproduciendo) {
-                seleccionarMusicaEnTabla(anterior.getId());
-            }
-
-            mostrarDatosDeMusica();
-            btnPlayPausa.setText("⏸️");
+            reproducirMusica(anterior);
             return;
         } else {
-            reproductor.Stop();
-            btnPlayPausa.setText("▶");
+            detenerReproduccion();
         }
     }//GEN-LAST:event_btnAnteriorActionPerformed
 
@@ -667,8 +683,14 @@ public class Principal extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "No hay una lista reproduciendose");
             return;
         }
-        
-        siguiente();
+
+        if (listaActualReproduciendo.tieneSiguiente()) {
+            Musica siguiente = listaActualReproduciendo.siguiente();
+            reproducirMusica(siguiente);
+            return;
+        } else {
+            detenerReproduccion();
+        }
     }//GEN-LAST:event_btnSiguienteActionPerformed
 
     private void btnPlayPausaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPlayPausaActionPerformed
@@ -689,13 +711,8 @@ public class Principal extends javax.swing.JFrame {
                 return;
             }
 
-            musicaActualSeleccionada = seleccionada;
-            musicaActualReproduciendo = seleccionada;
             listaActualReproduciendo = listaActualSeleccionada;
-
-            reproductor.Play(seleccionada);
-            btnPlayPausa.setText("⏸️");
-            mostrarDatosDeMusica();
+            reproducirMusica(seleccionada);
             return;
         }
 
@@ -730,26 +747,13 @@ public class Principal extends javax.swing.JFrame {
             return;
         }
 
-        musicaActualReproduciendo = primera;
-        musicaActualSeleccionada = primera;
-
-        reproductor.Play(primera);
-        btnPlayPausa.setText("⏸️");
-        mostrarDatosDeMusica();
-        if (listaActualReproduciendo == biblioteca.getBiblioteca()) {
-            tblPlaylist.clearSelection();
-        }
-        seleccionarMusicaEnTabla(musicaActualReproduciendo.getId());
+        reproducirMusica(primera);
     }//GEN-LAST:event_btnReproducirListaActionPerformed
 
     private void tglCircularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglCircularActionPerformed
         if (listaActualReproduciendo != null) {
-            if (tglCircular.isSelected()) {
-            listaActualReproduciendo.Circular(true);
-            }else {
-                listaActualReproduciendo.Circular(false);
-            }
-        }else {
+            listaActualReproduciendo.Circular(tglCircular.isSelected());
+        } else {
             tglCircular.setSelected(false);
         }
     }//GEN-LAST:event_tglCircularActionPerformed

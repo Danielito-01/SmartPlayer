@@ -20,8 +20,6 @@ public class Reproductor {
     private long totalBytes;
     private long bytesRestantes;
 
-    private Musica musicaActual;
-
     public Reproductor() {
 
         reproduciendo = false;
@@ -37,7 +35,7 @@ public class Reproductor {
 
         Stop();
         try {
-            musicaActual = musica;
+
             ruta = musica.getRuta();
             inputStream = new FileInputStream(ruta);
             totalBytes = inputStream.available();
@@ -47,25 +45,8 @@ public class Reproductor {
             pausado = false;
             finalizada = false;
             detenidoManualmente = false;
-            hiloReproduccion = new Thread(new Runnable() {
 
-                @Override
-                public void run() {
-                    try {
-                        player.play();
-                    } catch (Exception e) {
-                        System.out.println("Error al reproducir: " + e.getMessage());
-                    } finally {
-                        reproduciendo = false;
-                   
-                        if (!pausado && !detenidoManualmente) {
-                            finalizada = true;
-                            musicaActual = null;
-                        }
-                    }
-                }
-            });
-            hiloReproduccion.start();
+            iniciarHiloReproduccion();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -95,24 +76,8 @@ public class Reproductor {
                 pausado = false;
                 reproduciendo = true;
                 detenidoManualmente = false;
-                hiloReproduccion = new Thread(new Runnable() {
 
-                    @Override
-                    public void run() {
-                        try {
-                            player.play();
-                        } catch (Exception e) {
-                            System.out.println("Error al reanudar: " + e.getMessage());
-                        } finally {
-                            reproduciendo = false;
-                            if (!pausado && !detenidoManualmente) {
-                                finalizada = true;
-                                musicaActual = null;
-                            }
-                        }
-                    }
-                });
-                hiloReproduccion.start();
+                iniciarHiloReproduccion();
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -126,7 +91,7 @@ public class Reproductor {
             reproduciendo = false;
             pausado = false;
             bytesRestantes = 0;
-            
+
             if (player != null) {
                 player.close();
             }
@@ -137,11 +102,27 @@ public class Reproductor {
             player = null;
             inputStream = null;
             hiloReproduccion = null;
-            musicaActual = null;
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void iniciarHiloReproduccion() {
+        hiloReproduccion = new Thread(() -> {
+            try {
+                player.play();
+            } catch (Exception e) {
+                System.out.println("Error en reproducción: " + e.getMessage());
+            } finally {
+                reproduciendo = false;
+                if (!pausado && !detenidoManualmente) {
+                    finalizada = true;
+                }
+            }
+        });
+
+        hiloReproduccion.start();
     }
 
     public boolean Reproduciendo() {
