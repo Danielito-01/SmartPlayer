@@ -452,7 +452,7 @@ public class Principal extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(panCanciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(panReproduccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(panReproduccion, javax.swing.GroupLayout.PREFERRED_SIZE, 443, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(panPlaylist, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(18, Short.MAX_VALUE))
@@ -655,7 +655,6 @@ public class Principal extends javax.swing.JFrame {
         lblAnio.setText(textoHtml(musica.anioReal(), 40));
         lblTamanio.setText(textoHtml(musica.formatearTamanio(), 50));
         lblPortada.setIcon(musica.getPortadaGrande(lblPortada.getWidth(), lblPortada.getHeight()));
-        lblDuracion.setText(musica.formatearDuracion());
     }
     
     private void abrirPlaylist() {
@@ -745,8 +744,10 @@ public class Principal extends javax.swing.JFrame {
         if (musica == null) {
             return;
         }
-        musicaActualReproduciendo = musica;
         
+        timerReproduccion.stop();
+        
+        musicaActualReproduciendo = musica;
         duracionActualSegundos = (int) musica.getDuracion();
         tiempoActualSegundos = 0;
 
@@ -755,6 +756,7 @@ public class Principal extends javax.swing.JFrame {
 
         lblTiempoActual.setText("00:00");
         lblDuracion.setText(formatearTiempo(duracionActualSegundos));
+        
         reproductor.Play(musica);
         timerReproduccion.start();
         actualizarInterfazReproduccion();
