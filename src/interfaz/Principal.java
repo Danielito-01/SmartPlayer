@@ -18,6 +18,7 @@ import java.awt.Image;
 import java.awt.RenderingHints;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.Timer;
 
 /**
  *
@@ -29,9 +30,12 @@ public class Principal extends javax.swing.JFrame {
    
     private Lista listaActualSeleccionada;
     private Lista listaActualReproduciendo;
-   
     private Musica musicaActualReproduciendo;
-
+    private Timer timerReproduccion;
+    
+    private int duracionActualSegundos;
+    private int tiempoActualSegundos;
+    
     /**
      * Creates new form InterfazPrincipal
      */
@@ -44,6 +48,7 @@ public class Principal extends javax.swing.JFrame {
     private void inicializar() {
         configurarTablas();
         configurarSlider();
+        configurarTimerReproduccion();
         mostrarBiblioteca();
         mostrarPlaylists();
     }
@@ -213,9 +218,9 @@ public class Principal extends javax.swing.JFrame {
             panCancionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panCancionesLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lblTituloLista, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(scpMusicas, javax.swing.GroupLayout.PREFERRED_SIZE, 502, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(lblTituloLista, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(scpMusicas, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnReproducirLista, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -262,6 +267,8 @@ public class Principal extends javax.swing.JFrame {
                 }
             }
         });
+
+        sldReproduccion.setValue(0);
 
         btnPlayPausa.setBackground(new java.awt.Color(0, 63, 105));
         btnPlayPausa.setFont(new java.awt.Font("Segoe UI Symbol", 1, 24)); // NOI18N
@@ -448,7 +455,7 @@ public class Principal extends javax.swing.JFrame {
                 .addComponent(panReproduccion, javax.swing.GroupLayout.PREFERRED_SIZE, 443, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(panPlaylist, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -470,6 +477,32 @@ public class Principal extends javax.swing.JFrame {
 
         establecerAnchoMaximo(tblPlaylist, 0, 30);
         establecerAnchoMaximo(tblMusicas, 0, 30);
+    }
+    
+    private void configurarTimerReproduccion() {
+        timerReproduccion = new Timer(1000, e -> actualizarProgresoReproduccion());
+    }
+    
+    private void actualizarProgresoReproduccion() {
+        if (!reproductor.Reproduciendo()) {
+            return;
+        }
+
+        tiempoActualSegundos++;
+
+        if (tiempoActualSegundos > duracionActualSegundos) {
+            tiempoActualSegundos = duracionActualSegundos;
+        }
+
+        sldReproduccion.setValue(tiempoActualSegundos);
+        lblTiempoActual.setText(formatearTiempo(tiempoActualSegundos));
+    }
+    
+    private String formatearTiempo(int segundosTotales) {
+        int minutos = segundosTotales / 60;
+        int segundos = segundosTotales % 60;
+
+        return String.format("%02d:%02d", minutos, segundos);
     }
     
     private void ocultarColumna(javax.swing.JTable tabla, int columna) {
@@ -693,8 +726,17 @@ public class Principal extends javax.swing.JFrame {
             return;
         }
         musicaActualReproduciendo = musica;
+        
+        duracionActualSegundos = (int) musica.getDuracion();
+        tiempoActualSegundos = 0;
 
+        sldReproduccion.setMaximum(duracionActualSegundos);
+        sldReproduccion.setValue(0);
+
+        lblTiempoActual.setText("00:00");
+        lblDuracion.setText(formatearTiempo(duracionActualSegundos));
         reproductor.Play(musica);
+        timerReproduccion.start();
         actualizarInterfazReproduccion();
     }
     
@@ -711,6 +753,7 @@ public class Principal extends javax.swing.JFrame {
     }
 
     private void detenerReproduccion() {
+        timerReproduccion.stop();
         reproductor.Stop();
         btnPlayPausa.setText("▶");
     }

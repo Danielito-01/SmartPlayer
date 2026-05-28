@@ -60,7 +60,7 @@
               <Component id="panReproduccion" min="-2" pref="443" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
               <Component id="panPlaylist" min="-2" pref="250" max="-2" attributes="0"/>
-              <EmptySpace pref="15" max="32767" attributes="0"/>
+              <EmptySpace pref="17" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -237,9 +237,9 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace max="32767" attributes="0"/>
-                  <Component id="lblTituloLista" min="-2" pref="45" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" max="32767" attributes="0"/>
-                  <Component id="scpMusicas" min="-2" pref="502" max="-2" attributes="0"/>
+                  <Component id="lblTituloLista" min="-2" pref="33" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
+                  <Component id="scpMusicas" min="-2" pref="520" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="btnReproducirLista" min="-2" pref="42" max="-2" attributes="0"/>
                   <EmptySpace max="32767" attributes="0"/>
@@ -540,6 +540,9 @@
           </AuxValues>
         </Component>
         <Component class="javax.swing.JSlider" name="sldReproduccion">
+          <Properties>
+            <Property name="value" type="int" value="0"/>
+          </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="btnPlayPausa">
           <Properties>
