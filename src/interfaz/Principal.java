@@ -452,10 +452,10 @@ public class Principal extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(panCanciones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(panReproduccion, javax.swing.GroupLayout.PREFERRED_SIZE, 443, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(panReproduccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(panPlaylist, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -543,15 +543,35 @@ public class Principal extends javax.swing.JFrame {
 
                 int y = trackRect.y + trackRect.height / 2 - 2;
                 int alto = 4;
-                g2d.setColor(new java.awt.Color(220, 220, 220));
 
+                g2d.setColor(new java.awt.Color(220, 220, 220));
                 g2d.fillRoundRect(
                         trackRect.x,
                         y,
                         trackRect.width,
                         alto,
+                        8,
+                        8
+                );
+
+                int valorMinimo = slider.getMinimum();
+                int valorMaximo = slider.getMaximum();
+                int valorActual = slider.getValue();
+                int anchoProgreso = 0;
+
+                if (valorMaximo > valorMinimo) {
+                    double porcentaje = (double) (valorActual - valorMinimo)
+                            / (valorMaximo - valorMinimo);
+                    anchoProgreso = (int) (trackRect.width * porcentaje);
+                }
+                g2d.setColor(new java.awt.Color(0, 122, 255));
+                g2d.fillRoundRect(
+                        trackRect.x,
+                        y,
+                        anchoProgreso,
                         alto,
-                        alto
+                        8,
+                        8
                 );
             }
             @Override
