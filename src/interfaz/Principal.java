@@ -29,7 +29,6 @@ public class Principal extends javax.swing.JFrame {
     private Lista listaActualSeleccionada;
     private Lista listaActualReproduciendo;
    
-    private Musica musicaActualSeleccionada;
     private Musica musicaActualReproduciendo;
 
     /**
@@ -43,6 +42,7 @@ public class Principal extends javax.swing.JFrame {
     
     private void inicializar() {
         configurarTablas();
+        configurarSlider();
         mostrarBiblioteca();
         mostrarPlaylists();
     }
@@ -56,6 +56,7 @@ public class Principal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        tglCircular1 = new javax.swing.JToggleButton();
         panPlaylist = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblPlaylist = new javax.swing.JTable();
@@ -87,16 +88,21 @@ public class Principal extends javax.swing.JFrame {
         lblTamanio = new javax.swing.JLabel();
         lblAnio = new javax.swing.JLabel();
         tglCircular = new javax.swing.JToggleButton();
+        tglContinua = new javax.swing.JToggleButton();
         jmbMenu = new javax.swing.JMenuBar();
         menuAdministrador = new javax.swing.JMenu();
         jmiCargarMusicas = new javax.swing.JMenuItem();
+
+        tglCircular1.setFont(new java.awt.Font("Segoe UI Symbol", 1, 10)); // NOI18N
+        tglCircular1.setText("🔁");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         panPlaylist.setBackground(new java.awt.Color(153, 204, 255));
         panPlaylist.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        tblPlaylist.setBackground(new java.awt.Color(121, 245, 248));
+        tblPlaylist.setBackground(new java.awt.Color(0, 70, 132));
+        tblPlaylist.setForeground(new java.awt.Color(255, 255, 255));
         tblPlaylist.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -137,7 +143,9 @@ public class Principal extends javax.swing.JFrame {
 
         panCanciones.setBackground(new java.awt.Color(153, 204, 255));
 
-        tblMusicas.setBackground(new java.awt.Color(255, 255, 224));
+        tblMusicas.setAutoCreateRowSorter(true);
+        tblMusicas.setBackground(new java.awt.Color(0, 93, 232));
+        tblMusicas.setForeground(new java.awt.Color(255, 255, 255));
         tblMusicas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -166,9 +174,10 @@ public class Principal extends javax.swing.JFrame {
         lblTituloLista.setMinimumSize(new java.awt.Dimension(250, 45));
         lblTituloLista.setPreferredSize(new java.awt.Dimension(250, 45));
 
-        btnReproducirLista.setBackground(new java.awt.Color(204, 255, 204));
+        btnReproducirLista.setBackground(new java.awt.Color(16, 93, 213));
         btnReproducirLista.setFont(new java.awt.Font("Segoe UI Symbol", 1, 18)); // NOI18N
         btnReproducirLista.setText("↳ Reproducir lista ▶");
+        btnReproducirLista.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         btnReproducirLista.setOpaque(true);
         btnReproducirLista.addActionListener(this::btnReproducirListaActionPerformed);
 
@@ -238,38 +247,29 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
-        sldReproduccion.setUI(new javax.swing.plaf.basic.BasicSliderUI(sldReproduccion) {
-            @Override
-            public void paintThumb(Graphics g) {
-                Graphics2D g2d = (Graphics2D) g;
-                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-                // Color de la bolita
-                g2d.setColor(new java.awt.Color(0, 122, 255));
-
-                // Forzamos un tamaño idéntico para que sea un círculo perfecto (16x16 píxeles)
-                int diametro = 16;
-
-                // Centramos la bolita verticalmente en el espacio disponible
-                int x = thumbRect.x + (thumbRect.width - diametro) / 2;
-                int y = thumbRect.y + (thumbRect.height - diametro) / 2;
-
-                // Dibujamos el círculo perfecto
-                g2d.fillOval(x, y, diametro, diametro);
-            }
-        });
-
+        btnPlayPausa.setBackground(new java.awt.Color(0, 63, 105));
         btnPlayPausa.setFont(new java.awt.Font("Segoe UI Symbol", 1, 24)); // NOI18N
+        btnPlayPausa.setForeground(new java.awt.Color(255, 255, 255));
         btnPlayPausa.setText("▶");
         btnPlayPausa.setActionCommand("");
+        btnPlayPausa.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        btnPlayPausa.setOpaque(true);
         btnPlayPausa.addActionListener(this::btnPlayPausaActionPerformed);
 
+        btnSiguiente.setBackground(new java.awt.Color(0, 63, 105));
         btnSiguiente.setFont(new java.awt.Font("Segoe UI Symbol", 1, 24)); // NOI18N
+        btnSiguiente.setForeground(new java.awt.Color(255, 255, 255));
         btnSiguiente.setText("⏭");
+        btnSiguiente.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        btnSiguiente.setOpaque(true);
         btnSiguiente.addActionListener(this::btnSiguienteActionPerformed);
 
+        btnAnterior.setBackground(new java.awt.Color(0, 63, 105));
         btnAnterior.setFont(new java.awt.Font("Segoe UI Symbol", 1, 24)); // NOI18N
+        btnAnterior.setForeground(new java.awt.Color(255, 255, 255));
         btnAnterior.setText("⏮");
+        btnAnterior.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        btnAnterior.setOpaque(true);
         btnAnterior.addActionListener(this::btnAnteriorActionPerformed);
 
         lblTiempoActual.setFont(new java.awt.Font("Segoe UI", 1, 10)); // NOI18N
@@ -293,9 +293,21 @@ public class Principal extends javax.swing.JFrame {
         lblAnio.setFont(new java.awt.Font("Segoe UI", 3, 11)); // NOI18N
         lblAnio.setText("0000");
 
+        tglCircular.setBackground(new java.awt.Color(0, 63, 105));
         tglCircular.setFont(new java.awt.Font("Segoe UI Symbol", 1, 10)); // NOI18N
+        tglCircular.setForeground(new java.awt.Color(255, 255, 255));
         tglCircular.setText("🔁");
+        tglCircular.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        tglCircular.setOpaque(true);
         tglCircular.addActionListener(this::tglCircularActionPerformed);
+
+        tglContinua.setBackground(new java.awt.Color(0, 63, 105));
+        tglContinua.setFont(new java.awt.Font("Segoe UI Symbol", 1, 7)); // NOI18N
+        tglContinua.setForeground(new java.awt.Color(255, 255, 255));
+        tglContinua.setText("▶▶");
+        tglContinua.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        tglContinua.setOpaque(true);
+        tglContinua.addActionListener(this::tglContinuaActionPerformed);
 
         javax.swing.GroupLayout panReproduccionLayout = new javax.swing.GroupLayout(panReproduccion);
         panReproduccion.setLayout(panReproduccionLayout);
@@ -335,13 +347,15 @@ public class Principal extends javax.swing.JFrame {
                         .addComponent(lblTamanio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addContainerGap())
                     .addGroup(panReproduccionLayout.createSequentialGroup()
-                        .addGap(98, 98, 98)
+                        .addGap(44, 44, 44)
+                        .addComponent(tglContinua, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAnterior, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnPlayPausa, javax.swing.GroupLayout.PREFERRED_SIZE, 62, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnSiguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(tglCircular, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(lblPortada, javax.swing.GroupLayout.PREFERRED_SIZE, 431, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
@@ -378,13 +392,20 @@ public class Principal extends javax.swing.JFrame {
                         .addComponent(lblDuracion)
                         .addComponent(lblTiempoActual))
                     .addComponent(sldReproduccion, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(panReproduccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnPlayPausa, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(btnAnterior, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(btnSiguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(tglCircular, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addGroup(panReproduccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panReproduccionLayout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(panReproduccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnPlayPausa, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnAnterior, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnSiguiente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())
+                    .addGroup(panReproduccionLayout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addGroup(panReproduccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(tglCircular, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(tglContinua, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
         menuAdministrador.setText("Administrador");
@@ -408,7 +429,7 @@ public class Principal extends javax.swing.JFrame {
                 .addComponent(panReproduccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(panPlaylist, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(11, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -442,12 +463,68 @@ public class Principal extends javax.swing.JFrame {
         tabla.getColumnModel().getColumn(columna).setMaxWidth(ancho);
     }
     
+    private void configurarSlider() {
+        sldReproduccion.setOpaque(true);
+        sldReproduccion.setBackground(panReproduccion.getBackground());
+        sldReproduccion.setFocusable(false);
+        sldReproduccion.setPaintTicks(false);
+        sldReproduccion.setPaintLabels(false);
+        sldReproduccion.setBorder(null);
+
+        sldReproduccion.setUI(new javax.swing.plaf.basic.BasicSliderUI(sldReproduccion) {
+            @Override
+            public void paintFocus(Graphics g) {
+                // No dibujar borde de foco
+            }
+            @Override
+            public void setThumbLocation(int x, int y) {
+                super.setThumbLocation(x, y);
+                slider.repaint();
+            }
+            @Override
+            public void paintTrack(Graphics g) {
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setRenderingHint(
+                        RenderingHints.KEY_ANTIALIASING,
+                        RenderingHints.VALUE_ANTIALIAS_ON
+                );
+
+                int y = trackRect.y + trackRect.height / 2 - 2;
+                int alto = 4;
+                g2d.setColor(new java.awt.Color(220, 220, 220));
+
+                g2d.fillRoundRect(
+                        trackRect.x,
+                        y,
+                        trackRect.width,
+                        alto,
+                        alto,
+                        alto
+                );
+            }
+            @Override
+            public void paintThumb(Graphics g) {
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setRenderingHint(
+                        RenderingHints.KEY_ANTIALIASING,
+                        RenderingHints.VALUE_ANTIALIAS_ON
+                );
+                g2d.setColor(new java.awt.Color(0, 122, 255));
+               
+                int diametro = 16;
+                int x = thumbRect.x + (thumbRect.width - diametro) / 2;
+                int y = thumbRect.y + (thumbRect.height - diametro) / 2;
+                g2d.fillOval(x, y, diametro, diametro);
+            }
+        });
+    }
+    
     private void mostrarBiblioteca() {
-        Lista bibliotecaG = biblioteca.getBiblioteca();
+        Lista listaBiblioteca = biblioteca.getBiblioteca();
         
-        cargarMusicasEnTabla(bibliotecaG.toListAdelante());
+        cargarMusicasEnTabla(listaBiblioteca.toListAdelante());
         
-        listaActualSeleccionada = bibliotecaG;
+        listaActualSeleccionada = listaBiblioteca;
         
         lblTituloLista.setText("Biblioteca");
         
@@ -579,13 +656,11 @@ public class Principal extends javax.swing.JFrame {
    
     private void reproducirMusicaSeleccionada() {
         Musica musica = musicaSeleccionada();
-
         if (musica == null || listaActualSeleccionada == null) {
             return;
         }
 
         Musica seleccionada = listaActualSeleccionada.seleccionar(musica);
-
         if (seleccionada == null) {
             return;
         }
@@ -599,18 +674,18 @@ public class Principal extends javax.swing.JFrame {
             return;
         }
         musicaActualReproduciendo = musica;
-        musicaActualSeleccionada = musica;
 
         reproductor.Play(musica);
-
+        actualizarInterfazReproduccion();
+    }
+    
+    private void actualizarInterfazReproduccion() {
         btnPlayPausa.setText("⏸️");
-
         mostrarDatosDeMusica();
 
         if (listaActualSeleccionada == listaActualReproduciendo) {
-            seleccionarMusicaEnTabla(musica.getId());
+            seleccionarMusicaEnTabla(musicaActualReproduciendo.getId());
         }
-
         if (listaActualReproduciendo == biblioteca.getBiblioteca()) {
             tblPlaylist.clearSelection();
         }
@@ -677,7 +752,6 @@ public class Principal extends javax.swing.JFrame {
     }
     
     private void reproducirListaActual() {
-
         if (listaActualSeleccionada == null) {
             JOptionPane.showMessageDialog(this, "No hay lista seleccionada");
             return;
@@ -689,7 +763,6 @@ public class Principal extends javax.swing.JFrame {
         }
 
         listaActualReproduciendo = listaActualSeleccionada;
-
         Musica primera = listaActualReproduciendo.primera();
 
         if (primera == null) {
@@ -771,6 +844,10 @@ public class Principal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_tglCircularActionPerformed
 
+    private void tglContinuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglContinuaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tglContinuaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -810,5 +887,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JTable tblMusicas;
     private javax.swing.JTable tblPlaylist;
     private javax.swing.JToggleButton tglCircular;
+    private javax.swing.JToggleButton tglCircular1;
+    private javax.swing.JToggleButton tglContinua;
     // End of variables declaration//GEN-END:variables
 }
