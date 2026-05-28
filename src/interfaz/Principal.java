@@ -455,7 +455,7 @@ public class Principal extends javax.swing.JFrame {
                 .addComponent(panReproduccion, javax.swing.GroupLayout.PREFERRED_SIZE, 443, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(panPlaylist, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addContainerGap(20, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -484,12 +484,20 @@ public class Principal extends javax.swing.JFrame {
     }
     
     private void actualizarProgresoReproduccion() {
+        if (reproductor.Finalizada()) {
+            tiempoActualSegundos = duracionActualSegundos;
+
+            sldReproduccion.setValue(duracionActualSegundos);
+            lblTiempoActual.setText(formatearTiempo(duracionActualSegundos));
+
+            manejarFinDeCancion();
+            return;
+        }
         if (!reproductor.Reproduciendo()) {
             return;
         }
 
         tiempoActualSegundos++;
-
         if (tiempoActualSegundos > duracionActualSegundos) {
             tiempoActualSegundos = duracionActualSegundos;
         }
@@ -762,6 +770,18 @@ public class Principal extends javax.swing.JFrame {
         actualizarInterfazReproduccion();
     }
     
+    private void manejarFinDeCancion() {
+        if (tglContinua.isSelected()) {
+            if (listaActualReproduciendo.tieneSiguiente()) {
+                reproducirSiguiente();
+                return;
+            }
+            detenerReproduccion();
+            return;
+        }
+        detenerReproduccion();
+    }
+    
     private void actualizarInterfazReproduccion() {
         btnPlayPausa.setText("⏸️");
         mostrarDatosDeMusica();
@@ -797,12 +817,14 @@ public class Principal extends javax.swing.JFrame {
 
         if (reproductor.Reproduciendo()) {
             reproductor.Pausa();
+            timerReproduccion.stop();
             btnPlayPausa.setText("▶");
             return;
         }
 
         if (reproductor.Pausado()) {
             reproductor.Reanudar();
+            timerReproduccion.start();
             btnPlayPausa.setText("⏸️");
         }
     }
@@ -929,7 +951,7 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_tglCircularActionPerformed
 
     private void tglContinuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglContinuaActionPerformed
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_tglContinuaActionPerformed
 
     /**
