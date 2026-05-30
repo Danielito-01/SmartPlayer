@@ -1,5 +1,6 @@
-package clase;
+package servicios;
 
+import modelos.Musica;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -11,9 +12,7 @@ import java.util.Set;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
-import javax.swing.JTable;
 import javax.swing.filechooser.FileFilter;
-import javax.swing.table.DefaultTableModel;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
@@ -24,7 +23,7 @@ import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagException;
 import org.jaudiotagger.tag.images.Artwork;
 
-public class Administrador {
+public class GestorCargaMusicas {
 
     public static List<File> seleccionarArchivos(java.awt.Component parent) {
         JFileChooser explorador = new JFileChooser(); // Crea el explorador
@@ -32,13 +31,12 @@ public class Administrador {
         explorador.setMultiSelectionEnabled(true); // Permite seleccionar varios
         explorador.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES); // Acepta carpetas y archivos
         explorador.setAcceptAllFileFilterUsed(false); // Oculta "Todos los archivos"
+        
         explorador.setFileFilter(new FileFilter() {// Filtro personalizado
-
             @Override
             public boolean accept(File archivo) {
                 return archivo.isDirectory() || esMp3(archivo);
             }
-
             @Override
             public String getDescription() {
                 return "Archivos MP3 y carpetas";
@@ -52,16 +50,13 @@ public class Administrador {
 
         Set<String> rutasUnicas = new LinkedHashSet<>(); // Evita duplicados
         File[] archivosSeleccionados = explorador.getSelectedFiles(); // Archivos archivosSeleccionados
-
         for (File archivo : archivosSeleccionados) {// Recorre todo lo seleccionado
             if (archivo.isDirectory()) { // Si es carpeta
-
                 buscarEnCarpetas(archivo, rutasUnicas);
             }else if (archivo.isFile() && esMp3(archivo)) {// Si es mp3
                 agregarRutaUnica(archivo, rutasUnicas);
             }
         }
-
         List<File> archivosMp3 = new ArrayList<>();// Convierte rutas a File
         for (String ruta : rutasUnicas) {
             archivosMp3.add(new File(ruta));
@@ -72,12 +67,9 @@ public class Administrador {
     private static void buscarEnCarpetas(File directorio, Set<String> rutasUnicas) {
         File[] archivos = directorio.listFiles(); // Obtiene el contenido de la carpeta
      
-        if (archivos == null) {// Si no puede leerla
-            return;
-        }
+        if (archivos == null) return;
 
         for (File archivo : archivos) {// Recorre contenido
-
             if (archivo.isDirectory()) {// Si es subcarpeta
                 buscarEnCarpetas(archivo, rutasUnicas);
             }else if (archivo.isFile() && esMp3(archivo)) {// Si es archivo mp3
@@ -90,7 +82,7 @@ public class Administrador {
         try {
             String rutaCanonica = archivo.getCanonicalPath();// Ruta real del archivo
             rutas.add(rutaCanonica);
-        } catch (IOException e) {
+        }catch (IOException e) {
             rutas.add(archivo.getAbsolutePath());// Si falla usa absoluta
         }
     }
@@ -124,7 +116,7 @@ public class Administrador {
                 String genero = "Desconocido";
                 int anio = 0;
                 ImageIcon portada = null;
-                long duracion = 0;
+                int duracion = 0;
                 long tamanio = archivo.length();
 
                 if (datosMusica.getAudioHeader() != null) {// Obtiene duracion
@@ -165,21 +157,20 @@ public class Administrador {
     }
 
     private static ImageIcon extraerPortada(Tag tag) {
+        if (tag == null) return obtenerPortadaPorDefecto();
+
         try {
             Artwork imageBytes = tag.getFirstArtwork();
             if (imageBytes == null || imageBytes.getBinaryData() == null) {
                 return obtenerPortadaPorDefecto();
             }
-
-            BufferedImage imagen = ImageIO.read(// Convierte bytes a imagen
+            BufferedImage imagen = ImageIO.read(
                     new ByteArrayInputStream(imageBytes.getBinaryData())
             );
             if (imagen == null) {
                 return obtenerPortadaPorDefecto();
             }
-            
             return new ImageIcon(imagen);
-            
         }catch (Exception e) {
             return obtenerPortadaPorDefecto();
         }
@@ -187,35 +178,13 @@ public class Administrador {
     
     private static ImageIcon obtenerPortadaPorDefecto() {
         try {
-            BufferedImage imagen = ImageIO.read(
-                    Administrador.class.getResource("/imagen/SmartPlayerLogo.png")
-            );
-            return new ImageIcon(imagen);
+            BufferedImage imagen = ImageIO.read(GestorCargaMusicas.class.getResource("/imagen/SmartPlayerLogo.png"));
+            if (imagen != null) {
+                return new ImageIcon(imagen);
+            }
         }catch (Exception e) {
-            return null;
         }
-    }
-
-    public static void mostrarMusicasEnTabla(List<Musica> musicas, JTable tabla) {
-        int no = 1;
-        DefaultTableModel tablaMusicas = (DefaultTableModel) tabla.getModel();
-        tablaMusicas.setRowCount(0);
-        tabla.setRowHeight(50);
-
-        for (Musica musica : musicas) {
-            tablaMusicas.addRow(new Object[]{
-                no++,
-                musica.getNombre(),
-                musica.getArtista(),
-                musica.getAlbum(),
-                musica.getGenero(),
-                musica.formatearDuracion(), // 03:45
-                musica.formatearTamanio(), // 5.2 MB
-                musica.getRuta(),
-                musica.anioReal(),
-                musica.getPortadaPequenia()
-            });
-        }
+        return new ImageIcon();
     }
 
     private static String valorSeguro(String valor, String defecto) {
@@ -227,7 +196,6 @@ public class Administrador {
 
     private static String quitarExtension(String nombreArchivo) {       
         int punto = nombreArchivo.lastIndexOf('.');// Busca ultimo punto
-
         if (punto > 0) {// Si existe punto
             return nombreArchivo.substring(0, punto);
         }

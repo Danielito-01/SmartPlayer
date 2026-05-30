@@ -1,4 +1,4 @@
-package clase;
+package modelos;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -17,6 +17,7 @@ public class Musica {
     private String ruta;
     private int anio;
     private ImageIcon portada;
+    private int reproducciones;
 
     public Musica() {
     }
@@ -32,6 +33,7 @@ public class Musica {
         this.ruta = ruta;
         this.anio = anio;
         this.portada = portada;
+        this.reproducciones = 0;
     }
 
     public int getId() {
@@ -114,6 +116,14 @@ public class Musica {
         this.portada = portada;
     }
 
+    public int getReproducciones() {
+        return reproducciones;
+    }
+
+    public void setReproducciones(int reproducciones) {
+        this.reproducciones = reproducciones;
+    }
+
     @Override
     public String toString() {
         return nombre + " - " + artista;
@@ -145,13 +155,11 @@ public class Musica {
         return tamanio + " B";
     }
     
-    public String anioReal(){
+    public String anioReal() {
         if (anio <= 0) {
             return "Desconocido";
-        }else {
-            String anioReal = String.valueOf(anio);
-            return anioReal;
         }
+        return String.valueOf(anio);
     }
     
     public ImageIcon getPortadaGrande(int ancho, int alto) {

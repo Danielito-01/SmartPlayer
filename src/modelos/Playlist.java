@@ -1,11 +1,13 @@
-package clase;
+package modelos;
 
+import estructuras.ListaMusicas;
 import java.util.List;
+import modelos.Musica;
 
 public class Playlist {
     private final int id;
     private String nombre;
-    private final Lista playlist = new Lista();
+    private final ListaMusicas musicas = new ListaMusicas();
 
     public Playlist(int id, String nombre) {
         this.id = id;
@@ -20,8 +22,8 @@ public class Playlist {
         return nombre;
     }
     
-    public Lista getPlaylist() {
-        return playlist;
+    public ListaMusicas getMusicas() {
+        return musicas;
     }
 
     public final void setNombre(String nombre) {
@@ -30,8 +32,8 @@ public class Playlist {
                 : nombre.trim();
     }
 
-    public int size() {
-        return playlist.size();
+    public int getTamanio() {
+        return musicas.getTamanio();
     }
 
    
@@ -42,16 +44,16 @@ public class Playlist {
         if (tieneMusica(musica)) {
             return false;
         }
-        playlist.agregarMusica(musica);
+        musicas.agregarMusica(musica);
         return true;
     }
     
     public boolean tieneMusica(Musica musica) {
-        return playlist.tieneMusica(musica);
+        return musicas.tieneMusica(musica);
     }
 
     public List<Musica> toList() {
-        return playlist.toListAdelante();
+        return musicas.toListAdelante();
     }
 
     @Override

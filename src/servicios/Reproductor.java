@@ -1,8 +1,9 @@
-package clase;
+package servicios;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
 import javazoom.jl.player.Player;
+import modelos.Musica;
 
 public class Reproductor {
 
@@ -10,10 +11,10 @@ public class Reproductor {
     private InputStream inputStream;
     private Thread hiloReproduccion;
 
-    private boolean reproduciendo;
-    private boolean pausado;
-    private boolean finalizada;
-    private boolean detenidoManualmente;
+    private volatile boolean reproduciendo;
+    private volatile boolean pausado;
+    private volatile boolean finalizada;
+    private volatile boolean detenidoManualmente;
 
     private String ruta;
 
@@ -21,21 +22,19 @@ public class Reproductor {
     private long bytesRestantes;
 
     public Reproductor() {
-
         reproduciendo = false;
         pausado = false;
         finalizada = false;
         detenidoManualmente = false;
     }
 
-    public void Play(Musica musica) {
+    public void reproducir(Musica musica) {
         if (musica == null) {
             return;
         }
 
-        Stop();
+        detener();
         try {
-
             ruta = musica.getRuta();
             inputStream = new FileInputStream(ruta);
             totalBytes = inputStream.available();
@@ -47,13 +46,12 @@ public class Reproductor {
             detenidoManualmente = false;
 
             iniciarHiloReproduccion();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void Pausa() {
+    public void pausar() {
         if (player != null && reproduciendo && !pausado) {
             try {
                 bytesRestantes = inputStream.available();
@@ -67,7 +65,7 @@ public class Reproductor {
         }
     }
 
-    public void Reanudar() {
+    public void reanudar() {
         if (pausado) {
             try {
                 inputStream = new FileInputStream(ruta);
@@ -85,7 +83,7 @@ public class Reproductor {
         }
     }
 
-    public void Stop() {
+    public void detener() {
         try {
             detenidoManualmente = true;
             reproduciendo = false;
@@ -125,15 +123,15 @@ public class Reproductor {
         hiloReproduccion.start();
     }
 
-    public boolean Reproduciendo() {
+    public boolean estaReproduciendo() {
         return reproduciendo;
     }
 
-    public boolean Pausado() {
+    public boolean estaPausado() {
         return pausado;
     }
 
-    public boolean Finalizada() {
+    public boolean estaFinalizada() {
         if (finalizada) {
             finalizada = false;
             return true;

@@ -1,9 +1,10 @@
-package clase;
+package estructuras;
 
 import java.util.ArrayList;
 import java.util.List;
+import modelos.Musica;
 
-public class Lista {
+public class ListaMusicas {
 
     private static class NMusica {
         Musica musica;
@@ -21,42 +22,49 @@ public class Lista {
     private NMusica ultima;
     private NMusica actual;
     private boolean circular;
-    private int size;
+    private int tamanio;
 
-    public Lista() {
+    public ListaMusicas() {
         primera = null;
         ultima = null;
         circular = false;
-        size = 0;
+        tamanio = 0;
     }
 
     public boolean estaVacia() {
         return primera == null;
     }
 
-    public int size() {
-        return size;
+    public int getTamanio() {
+        return tamanio;
     }
     
-    public void agregarMusica(Musica musica) {// Agrega al final (cola)
+    public void agregarMusica(Musica musica) {
         if (musica == null) return;
 
         NMusica nuevo = new NMusica(musica);
-
         if (estaVacia()) {
             primera = nuevo;
             ultima = nuevo;
         } else {
+            if (circular) {
+                ultima.siguiente = null;
+                primera.anterior = null;
+            }
             ultima.siguiente = nuevo;
             nuevo.anterior = ultima;
             ultima = nuevo;
+            if (circular) {
+                primera.anterior = ultima;
+                ultima.siguiente = primera;
+            }
         }
-        size++;
+        tamanio++;
     }
     
     public Musica buscarPorId(int id) {
         NMusica aux = primera;
-        while (aux != null) {
+        for (int i = 0; i < tamanio; i++) {
             if (aux.musica.getId() == id) {
                 return aux.musica;
             }
@@ -66,18 +74,16 @@ public class Lista {
     }
  
     public boolean tieneMusica(Musica musica) {
-        if (musica == null) {
-            return false;
-        }
+        if (musica == null) return false;
+
         NMusica aux = primera;
-        while (aux != null) {
+        for (int i = 0; i < tamanio; i++) {
             Musica musicaActual = aux.musica;
-           
-            if (musicaActual.getId() > 0 && musica.getId() > 0 && musicaActual.getId() == musica.getId()) {  // Comparar por ID
+            if (musicaActual.getId() > 0 && musica.getId() > 0 && musicaActual.getId() == musica.getId()) {
                 return true;
-            }  
-            if (musicaActual.getRuta() != null && musica.getRuta() != null && musicaActual.getRuta()
-                    .trim().equalsIgnoreCase(musica.getRuta().trim())) { // Comparar por ruta
+            }
+            if (musicaActual.getRuta() != null && musica.getRuta() != null
+                    && musicaActual.getRuta().trim().equalsIgnoreCase(musica.getRuta().trim())) {
                 return true;
             }
             aux = aux.siguiente;
@@ -173,11 +179,10 @@ public class Lista {
     }
     
     public Musica seleccionar(Musica musica) {
-        if (musica == null) {
-        return null;
-        }
+        if (musica == null) return null;
+
         NMusica aux = primera;
-        while (aux != null) {
+        for (int i = 0; i < tamanio; i++) {
             if (aux.musica.getId() == musica.getId()) {
                 actual = aux;
                 return actual.musica;
@@ -185,14 +190,13 @@ public class Lista {
             aux = aux.siguiente;
         }
         return null;
-    } 
+    }
     
-    public void Circular(boolean estado) {
-        if (estaVacia()) {
-            return;
-        }
+    public void setCircular(boolean estado) {
+        if (estaVacia()) return;
+
         this.circular = estado;
-        if (estado == true) {
+        if (estado) {
             primera.anterior = ultima;
             ultima.siguiente = primera;
         } else {
