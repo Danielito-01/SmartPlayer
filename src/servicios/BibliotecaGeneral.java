@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Set;
 import modelos.Musica;
 
-public final class Biblioteca {
-    private static final Biblioteca INSTANCE = new Biblioteca();
+public final class BibliotecaGeneral {
+    private static final BibliotecaGeneral INSTANCE = new BibliotecaGeneral();
     
     private int nextId = 1;
     private final ListaMusicas biblioteca = new ListaMusicas();
@@ -19,9 +19,9 @@ public final class Biblioteca {
     private final List<Playlist> playlists = new ArrayList<>();
     private final Set<String> nombresPlaylists = new HashSet<>();
 
-    private Biblioteca() {}
+    private BibliotecaGeneral() {}
 
-    public static Biblioteca getInstance() {
+    public static BibliotecaGeneral getInstance() {
         return INSTANCE;
     }
 

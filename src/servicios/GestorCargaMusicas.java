@@ -13,6 +13,7 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileSystemView;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
@@ -26,44 +27,47 @@ import org.jaudiotagger.tag.images.Artwork;
 public class GestorCargaMusicas {
 
     public static List<File> seleccionarArchivos(java.awt.Component parent) {
-        JFileChooser explorador = new JFileChooser(); // Crea el explorador
-        explorador.setDialogTitle("Selecciona archivos MP3 o carpetas"); // Titulo
-        explorador.setMultiSelectionEnabled(true); // Permite seleccionar varios
-        explorador.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES); // Acepta carpetas y archivos
-        explorador.setAcceptAllFileFilterUsed(false); // Oculta "Todos los archivos"
-        
-        explorador.setFileFilter(new FileFilter() {// Filtro personalizado
+        FileSystemView vistaSistema = FileSystemView.getFileSystemView();
+        File escritorioWindows = vistaSistema.getHomeDirectory();
+        JFileChooser explorador = new JFileChooser(escritorioWindows, vistaSistema);
+        explorador.setCurrentDirectory(escritorioWindows);
+        explorador.rescanCurrentDirectory();
+        explorador.setMultiSelectionEnabled(true);
+        explorador.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+        explorador.setAcceptAllFileFilterUsed(false);
+        explorador.setFileFilter(new FileFilter() {
             @Override
             public boolean accept(File archivo) {
                 return archivo.isDirectory() || esMp3(archivo);
             }
             @Override
             public String getDescription() {
-                return "Archivos MP3 y carpetas";
+                return "Archivos mp3 y carpetas";
             }
         });
-
-        int resultado = explorador.showOpenDialog(parent);// Abre la ventana
-        if (resultado != JFileChooser.APPROVE_OPTION) { // Si cancela
+        int resultado = explorador.showOpenDialog(parent);
+        if (resultado != JFileChooser.APPROVE_OPTION) {
             return new ArrayList<>();
         }
-
-        Set<String> rutasUnicas = new LinkedHashSet<>(); // Evita duplicados
-        File[] archivosSeleccionados = explorador.getSelectedFiles(); // Archivos archivosSeleccionados
-        for (File archivo : archivosSeleccionados) {// Recorre todo lo seleccionado
-            if (archivo.isDirectory()) { // Si es carpeta
+        Set<String> rutasUnicas = new LinkedHashSet<>();
+        File[] archivosSeleccionados = explorador.getSelectedFiles();
+        for (File archivo : archivosSeleccionados) {
+            if (archivo == null) {
+                continue;
+            }
+            if (archivo.isDirectory()) {
                 buscarEnCarpetas(archivo, rutasUnicas);
-            }else if (archivo.isFile() && esMp3(archivo)) {// Si es mp3
+            } else if (archivo.isFile() && esMp3(archivo)) {
                 agregarRutaUnica(archivo, rutasUnicas);
             }
         }
-        List<File> archivosMp3 = new ArrayList<>();// Convierte rutas a File
+        List<File> archivosMp3 = new ArrayList<>();
         for (String ruta : rutasUnicas) {
             archivosMp3.add(new File(ruta));
         }
         return archivosMp3;
     }
-
+    
     private static void buscarEnCarpetas(File directorio, Set<String> rutasUnicas) {
         File[] archivos = directorio.listFiles(); // Obtiene el contenido de la carpeta
      

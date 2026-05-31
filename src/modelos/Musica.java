@@ -12,17 +12,14 @@ public class Musica {
     private String artista;
     private String album;
     private String genero;
-    private long duracion;
+    private int duracion;
     private long tamanio;
     private String ruta;
     private int anio;
     private ImageIcon portada;
     private int reproducciones;
 
-    public Musica() {
-    }
-
-    public Musica(int id, String nombre, String artista, String album, String genero, long duracion, long tamanio, String ruta, int anio, ImageIcon portada) {
+    public Musica(int id, String nombre, String artista, String album, String genero, int duracion, long tamanio, String ruta, int anio, ImageIcon portada) {
         this.id = id;
         this.nombre = nombre;
         this.artista = artista;
@@ -80,7 +77,7 @@ public class Musica {
         return duracion;
     }
 
-    public void setDuracion(long duracion) {
+    public void setDuracion(int duracion) {
         this.duracion = duracion;
     }
 

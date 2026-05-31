@@ -4,21 +4,22 @@ import servicios.GestorCargaMusicas;
 import modelos.Musica;
 import java.io.File;
 import java.util.List;
-import servicios.Biblioteca;
+import servicios.BibliotecaGeneral;
 import java.awt.Color;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import utilidades.Estilos;
 import utilidades.TablaHelper;
 
 public class DialogoCargaMusicas extends javax.swing.JDialog {
-    private final Biblioteca biblioteca = Biblioteca.getInstance();
+    private final BibliotecaGeneral biblioteca = BibliotecaGeneral.getInstance();
     private List<Musica> musicasCargadas = new ArrayList<>();
 
     public DialogoCargaMusicas(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         configurarTabla();
-        getContentPane().setBackground(new Color(153,204,255));
+        Estilos.aplicar(this);
     }
 
     @SuppressWarnings("unchecked")

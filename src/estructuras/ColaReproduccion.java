@@ -4,7 +4,7 @@ import modelos.Musica;
 
 public class ColaReproduccion {
     
-    private static class NMusica {
+    private static final class NMusica {
         Musica musica;
         NMusica siguiente;
         
@@ -22,10 +22,6 @@ public class ColaReproduccion {
         this.frente = null;
         this.fin = null;
         this.tamanio = 0;
-    }
-    
-    public int getTamanio() {
-        return tamanio;
     }
     
     public boolean estaVacia() {

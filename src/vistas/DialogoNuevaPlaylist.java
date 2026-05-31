@@ -1,6 +1,6 @@
 package vistas;
 
-import servicios.Biblioteca;
+import servicios.BibliotecaGeneral;
 import modelos.Playlist;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -12,7 +12,7 @@ import modelos.Musica;
 import utilidades.TablaHelper;
 
 public class DialogoNuevaPlaylist extends javax.swing.JDialog {
-    private final Biblioteca biblioteca = Biblioteca.getInstance();
+    private final BibliotecaGeneral biblioteca = BibliotecaGeneral.getInstance();
     private final String nombrePlaylist;
     private final List<Musica> seleccionadas = new ArrayList<>();
     private final Set<Integer> idsSeleccionadas = new HashSet<>();

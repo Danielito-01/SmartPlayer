@@ -2,7 +2,6 @@ package modelos;
 
 import estructuras.ListaMusicas;
 import java.util.List;
-import modelos.Musica;
 
 public class Playlist {
     private final int id;
@@ -33,7 +32,7 @@ public class Playlist {
     }
 
     public int getTamanio() {
-        return musicas.getTamanio();
+        return musicas.getCantidad();
     }
 
    

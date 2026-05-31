@@ -6,7 +6,7 @@ import modelos.Musica;
 
 public class ListaMusicas {
 
-    private static class NMusica {
+    private static final class NMusica {
         Musica musica;
         NMusica siguiente;
         NMusica anterior;
@@ -22,21 +22,26 @@ public class ListaMusicas {
     private NMusica ultima;
     private NMusica actual;
     private boolean circular;
-    private int tamanio;
+    private boolean aleatoria;
+    private int cantidad;
+    private long duracion;
+    
 
     public ListaMusicas() {
         primera = null;
         ultima = null;
         circular = false;
-        tamanio = 0;
+        aleatoria = false;
+        cantidad = 0;
+        duracion = 0;
     }
 
     public boolean estaVacia() {
         return primera == null;
     }
 
-    public int getTamanio() {
-        return tamanio;
+    public int getCantidad() {
+        return cantidad;
     }
     
     public void agregarMusica(Musica musica) {
@@ -59,12 +64,12 @@ public class ListaMusicas {
                 ultima.siguiente = primera;
             }
         }
-        tamanio++;
+        cantidad++;
     }
     
     public Musica buscarPorId(int id) {
         NMusica aux = primera;
-        for (int i = 0; i < tamanio; i++) {
+        for (int i = 0; i < cantidad; i++) {
             if (aux.musica.getId() == id) {
                 return aux.musica;
             }
@@ -77,7 +82,7 @@ public class ListaMusicas {
         if (musica == null) return false;
 
         NMusica aux = primera;
-        for (int i = 0; i < tamanio; i++) {
+        for (int i = 0; i < cantidad; i++) {
             Musica musicaActual = aux.musica;
             if (musicaActual.getId() > 0 && musica.getId() > 0 && musicaActual.getId() == musica.getId()) {
                 return true;
@@ -101,33 +106,12 @@ public class ListaMusicas {
             do {
             resultado.add(aux.musica);
             aux = aux.siguiente;
-            } while (aux != null && aux != primera); // se detiene al volver al inicio
+            } while (aux != null && aux != primera);
         } else {
             while (aux != null) {
             resultado.add(aux.musica);
             aux = aux.siguiente;
             }            
-        }
-        return resultado;
-    }
-
-    public List<Musica> toListAtras() {
-        List<Musica> resultado = new ArrayList<>();
-        if (estaVacia()) {
-            return resultado;
-        }
-        
-        NMusica aux = ultima;
-        if (circular) {
-            do {
-            resultado.add(aux.musica);
-            aux = aux.anterior;
-            } while (aux != null && aux != ultima);  // se detiene al volver al final
-        } else {
-            while (aux != null) {
-            resultado.add(aux.musica);
-            aux = aux.anterior;
-            }
         }
         return resultado;
     }
@@ -180,9 +164,8 @@ public class ListaMusicas {
     
     public Musica seleccionar(Musica musica) {
         if (musica == null) return null;
-
         NMusica aux = primera;
-        for (int i = 0; i < tamanio; i++) {
+        for (int i = 0; i < cantidad; i++) {
             if (aux.musica.getId() == musica.getId()) {
                 actual = aux;
                 return actual.musica;

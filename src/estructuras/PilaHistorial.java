@@ -4,7 +4,7 @@ import modelos.Musica;
 
 public class PilaHistorial {
     
-    public static class NMusica {
+    private static final class NMusica {
         Musica musica;
         NMusica siguiente;
         
@@ -20,10 +20,6 @@ public class PilaHistorial {
     public PilaHistorial() {
         this.cima = null;
         this.tamanio = 0;
-    }
-   
-    public int getTamanio() {
-        return tamanio;
     }
    
     public boolean estaVacia() {
