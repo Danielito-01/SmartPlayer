@@ -14,8 +14,6 @@ public final class Biblioteca {
     private int nextId = 1;
     private final ListaMusicas biblioteca = new ListaMusicas();
     private final Set<String> rutas = new HashSet<>();
-    
-    private final GestorBusqueda gestorBusqueda = new GestorBusqueda();
 
     private int nextPlaylistId = 1;
     private final List<Playlist> playlists = new ArrayList<>();
@@ -29,10 +27,6 @@ public final class Biblioteca {
 
     public ListaMusicas getBiblioteca() {
         return biblioteca;
-    }
-    
-    public GestorBusqueda getGestorBusqueda() {
-        return gestorBusqueda;
     }
     
     public List<Playlist> getPlaylists() {
@@ -61,7 +55,6 @@ public final class Biblioteca {
                 nextId = musica.getId() + 1;
             }
             biblioteca.agregarMusica(musica);
-            gestorBusqueda.insertar(musica);
             agregadas++;
         }
         return agregadas;
