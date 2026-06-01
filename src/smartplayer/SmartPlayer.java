@@ -13,9 +13,7 @@ public class SmartPlayer {
 
     public static void main(String[] args) {
         silenciarWarningsMolestos();
-        Logger.getLogger("org.jaudiotagger").setLevel(Level.SEVERE);
-
-        try{
+        try {
             System.setProperty("flatlaf.useWindowDecorations", "true");
             FlatIntelliJLaf.setup();
             UIManager.put("Button.arc", 999);
@@ -23,7 +21,7 @@ public class SmartPlayer {
             UIManager.put("ProgressBar.arc", 999);
             UIManager.put("TextComponent.arc", 15);
             UIManager.put("ScrollBar.thumbArc", 999);
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         java.awt.EventQueue.invokeLater(() -> {
@@ -32,6 +30,11 @@ public class SmartPlayer {
     }
 
     private static void silenciarWarningsMolestos() {
+        Logger.getLogger("org.jaudiotagger").setLevel(Level.OFF);
+        Logger.getLogger("org.jaudiotagger.tag").setLevel(Level.OFF);
+        Logger.getLogger("org.jaudiotagger.audio").setLevel(Level.OFF);
+        Logger.getLogger("org.jaudiotagger.tag.id3").setLevel(Level.OFF);
+        Logger.getLogger("org.jaudiotagger.tag.id3.framebody").setLevel(Level.OFF);
         Logger.getLogger("sun.awt.shell").setLevel(Level.OFF);
         Logger.getLogger("sun.awt.shell.Win32ShellFolderManager2").setLevel(Level.OFF);
         Logger.getLogger("sun.awt.shell.Win32ShellFolder2").setLevel(Level.OFF);
@@ -43,9 +46,11 @@ public class SmartPlayer {
                 String mensaje = record.getMessage();
                 boolean esWarningShell = logger != null
                         && logger.startsWith("sun.awt.shell");
+                boolean esJaudiotagger = logger != null
+                        && logger.startsWith("org.jaudiotagger");
                 boolean esWarningPersonal = mensaje != null
                         && mensaje.contains("Cannot access 'Personal'");
-                if (esWarningShell || esWarningPersonal) {
+                if (esWarningShell || esJaudiotagger || esWarningPersonal) {
                     return false;
                 }
                 if (filtroAnterior != null) {
