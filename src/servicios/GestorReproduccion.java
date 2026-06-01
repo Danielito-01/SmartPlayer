@@ -79,10 +79,9 @@ public class GestorReproduccion {
             return null;
         }
 
-        if (listaActualReproduciendo.tieneSiguiente()) {
-            return listaActualReproduciendo.siguiente();
+        if (listaActualReproduciendo.tieneMusicaSiguiente()) {
+            return listaActualReproduciendo.siguienteMusica();
         }
-
         return null;
     }
 
@@ -91,10 +90,9 @@ public class GestorReproduccion {
             return null;
         }
 
-        if (listaActualReproduciendo.tieneAnterior()) {
-            return listaActualReproduciendo.anterior();
+        if (listaActualReproduciendo.tieneMusicaAnterior()) {
+            return listaActualReproduciendo.musicaAnterior();
         }
-
         return null;
     }
 
@@ -102,18 +100,16 @@ public class GestorReproduccion {
         if (lista == null || lista.estaVacia()) {
             return null;
         }
-
         listaActualReproduciendo = lista;
-        return listaActualReproduciendo.primera();
+        return listaActualReproduciendo.primerMusica();
     }
 
     public Musica seleccionarMusicaEnLista(ListaMusicas lista, Musica musica) {
         if (lista == null || musica == null) {
             return null;
         }
-
         listaActualReproduciendo = lista;
-        return listaActualReproduciendo.seleccionar(musica);
+        return listaActualReproduciendo.seleccionarMusica(musica);
     }
 
     public void avanzarTiempo() {

@@ -73,7 +73,7 @@ public class Musica {
         this.genero = genero;
     }
 
-    public long getDuracion() {
+    public int getDuracion() {
         return duracion;
     }
 

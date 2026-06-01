@@ -6,7 +6,7 @@ import java.util.List;
 public class Playlist {
     private final int id;
     private String nombre;
-    private final ListaMusicas musicas = new ListaMusicas();
+    private final ListaMusicas playlist = new ListaMusicas();
 
     public Playlist(int id, String nombre) {
         this.id = id;
@@ -20,9 +20,13 @@ public class Playlist {
     public String getNombre() {
         return nombre;
     }
-    
-    public ListaMusicas getMusicas() {
-        return musicas;
+
+    public ListaMusicas getPlaylist() {
+        return playlist;
+    }
+
+    public int getCantidad() {
+        return playlist.getCantidad();
     }
 
     public final void setNombre(String nombre) {
@@ -31,28 +35,29 @@ public class Playlist {
                 : nombre.trim();
     }
 
-    public int getTamanio() {
-        return musicas.getCantidad();
-    }
-
-   
     public boolean agregarMusica(Musica musica) {
         if (musica == null) {
             return false;
         }
+
         if (tieneMusica(musica)) {
             return false;
         }
-        musicas.agregarMusica(musica);
+
+        playlist.agregarMusica(musica);
         return true;
     }
-    
-    public boolean tieneMusica(Musica musica) {
-        return musicas.tieneMusica(musica);
+
+    public boolean eliminarMusica(Musica musica) {
+        return playlist.eliminarMusica(musica);
     }
 
-    public List<Musica> toList() {
-        return musicas.toListAdelante();
+    public boolean tieneMusica(Musica musica) {
+        return playlist.tieneMusica(musica);
+    }
+
+    public List<Musica> toListAdelante() {
+        return playlist.toListAdelante();
     }
 
     @Override

@@ -1,6 +1,6 @@
 package vistas;
 
-import servicios.BibliotecaGeneral;
+import estructuras.BibliotecaGeneral;
 import estructuras.ListaMusicas;
 import modelos.Musica;
 import java.util.List;
@@ -21,7 +21,7 @@ import utilidades.TablaHelper;
 
 public class VentanaPrincipal extends javax.swing.JFrame {
     private final BibliotecaGeneral biblioteca = BibliotecaGeneral.getInstance();
-    private final GestorReproduccion controladorReproduccion = new GestorReproduccion(new Reproductor());
+    private final GestorReproduccion ctrlReproduccion = new GestorReproduccion(new Reproductor());
     
     private ListaMusicas listaActualSeleccionada;
     private Timer timerReproduccion;
@@ -212,16 +212,17 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(lblTituloLista, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(scpMusicas, javax.swing.GroupLayout.PREFERRED_SIZE, 528, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnReproducirLista, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(scpMusicas, javax.swing.GroupLayout.PREFERRED_SIZE, 522, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnReproducirLista, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         panReproduccion.setBackground(new java.awt.Color(73, 134, 190));
 
         lblNombreMusica.setBackground(new java.awt.Color(153, 204, 255));
         lblNombreMusica.setFont(new java.awt.Font("Segoe UI", 3, 24)); // NOI18N
+        lblNombreMusica.setText("Nombre Musica");
         lblNombreMusica.setText("<html><div style='width:250px;'>Nombre Musica</div></html>");
 
         lblTxtArtista.setBackground(new java.awt.Color(0, 153, 255));
@@ -292,19 +293,19 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         lblTiempoActual.setText("00:00");
 
         lblArtista.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
-        lblArtista.setText("Nombre del artista");
+        lblArtista.setText("Desconocido");
 
         lblAlbum.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
-        lblAlbum.setText("Nombre del album");
+        lblAlbum.setText("Desconocido");
 
         lblGenero.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
-        lblGenero.setText("Genero de la musica");
+        lblGenero.setText("Desconocido");
 
         lblTamanio.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
         lblTamanio.setText("500 GB");
 
         lblAnio.setFont(new java.awt.Font("Segoe UI", 0, 15)); // NOI18N
-        lblAnio.setText("0000");
+        lblAnio.setText("Desconocido");
 
         tglCircular.setBackground(new java.awt.Color(0, 63, 105));
         tglCircular.setFont(new java.awt.Font("Segoe UI Symbol", 1, 10)); // NOI18N
@@ -332,9 +333,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         panReproduccionLayout.setHorizontalGroup(
             panReproduccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panReproduccionLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(panReproduccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(panReproduccionLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panReproduccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panReproduccionLayout.createSequentialGroup()
                         .addComponent(tglContinua, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnAnterior, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -345,41 +346,37 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(tglCircular, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(52, 52, 52))
-                    .addGroup(panReproduccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panReproduccionLayout.createSequentialGroup()
-                            .addComponent(lblTiempoActual, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGap(25, 25, 25)
-                            .addComponent(sldProgreso, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(26, 26, 26)
-                            .addComponent(lblDuracion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addComponent(lblPortada, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(panReproduccionLayout.createSequentialGroup()
-                            .addGroup(panReproduccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addGroup(panReproduccionLayout.createSequentialGroup()
-                                    .addComponent(lblTxtArtista)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(lblArtista, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(lblTxtAlbum)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(lblAlbum, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGroup(panReproduccionLayout.createSequentialGroup()
-                                    .addComponent(lblTxtGenero)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(lblGenero, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGap(3, 3, 3)
-                                    .addComponent(lblTxtAnio)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(lblAnio, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(lblTxtTamanio)
-                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(lblTamanio, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGap(0, 0, Short.MAX_VALUE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(panReproduccionLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblNombreMusica, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panReproduccionLayout.createSequentialGroup()
+                        .addComponent(lblTiempoActual, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(25, 25, 25)
+                        .addComponent(sldProgreso, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(26, 26, 26)
+                        .addComponent(lblDuracion, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(lblPortada, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(panReproduccionLayout.createSequentialGroup()
+                        .addGroup(panReproduccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(panReproduccionLayout.createSequentialGroup()
+                                .addComponent(lblTxtArtista)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblArtista, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblTxtAlbum)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblAlbum, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(panReproduccionLayout.createSequentialGroup()
+                                .addComponent(lblTxtGenero)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblGenero, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(3, 3, 3)
+                                .addComponent(lblTxtAnio)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblAnio, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblTxtTamanio)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(lblTamanio, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(lblNombreMusica, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         panReproduccionLayout.setVerticalGroup(
@@ -388,11 +385,12 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(lblNombreMusica, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(panReproduccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblTxtAlbum)
-                    .addComponent(lblAlbum, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblTxtArtista)
-                    .addComponent(lblArtista, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(panReproduccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(lblArtista, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(panReproduccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(lblTxtAlbum)
+                        .addComponent(lblAlbum, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(lblTxtArtista)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panReproduccionLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblGenero, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -480,9 +478,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         
         lblTituloLista.setText("BIBLIOTECA");
         
-        if (controladorReproduccion.getListaActualReproduciendo() == listaActualSeleccionada
-                && controladorReproduccion.getMusicaActualReproduciendo() != null) {
-            TablaHelper.seleccionarFilaPorId(tblMusicas, 2, controladorReproduccion.getMusicaActualReproduciendo().getId());
+        if (ctrlReproduccion.getListaActualReproduciendo() == listaActualSeleccionada
+                && ctrlReproduccion.getMusicaActualReproduciendo() != null) {
+            TablaHelper.seleccionarFilaPorId(tblMusicas, 2, ctrlReproduccion.getMusicaActualReproduciendo().getId());
         }
         
         seleccionarPlaylistReproduciendo();
@@ -513,17 +511,17 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         Playlist playlistSeleccionada = biblioteca.buscarPlaylistPorId(id);
         if (playlistSeleccionada == null) return;
 
-        TablaHelper.cargarMusicas(tblMusicas, playlistSeleccionada.toList());
-        listaActualSeleccionada = playlistSeleccionada.getMusicas();
+        TablaHelper.cargarMusicas(tblMusicas, playlistSeleccionada.toListAdelante());
+        listaActualSeleccionada = playlistSeleccionada.getPlaylist();
         lblTituloLista.setText("Playlist: " + playlistSeleccionada.getNombre());
 
-        if (controladorReproduccion.getListaActualReproduciendo() == listaActualSeleccionada && controladorReproduccion.getMusicaActualReproduciendo() != null) {
-            TablaHelper.seleccionarFilaPorId(tblMusicas, 2, controladorReproduccion.getMusicaActualReproduciendo().getId());
+        if (ctrlReproduccion.getListaActualReproduciendo() == listaActualSeleccionada && ctrlReproduccion.getMusicaActualReproduciendo() != null) {
+            TablaHelper.seleccionarFilaPorId(tblMusicas, 2, ctrlReproduccion.getMusicaActualReproduciendo().getId());
         }
     }
     
     private void seleccionarPlaylistReproduciendo() {
-        if (controladorReproduccion.getListaActualReproduciendo() == null || controladorReproduccion.getMusicaActualReproduciendo() == null) {
+        if (ctrlReproduccion.getListaActualReproduciendo() == null || ctrlReproduccion.getMusicaActualReproduciendo() == null) {
             tblPlaylist.clearSelection();
             return;
         }
@@ -536,7 +534,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
             for (Playlist playlist : biblioteca.getPlaylists()) {
                 if (playlist.getId() == idPlaylist) {
-                    if (playlist.getMusicas() == controladorReproduccion.getListaActualReproduciendo()) {
+                    if (playlist.getPlaylist() == ctrlReproduccion.getListaActualReproduciendo()) {
                         tblPlaylist.setRowSelectionInterval(fila, fila);
                         return;
                     }
@@ -559,7 +557,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         if (listaActualSeleccionada == null) {
             return null;
         }
-        return listaActualSeleccionada.buscarPorId(idMusicaSeleccionada());
+        return biblioteca.getHash().buscarPorId(idMusicaSeleccionada());
     }
     
     private void reproducirMusicaSeleccionada() {
@@ -567,7 +565,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         if (musica == null || listaActualSeleccionada == null) {
             return;
         }
-        Musica seleccionada = controladorReproduccion.seleccionarMusicaEnLista(listaActualSeleccionada, musica);
+        Musica seleccionada = ctrlReproduccion.seleccionarMusicaEnLista(listaActualSeleccionada, musica);
         if (seleccionada == null) {
             return;
         }
@@ -575,7 +573,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }
     
     private void mostrarDatosDeMusica() {
-        Musica musica = controladorReproduccion.getMusicaActualReproduciendo();
+        Musica musica = ctrlReproduccion.getMusicaActualReproduciendo();
         if (musica == null) {
             return;
         }
@@ -592,29 +590,29 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         btnPlayPausa.setText("⏸️");
         mostrarDatosDeMusica();
 
-        if (listaActualSeleccionada == controladorReproduccion.getListaActualReproduciendo()) {
-            TablaHelper.seleccionarFilaPorId(tblMusicas, 2, controladorReproduccion.getMusicaActualReproduciendo().getId());
+        if (listaActualSeleccionada == ctrlReproduccion.getListaActualReproduciendo()) {
+            TablaHelper.seleccionarFilaPorId(tblMusicas, 2, ctrlReproduccion.getMusicaActualReproduciendo().getId());
         }
-        if (controladorReproduccion.getListaActualReproduciendo() == biblioteca.getBiblioteca()) {
+        if (ctrlReproduccion.getListaActualReproduciendo() == biblioteca.getBiblioteca()) {
             tblPlaylist.clearSelection();
         }
     }
     
     private void actualizarProgresoReproduccion() {
-        if (controladorReproduccion.estaFinalizada()) {
-            controladorReproduccion.marcarComoTerminada();
-            sldProgreso.setValue(controladorReproduccion.getDuracionActualSegundos());
-            lblTiempoActual.setText(Formato.tiempo(controladorReproduccion.getTiempoActualSegundos()));
+        if (ctrlReproduccion.estaFinalizada()) {
+            ctrlReproduccion.marcarComoTerminada();
+            sldProgreso.setValue(ctrlReproduccion.getDuracionActualSegundos());
+            lblTiempoActual.setText(Formato.tiempo(ctrlReproduccion.getTiempoActualSegundos()));
             manejarFinDeMusica();
             return;
         }
-        if (!controladorReproduccion.estaReproduciendo()) {
+        if (!ctrlReproduccion.estaReproduciendo()) {
             return;
         }
 
-        controladorReproduccion.avanzarTiempo();
-        sldProgreso.setValue(controladorReproduccion.getTiempoActualSegundos());
-        lblTiempoActual.setText(Formato.tiempo(controladorReproduccion.getTiempoActualSegundos()));
+        ctrlReproduccion.avanzarTiempo();
+        sldProgreso.setValue(ctrlReproduccion.getTiempoActualSegundos());
+        lblTiempoActual.setText(Formato.tiempo(ctrlReproduccion.getTiempoActualSegundos()));
 
     }
     
@@ -625,13 +623,13 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         
         timerReproduccion.stop();
         
-        controladorReproduccion.reproducir(musica);
+        ctrlReproduccion.reproducir(musica);
 
-        sldProgreso.setMaximum(controladorReproduccion.getDuracionActualSegundos());
+        sldProgreso.setMaximum(ctrlReproduccion.getDuracionActualSegundos());
         sldProgreso.setValue(0);
 
         lblTiempoActual.setText("00:00");
-        lblDuracion.setText(Formato.tiempo(controladorReproduccion.getDuracionActualSegundos()));
+        lblDuracion.setText(Formato.tiempo(ctrlReproduccion.getDuracionActualSegundos()));
    
         timerReproduccion.start();
         actualizarInterfazReproduccion();
@@ -647,12 +645,12 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     private void detenerReproduccion() {
         timerReproduccion.stop();
-        controladorReproduccion.detener();
+        ctrlReproduccion.detener();
         btnPlayPausa.setText("▶");
     }
     
     private void manejarPlayPausa() {
-        if (!controladorReproduccion.estaReproduciendo() && !controladorReproduccion.estaPausado()) {
+        if (!ctrlReproduccion.estaReproduciendo() && !ctrlReproduccion.estaPausado()) {
             if (listaActualSeleccionada == null) {
                 JOptionPane.showMessageDialog(this, "No hay lista seleccionada");
                 return;
@@ -666,26 +664,26 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             return;
         }
 
-        if (controladorReproduccion.estaReproduciendo()) {
-            controladorReproduccion.pausar();
+        if (ctrlReproduccion.estaReproduciendo()) {
+            ctrlReproduccion.pausar();
             timerReproduccion.stop();
             btnPlayPausa.setText("▶");
             return;
         }
 
-        if (controladorReproduccion.estaPausado()) {
-            controladorReproduccion.reanudar();
+        if (ctrlReproduccion.estaPausado()) {
+            ctrlReproduccion.reanudar();
             timerReproduccion.start();
             btnPlayPausa.setText("⏸️");
         }
     }
     
     private void reproducirSiguiente() {
-        if (!controladorReproduccion.tieneListaReproduciendo()) {
+        if (!ctrlReproduccion.tieneListaReproduciendo()) {
             JOptionPane.showMessageDialog(this, "No hay una lista reproduciendose");
             return;
         }
-        Musica siguiente = controladorReproduccion.siguiente();
+        Musica siguiente = ctrlReproduccion.siguiente();
         if (siguiente != null) {
             reproducirMusica(siguiente);
             return;
@@ -694,11 +692,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }
     
     private void reproducirAnterior() {
-        if (!controladorReproduccion.tieneListaReproduciendo()) {
+        if (!ctrlReproduccion.tieneListaReproduciendo()) {
             JOptionPane.showMessageDialog(this, "No hay una lista reproduciendose");
             return;
         }
-        Musica anterior = controladorReproduccion.anterior();
+        Musica anterior = ctrlReproduccion.anterior();
         if (anterior != null) {
             reproducirMusica(anterior);
             return;
@@ -716,7 +714,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             return;
         }
         
-        Musica primera = controladorReproduccion.iniciarLista(listaActualSeleccionada);
+        Musica primera = ctrlReproduccion.iniciarLista(listaActualSeleccionada);
         if (primera == null) {
             JOptionPane.showMessageDialog(this, "No se pudo iniciar la reproduccion");
             return;
@@ -758,8 +756,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_tglContinuaActionPerformed
 
     private void tglCircularActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglCircularActionPerformed
-        if (controladorReproduccion.tieneListaReproduciendo()) {
-            controladorReproduccion.setCircular(tglCircular.isSelected());
+        if (ctrlReproduccion.tieneListaReproduciendo()) {
+            ctrlReproduccion.setCircular(tglCircular.isSelected());
         } else {
             tglCircular.setSelected(false);
         }

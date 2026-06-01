@@ -13,8 +13,6 @@ public class ListaMusicas {
 
         NMusica(Musica musica) {
             this.musica = musica;
-            this.siguiente = null;
-            this.anterior = null;
         }
     }
 
@@ -22,28 +20,41 @@ public class ListaMusicas {
     private NMusica ultima;
     private NMusica actual;
     private boolean circular;
-    private boolean aleatoria;
     private int cantidad;
-    private long duracion;
-    
 
     public ListaMusicas() {
         primera = null;
         ultima = null;
+        actual = null;
         circular = false;
-        aleatoria = false;
         cantidad = 0;
-        duracion = 0;
+    }
+
+    public int getCantidad() {
+        return cantidad;
     }
 
     public boolean estaVacia() {
         return primera == null;
     }
 
-    public int getCantidad() {
-        return cantidad;
+    public Musica getMusicaActual() {
+        return actual == null ? null : actual.musica;
     }
-    
+
+    public boolean tieneMusica(Musica musica) {
+        if (musica == null) return false;
+        
+        NMusica aux = primera;
+        for (int i = 0; i < cantidad; i++) {
+            if (mismaMusica(aux.musica, musica)) {
+                return true;
+            }
+            aux = aux.siguiente;
+        }
+        return false;
+    }
+
     public void agregarMusica(Musica musica) {
         if (musica == null) return;
 
@@ -51,6 +62,7 @@ public class ListaMusicas {
         if (estaVacia()) {
             primera = nuevo;
             ultima = nuevo;
+            actual = nuevo;
         } else {
             if (circular) {
                 ultima.siguiente = null;
@@ -66,107 +78,70 @@ public class ListaMusicas {
         }
         cantidad++;
     }
-    
-    public Musica buscarPorId(int id) {
-        NMusica aux = primera;
-        for (int i = 0; i < cantidad; i++) {
-            if (aux.musica.getId() == id) {
-                return aux.musica;
-            }
-            aux = aux.siguiente;
-        }
-        return null;
-    }
- 
-    public boolean tieneMusica(Musica musica) {
-        if (musica == null) return false;
+
+    public boolean eliminarMusica(Musica musica) {
+        if (musica == null || estaVacia()) return false;
 
         NMusica aux = primera;
         for (int i = 0; i < cantidad; i++) {
-            Musica musicaActual = aux.musica;
-            if (musicaActual.getId() > 0 && musica.getId() > 0 && musicaActual.getId() == musica.getId()) {
-                return true;
-            }
-            if (musicaActual.getRuta() != null && musica.getRuta() != null
-                    && musicaActual.getRuta().trim().equalsIgnoreCase(musica.getRuta().trim())) {
+            if (mismaMusica(aux.musica, musica)) {
+                if (cantidad == 1) {
+                    primera = null;
+                    ultima = null;
+                    actual = null;
+                    cantidad = 0;
+                    return true;
+                }
+                NMusica anterior = aux.anterior;
+                NMusica siguiente = aux.siguiente;
+                if (aux == primera) {
+                    primera = siguiente;
+                }
+                if (aux == ultima) {
+                    ultima = anterior;
+                }
+                if (anterior != null) {
+                    anterior.siguiente = siguiente;
+                }
+                if (siguiente != null) {
+                    siguiente.anterior = anterior;
+                }
+                if (actual == aux) {
+                    actual = primera;
+                }
+                cantidad--;
+                if (circular && !estaVacia()) {
+                    primera.anterior = ultima;
+                    ultima.siguiente = primera;
+                } else if (!estaVacia()) {
+                    primera.anterior = null;
+                    ultima.siguiente = null;
+                }
                 return true;
             }
             aux = aux.siguiente;
         }
         return false;
     }
-    
+
     public List<Musica> toListAdelante() {
         List<Musica> resultado = new ArrayList<>();
-        if (estaVacia()) {
-            return resultado;
-        }
+        if (estaVacia()) return resultado;
+        
         NMusica aux = primera;
-        if (circular) {
-            do {
+        for (int i = 0; i < cantidad; i++) {
             resultado.add(aux.musica);
             aux = aux.siguiente;
-            } while (aux != null && aux != primera);
-        } else {
-            while (aux != null) {
-            resultado.add(aux.musica);
-            aux = aux.siguiente;
-            }            
         }
         return resultado;
     }
-    
-    public Musica primera() {
-        if (estaVacia()) {
-            return null;
-        }
-        actual = primera;
-        return actual.musica;
-    }
-    
-    public Musica ultima() {
-        if (estaVacia()) {
-            return null;
-        }
-        actual = ultima;
-        return actual.musica;
-    }
-    
-    public Musica siguiente() {
-        if (actual == null) {
-            return null;
-        }
-        if (actual.siguiente != null) {
-            actual = actual.siguiente;
-            return actual.musica;
-        }
-        return null;
-    }
-    
-    public Musica anterior() {
-        if (actual == null) {
-            return null;
-        }
-        if (actual.anterior != null) {
-            actual = actual.anterior;
-            return actual.musica;
-        }
-        return null;
-    }
-    
-    public boolean tieneSiguiente() {
-        return actual != null && actual.siguiente != null;
-    }
-    
-    public boolean tieneAnterior() {
-        return actual != null && actual.anterior != null;
-    }
-    
-    public Musica seleccionar(Musica musica) {
+
+    public Musica seleccionarMusica(Musica musica) {
         if (musica == null) return null;
+       
         NMusica aux = primera;
         for (int i = 0; i < cantidad; i++) {
-            if (aux.musica.getId() == musica.getId()) {
+            if (mismaMusica(aux.musica, musica)) {
                 actual = aux;
                 return actual.musica;
             }
@@ -174,11 +149,43 @@ public class ListaMusicas {
         }
         return null;
     }
-    
+
+    public Musica primerMusica() {
+        if (estaVacia()) return null;
+        actual = primera;
+        return actual.musica;
+    }
+
+    public Musica ultimaMusica() {
+        if (estaVacia()) return null;
+        actual = ultima;
+        return actual.musica;
+    }
+
+    public Musica siguienteMusica() {
+        if (actual == null || actual.siguiente == null) return null;
+        actual = actual.siguiente;
+        return actual.musica;
+    }
+
+    public Musica musicaAnterior() {
+        if (actual == null || actual.anterior == null) return null;
+        actual = actual.anterior;
+        return actual.musica;
+    }
+
+    public boolean tieneMusicaSiguiente() {
+        return actual != null && actual.siguiente != null;
+    }
+
+    public boolean tieneMusicaAnterior() {
+        return actual != null && actual.anterior != null;
+    }
+
     public void setCircular(boolean estado) {
         if (estaVacia()) return;
 
-        this.circular = estado;
+        circular = estado;
         if (estado) {
             primera.anterior = ultima;
             ultima.siguiente = primera;
@@ -187,11 +194,15 @@ public class ListaMusicas {
             ultima.siguiente = null;
         }
     }
-    
-    public Musica getActual() {
-        if (actual == null) {
-            return null;
+
+    private boolean mismaMusica(Musica a, Musica b) {
+        if (a == null || b == null) return false;
+        if (a.getId() > 0 && b.getId() > 0) {
+            return a.getId() == b.getId();
         }
-        return actual.musica;
+        if (a.getRuta() != null && b.getRuta() != null) {
+            return a.getRuta().trim().equalsIgnoreCase(b.getRuta().trim());
+        }
+        return false;
     }
 }

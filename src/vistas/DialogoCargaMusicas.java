@@ -4,7 +4,7 @@ import servicios.GestorCargaMusicas;
 import modelos.Musica;
 import java.io.File;
 import java.util.List;
-import servicios.BibliotecaGeneral;
+import estructuras.BibliotecaGeneral;
 import java.awt.Color;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
@@ -97,13 +97,13 @@ public class DialogoCargaMusicas extends javax.swing.JDialog {
     layout.setVerticalGroup(
         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addContainerGap()
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                 .addComponent(btnCargar)
                 .addComponent(btnGuardar))
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(scpMusicasCargadas, javax.swing.GroupLayout.PREFERRED_SIZE, 442, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addContainerGap(15, Short.MAX_VALUE))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+            .addComponent(scpMusicasCargadas, javax.swing.GroupLayout.PREFERRED_SIZE, 533, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGap(16, 16, 16))
     );
 
     pack();
@@ -134,7 +134,7 @@ public class DialogoCargaMusicas extends javax.swing.JDialog {
             return;
         }
 
-        int agregadas = biblioteca.agregarSinRepetir(musicasCargadas);
+        int agregadas = biblioteca.agregarMusicas(musicasCargadas);
         JOptionPane.showMessageDialog(
                 this,
                 "Guardadas: " + agregadas,

@@ -42,7 +42,7 @@ public class GestorCargaMusicas {
             }
             @Override
             public String getDescription() {
-                return "Archivos mp3 y carpetas";
+                return ".mp3";
             }
         });
         int resultado = explorador.showOpenDialog(parent);

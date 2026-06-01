@@ -1,6 +1,7 @@
 package vistas;
 
-import servicios.BibliotecaGeneral;
+import estructuras.ArbolAVL;
+import estructuras.BibliotecaGeneral;
 import modelos.Playlist;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -13,6 +14,7 @@ import utilidades.TablaHelper;
 
 public class DialogoNuevaPlaylist extends javax.swing.JDialog {
     private final BibliotecaGeneral biblioteca = BibliotecaGeneral.getInstance();
+
     private final String nombrePlaylist;
     private final List<Musica> seleccionadas = new ArrayList<>();
     private final Set<Integer> idsSeleccionadas = new HashSet<>();
@@ -281,7 +283,7 @@ public class DialogoNuevaPlaylist extends javax.swing.JDialog {
         for (int fila : filas) {
             Object valor = tblMusicas.getValueAt(fila, 5);
             int id = Integer.parseInt(valor.toString());
-            Musica seleccionada = biblioteca.getBiblioteca().buscarPorId(id);
+            Musica seleccionada = biblioteca.getHash().buscarPorId(id);
             if (seleccionada == null) {
                 noEncontradas++;
                 continue;
