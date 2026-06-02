@@ -6,13 +6,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import modelos.Musica;
+import modelos.ReporteCargaMusicas;
 
 public final class BibliotecaGeneral {
     private static final BibliotecaGeneral INSTANCE = new BibliotecaGeneral();
     
     private final ArbolABB abb = new ArbolABB();
     private final ArbolAVL avl = new ArbolAVL();
-    private final HashMusicas hash = new HashMusicas();
+    private final TablaHashMusicas hash = new TablaHashMusicas();
 
     private int idMusica = 1;
     private final ListaMusicas biblioteca = new ListaMusicas();
@@ -40,7 +41,7 @@ public final class BibliotecaGeneral {
         return avl;
     }
 
-    public HashMusicas getHash() {
+    public TablaHashMusicas getHash() {
         return hash;
     }
     
@@ -48,20 +49,33 @@ public final class BibliotecaGeneral {
         return playlists;
     }
 
-    // AGREGA EN LISTA + ABB + AVL
+    // AGREGA EN LISTA + ABB + AVL + HASH
     public int agregarMusicas(List<Musica> nuevas) {
-        if (nuevas == null) return 0;
+        return agregarMusicasConReporte(nuevas).getIngresadasBiblioteca();
+    }
 
-        int agregadas = 0;
+    public ReporteCargaMusicas agregarMusicasConReporte(List<Musica> nuevas) {
+        ReporteCargaMusicas reporte = new ReporteCargaMusicas();
+
+        long inicioTotal = System.nanoTime();
+        if (nuevas == null) {
+            reporte.setTotalBiblioteca(biblioteca.getCantidad());
+            reporte.setTotalABB(abb.getCantidad());
+            reporte.setTotalAVL(avl.getCantidad());
+            reporte.setTiempoTotalNs(System.nanoTime() - inicioTotal);
+            return reporte;
+        }
+        reporte.setRecibidas(nuevas.size());
 
         for (Musica musica : nuevas) {
             if (musica == null || musica.getRuta() == null || musica.getRuta().isBlank()) {
+                reporte.incrementarOmitidasInvalidas();
                 continue;
             }
 
             String key = normalizarRuta(musica.getRuta());
-
             if (!rutas.add(key)) {
+                reporte.incrementarOmitidasDuplicadas();
                 continue;
             }
 
@@ -71,15 +85,30 @@ public final class BibliotecaGeneral {
                 idMusica = musica.getId() + 1;
             }
 
+            long inicioBiblioteca = System.nanoTime();
             biblioteca.agregarMusica(musica);
-            abb.insertar(musica);
-            avl.insertar(musica);
+            reporte.sumarTiempoBibliotecaNs(System.nanoTime() - inicioBiblioteca);
+            reporte.incrementarIngresadasBiblioteca();
+            long inicioABB = System.nanoTime();
+            boolean ingresoABB = abb.insertar(musica);
+            reporte.sumarTiempoABBNs(System.nanoTime() - inicioABB);
+            if (ingresoABB) {
+                reporte.incrementarIngresadasABB();
+            }
+            long inicioAVL = System.nanoTime();
+            boolean ingresoAVL = avl.insertar(musica);
+            reporte.sumarTiempoAVLNs(System.nanoTime() - inicioAVL);
+            if (ingresoAVL) {
+                reporte.incrementarIngresadasAVL();
+            }
+
             hash.insertar(musica);
-
-            agregadas++;
         }
-
-        return agregadas;
+        reporte.setTotalBiblioteca(biblioteca.getCantidad());
+        reporte.setTotalABB(abb.getCantidad());
+        reporte.setTotalAVL(avl.getCantidad());
+        reporte.setTiempoTotalNs(System.nanoTime() - inicioTotal);
+        return reporte;
     }
 
     // ELIMINA DE LISTA + ABB + AVL + PLAYLISTS

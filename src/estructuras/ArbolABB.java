@@ -30,22 +30,24 @@ public class ArbolABB {
     // INSERCIÓN
     public boolean insertar(Musica musica) {
         if (musica == null || musica.getId() <= 0) return false;
-
-        raiz = insertarRec(raiz, musica);
-        cantidad++;
-        return true;
+        boolean[] insertado = {false};
+        raiz = insertarRec(raiz, musica, insertado);
+        if (insertado[0]) {
+            cantidad++;
+        }
+        return insertado[0];
     }
 
-    private NMusica insertarRec(NMusica nodo, Musica musica) {
+    private NMusica insertarRec(NMusica nodo, Musica musica, boolean[] insertado) {
         if (nodo == null) {
+            insertado[0] = true;
             return new NMusica(musica);
         }
-
         int comparacion = comparar(musica, nodo.musica);
         if (comparacion < 0) {
-            nodo.izquierdo = insertarRec(nodo.izquierdo, musica);
+            nodo.izquierdo = insertarRec(nodo.izquierdo, musica, insertado);
         } else if (comparacion > 0) {
-            nodo.derecho = insertarRec(nodo.derecho, musica);
+            nodo.derecho = insertarRec(nodo.derecho, musica, insertado);
         }
         return nodo;
     }

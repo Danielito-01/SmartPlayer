@@ -8,6 +8,7 @@ import estructuras.BibliotecaGeneral;
 import java.awt.Color;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import modelos.ReporteCargaMusicas;
 import utilidades.Estilos;
 import utilidades.TablaHelper;
 
@@ -110,9 +111,9 @@ public class DialogoCargaMusicas extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void configurarTabla() {
-        TablaHelper.establecerAnchoMaximo(tblMusicasCargadas, 0, 30);
-        TablaHelper.establecerAnchoMaximo(tblMusicasCargadas, 5, 65);
-        TablaHelper.establecerAnchoMaximo(tblMusicasCargadas, 6, 55);
+        TablaHelper.establecerAnchoMaximo(tblMusicasCargadas, 0, 45);
+        TablaHelper.establecerAnchoMaximo(tblMusicasCargadas, 5, 60);
+        TablaHelper.establecerAnchoMaximo(tblMusicasCargadas, 6, 80);
         TablaHelper.establecerAnchoMaximo(tblMusicasCargadas, 8, 80);
         TablaHelper.establecerAnchoMaximo(tblMusicasCargadas, 9, 60);
     }
@@ -134,13 +135,59 @@ public class DialogoCargaMusicas extends javax.swing.JDialog {
             return;
         }
 
-        int agregadas = biblioteca.agregarMusicas(musicasCargadas);
+        ReporteCargaMusicas reporte = biblioteca.agregarMusicasConReporte(musicasCargadas);
+
+        String mensaje = String.format(
+                """
+                Resumen de carga
+
+                Recibidas: %d
+                Omitidas inválidas: %d
+                Omitidas duplicadas: %d
+
+                Ingresadas en esta carga:
+                Biblioteca/lista: %d
+                ABB: %d
+                AVL: %d
+
+                Tamaño total actual:
+                Biblioteca: %d
+                ABB: %d
+                AVL: %d
+
+                Tiempos de inserción:
+                Biblioteca: %.6f ms
+                ABB: %.6f ms
+                AVL: %.6f ms
+
+                Tiempo total: %.6f ms
+                """,
+                reporte.getRecibidas(),
+                reporte.getOmitidasInvalidas(),
+                reporte.getOmitidasDuplicadas(),
+
+                reporte.getIngresadasBiblioteca(),
+                reporte.getIngresadasABB(),
+                reporte.getIngresadasAVL(),
+
+                reporte.getTotalBiblioteca(),
+                reporte.getTotalABB(),
+                reporte.getTotalAVL(),
+
+                reporte.getTiempoBibliotecaMs(),
+                reporte.getTiempoABBMs(),
+                reporte.getTiempoAVLMs(),
+
+                reporte.getTiempoTotalMs()
+        );
+
         JOptionPane.showMessageDialog(
                 this,
-                "Guardadas: " + agregadas,
+                mensaje,
                 "Biblioteca",
                 JOptionPane.INFORMATION_MESSAGE
         );
+
         dispose();
     }//GEN-LAST:event_btnGuardarActionPerformed
 

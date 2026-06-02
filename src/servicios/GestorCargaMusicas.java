@@ -182,7 +182,7 @@ public class GestorCargaMusicas {
     
     private static ImageIcon obtenerPortadaPorDefecto() {
         try {
-            BufferedImage imagen = ImageIO.read(GestorCargaMusicas.class.getResource("/imagen/SmartPlayerLogo.png"));
+            BufferedImage imagen = ImageIO.read(GestorCargaMusicas.class.getResource("/recursos/SmartPlayerLogo.png"));
             if (imagen != null) {
                 return new ImageIcon(imagen);
             }

@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import modelos.Musica;
 
-public class HashMusicas {
+public class TablaHashMusicas {
 
     private final Map<Integer, Musica> porId = new HashMap<>();
 

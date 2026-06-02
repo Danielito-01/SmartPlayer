@@ -214,7 +214,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(scpMusicas, javax.swing.GroupLayout.PREFERRED_SIZE, 522, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnReproducirLista, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+                .addComponent(btnReproducirLista, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -246,7 +246,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         lblTxtAnio.setText("Año:");
 
         lblPortada.setOpaque(true);
-        ImageIcon originalIcon = new ImageIcon(getClass().getResource("/imagen/SmartPlayerLogo.png"));
+        ImageIcon originalIcon = new ImageIcon(getClass().getResource("/recursos/SmartPlayerLogo.png"));
         Image originalImage = originalIcon.getImage();
 
         lblPortada.addComponentListener(new java.awt.event.ComponentAdapter() {
