@@ -109,6 +109,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jmiPilaHistorial = new javax.swing.JMenuItem();
         jmiBusquedaArboles = new javax.swing.JMenuItem();
         jmiVisualizacionArboles = new javax.swing.JMenuItem();
+        jmiRecorridos = new javax.swing.JMenuItem();
 
         agregarACola.setText("Agregar a cola");
         agregarACola.addActionListener(this::agregarAColaActionPerformed);
@@ -514,6 +515,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jmiVisualizacionArboles.setText("Visualizacion Arboles");
         jmiVisualizacionArboles.addActionListener(this::jmiVisualizacionArbolesActionPerformed);
         menuRequisitos.add(jmiVisualizacionArboles);
+
+        jmiRecorridos.setText("Recorridos");
+        jmiRecorridos.addActionListener(this::jmiRecorridosActionPerformed);
+        menuRequisitos.add(jmiRecorridos);
 
         jmbMenu.add(menuRequisitos);
 
@@ -1224,7 +1229,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jmiBusquedaArbolesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiBusquedaArbolesActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_jmiBusquedaArbolesActionPerformed
 
     private void jmiPilaHistorialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiPilaHistorialActionPerformed
@@ -1234,9 +1239,14 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jmiPilaHistorialActionPerformed
 
     private void jmiVisualizacionArbolesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiVisualizacionArbolesActionPerformed
-            DialogoVisualizacionArboles dialogo = new DialogoVisualizacionArboles(this, true);
-            dialogo.setVisible(true);
+        DialogoVisualizacionArboles dialogo = new DialogoVisualizacionArboles(this, true);
+        dialogo.setVisible(true);
     }//GEN-LAST:event_jmiVisualizacionArbolesActionPerformed
+
+    private void jmiRecorridosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiRecorridosActionPerformed
+        DialogoRecorrido dialogo = new DialogoRecorrido(this, true);
+        dialogo.setVisible(true);
+    }//GEN-LAST:event_jmiRecorridosActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem agregarACola;
@@ -1251,6 +1261,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiCargarMusicas;
     private javax.swing.JMenuItem jmiNueva;
     private javax.swing.JMenuItem jmiPilaHistorial;
+    private javax.swing.JMenuItem jmiRecorridos;
     private javax.swing.JMenuItem jmiTodas;
     private javax.swing.JMenuItem jmiVisualizacionArboles;
     private javax.swing.JLabel lblAlbum;

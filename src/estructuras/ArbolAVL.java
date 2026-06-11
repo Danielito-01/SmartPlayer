@@ -27,7 +27,7 @@ public class ArbolAVL {
     }
 
     public Musica getRaiz() {
-        return raiz.musica;
+        return raiz == null ? null : raiz.musica;
     }
     
     public int getCantidad() {
@@ -140,7 +140,7 @@ public class ArbolAVL {
 
         dot.append("digraph ArbolAVL {\n");
         dot.append("    rankdir=TB;\n");
-        dot.append("    node [shape=record, style=filled, fillcolor=\"#EAF8EA\", color=\"#3FA34D\"];\n");
+        dot.append("    node [shape=circle, style=filled, fillcolor=\"#EAF8EA\", color=\"#3FA34D\"];\n");
         dot.append("    edge [color=\"#3FA34D\"];\n\n");
 
         if (raiz == null) {
@@ -401,5 +401,20 @@ public class ArbolAVL {
 
     private String obtenerNombre(Musica musica) {
         return musica.getNombre().trim();
+    }
+    
+    public List<Musica> recorridoInOrden() {
+        List<Musica> resultado = new ArrayList<>();
+        recorridoInOrden(raiz, resultado);
+        return resultado;
+    }
+
+    private void recorridoInOrden(ArbolAVL.NMusica nodo, List<Musica> resultado) {
+        if (nodo == null) {
+            return;
+        }
+        recorridoInOrden(nodo.izquierdo, resultado);
+        resultado.add(nodo.musica);
+        recorridoInOrden(nodo.derecho, resultado);
     }
 }

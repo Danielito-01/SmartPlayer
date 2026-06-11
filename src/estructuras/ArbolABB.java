@@ -25,7 +25,7 @@ public class ArbolABB {
     }
     
     public Musica getRaiz() {
-        return raiz.musica;
+        return raiz == null ? null : raiz.musica;
     }
 
     public int getCantidad() {
@@ -144,7 +144,7 @@ public class ArbolABB {
 
         dot.append("digraph ArbolABB {\n");
         dot.append("    rankdir=TB;\n");
-        dot.append("    node [shape=record, style=filled, fillcolor=\"#EAF2FF\", color=\"#4A90E2\"];\n");
+        dot.append("    node [shape=circle, style=filled, fillcolor=\"#EAF2FF\", color=\"#4A90E2\"];\n");
         dot.append("    edge [color=\"#4A90E2\"];\n\n");
 
         if (raiz == null) {

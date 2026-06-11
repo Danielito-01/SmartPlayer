@@ -94,6 +94,14 @@ public class Presentacion {
     public static void aplicarPilaHistorial(JDialog dialogo) {
         aplicarDialogo(dialogo, "PilaHistorial");
     }
+    
+    public static void aplicarVisualizacionArboles(JDialog dialogo) {
+        aplicarDialogo(dialogo, "Visualizacion de arboles");
+    }
+    
+    public static void aplicarRecorridos(JDialog dialogo) {
+        aplicarDialogo(dialogo, "Recorrido");
+    }
 
     public static void refrescarToggle(JToggleButton toggle) {
         if (toggle.isSelected()) {

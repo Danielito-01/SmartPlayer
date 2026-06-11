@@ -11,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import javax.swing.JOptionPane;
 import servicios.GestorGraphviz;
 import utilidades.PanelSvgZoom;
+import utilidades.Presentacion;
 
 
 public class DialogoVisualizacionArboles extends javax.swing.JDialog {
@@ -81,17 +82,17 @@ public class DialogoVisualizacionArboles extends javax.swing.JDialog {
 
         lblRaizABB.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
         lblRaizABB.setForeground(new java.awt.Color(51, 51, 51));
-        lblRaizABB.setText("Raiz:");
+        lblRaizABB.setText("Raiz: NULL");
 
         lblCantidadABB.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
         lblCantidadABB.setForeground(new java.awt.Color(51, 51, 51));
-        lblCantidadABB.setText("Cantidad:");
+        lblCantidadABB.setText("Cantidad: 0");
 
         lblRaizAVL.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
-        lblRaizAVL.setText("Raiz");
+        lblRaizAVL.setText("Raiz: NULL");
 
         lblCantidadAVL.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
-        lblCantidadAVL.setText("Cantidad:");
+        lblCantidadAVL.setText("Cantidad: 0");
 
         lblArboles1.setFont(new java.awt.Font("Segoe UI Black", 3, 36)); // NOI18N
         lblArboles1.setForeground(new java.awt.Color(51, 51, 51));
@@ -145,8 +146,8 @@ public class DialogoVisualizacionArboles extends javax.swing.JDialog {
                             .addComponent(lblCantidadABB, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(37, 37, 37)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lblRaizAVL, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblRaizAVL, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lblCantidadAVL, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -163,6 +164,7 @@ public class DialogoVisualizacionArboles extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
  
     private void inicializar() {
+        Presentacion.aplicarVisualizacionArboles(this);
         setLocationRelativeTo(getParent());
         scpABB.setViewportView(panelABB);
         scpAVL.setViewportView(panelAVL);
