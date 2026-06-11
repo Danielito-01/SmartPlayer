@@ -108,6 +108,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         menuRequisitos = new javax.swing.JMenu();
         jmiPilaHistorial = new javax.swing.JMenuItem();
         jmiBusquedaArboles = new javax.swing.JMenuItem();
+        jmiVisualizacionArboles = new javax.swing.JMenuItem();
 
         agregarACola.setText("Agregar a cola");
         agregarACola.addActionListener(this::agregarAColaActionPerformed);
@@ -509,6 +510,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jmiBusquedaArboles.setText("BusquedaArboles");
         jmiBusquedaArboles.addActionListener(this::jmiBusquedaArbolesActionPerformed);
         menuRequisitos.add(jmiBusquedaArboles);
+
+        jmiVisualizacionArboles.setText("Visualizacion Arboles");
+        jmiVisualizacionArboles.addActionListener(this::jmiVisualizacionArbolesActionPerformed);
+        menuRequisitos.add(jmiVisualizacionArboles);
 
         jmbMenu.add(menuRequisitos);
 
@@ -1228,6 +1233,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         refrescar();
     }//GEN-LAST:event_jmiPilaHistorialActionPerformed
 
+    private void jmiVisualizacionArbolesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiVisualizacionArbolesActionPerformed
+            DialogoVisualizacionArboles dialogo = new DialogoVisualizacionArboles(this, true);
+            dialogo.setVisible(true);
+    }//GEN-LAST:event_jmiVisualizacionArbolesActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem agregarACola;
     private javax.swing.JButton btnAnterior;
@@ -1242,6 +1252,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiNueva;
     private javax.swing.JMenuItem jmiPilaHistorial;
     private javax.swing.JMenuItem jmiTodas;
+    private javax.swing.JMenuItem jmiVisualizacionArboles;
     private javax.swing.JLabel lblAlbum;
     private javax.swing.JLabel lblAnio;
     private javax.swing.JLabel lblArtista;

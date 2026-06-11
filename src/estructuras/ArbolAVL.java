@@ -220,13 +220,20 @@ public class ArbolAVL {
     }
 
     private String escaparDot(String texto) {
-        if (texto == null) {
-            return "";
+        if (texto == null || texto.isBlank()) {
+            return "Desconocido";
         }
 
         return texto
                 .replace("\\", "\\\\")
-                .replace("\"", "\\\"");
+                .replace("\"", "\\\"")
+                .replace("\r", "")
+                .replace("\n", "\\n")
+                .replace("{", "\\{")
+                .replace("}", "\\}")
+                .replace("|", "\\|")
+                .replace("<", "\\<")
+                .replace(">", "\\>");
     }
 
     private NMusica eliminarPorId(NMusica nodo, int id, boolean[] eliminada) {
