@@ -99,7 +99,7 @@ public class Presentacion {
         aplicarDialogo(dialogo, "Visualizacion de arboles");
     }
     
-    public static void aplicarRecorridos(JDialog dialogo) {
+    public static void aplicarRecorrido(JDialog dialogo) {
         aplicarDialogo(dialogo, "Recorrido");
     }
 

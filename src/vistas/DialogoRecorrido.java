@@ -15,7 +15,7 @@ public class DialogoRecorrido extends javax.swing.JDialog {
     }
     
     private void inicializar() {
-        Presentacion.aplicarRecorridos(this);
+        Presentacion.aplicarRecorrido(this);
         cargarRecorridoABB();
         cargarRecorridoAVL();
         jtxtABB.setEditable(false);
