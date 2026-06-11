@@ -30,163 +30,128 @@ public class ListaMusicas {
         cantidad = 0;
     }
 
+    public Musica getActual() {
+        return actual == null ? null : actual.musica;
+    }
+
     public int getCantidad() {
         return cantidad;
     }
 
     public boolean estaVacia() {
-        return primera == null;
+        return cantidad == 0;
     }
 
-    public Musica getMusicaActual() {
-        return actual == null ? null : actual.musica;
-    }
-
-    public boolean tieneMusica(Musica musica) {
+    public boolean agregarMusica(Musica musica) {
         if (musica == null) return false;
-        
-        NMusica aux = primera;
-        for (int i = 0; i < cantidad; i++) {
-            if (mismaMusica(aux.musica, musica)) {
-                return true;
-            }
-            aux = aux.siguiente;
-        }
-        return false;
-    }
 
-    public void agregarMusica(Musica musica) {
-        if (musica == null) return;
-
-        NMusica nuevo = new NMusica(musica);
+        NMusica nueva = new NMusica(musica);
         if (estaVacia()) {
-            primera = nuevo;
-            ultima = nuevo;
-            actual = nuevo;
+            primera = nueva;
+            ultima = nueva;
+            actual = nueva;
         } else {
-            if (circular) {
-                ultima.siguiente = null;
-                primera.anterior = null;
-            }
-            ultima.siguiente = nuevo;
-            nuevo.anterior = ultima;
-            ultima = nuevo;
-            if (circular) {
-                primera.anterior = ultima;
-                ultima.siguiente = primera;
-            }
+            ultima.siguiente = nueva;
+            nueva.anterior = ultima;
+            ultima = nueva;
         }
         cantidad++;
+        aplicarModoCircular();
+        return true;
     }
-
-    public boolean eliminarMusica(Musica musica) {
-        if (musica == null || estaVacia()) return false;
+    
+    public List<Musica> listaMusicas() {
+        List<Musica> musicas = new ArrayList<>();
+        if (estaVacia()) return musicas;
 
         NMusica aux = primera;
         for (int i = 0; i < cantidad; i++) {
-            if (mismaMusica(aux.musica, musica)) {
-                if (cantidad == 1) {
-                    primera = null;
-                    ultima = null;
-                    actual = null;
-                    cantidad = 0;
-                    return true;
-                }
-                NMusica anterior = aux.anterior;
-                NMusica siguiente = aux.siguiente;
-                if (aux == primera) {
-                    primera = siguiente;
-                }
-                if (aux == ultima) {
-                    ultima = anterior;
-                }
-                if (anterior != null) {
-                    anterior.siguiente = siguiente;
-                }
-                if (siguiente != null) {
-                    siguiente.anterior = anterior;
-                }
-                if (actual == aux) {
-                    actual = primera;
-                }
-                cantidad--;
-                if (circular && !estaVacia()) {
-                    primera.anterior = ultima;
-                    ultima.siguiente = primera;
-                } else if (!estaVacia()) {
-                    primera.anterior = null;
-                    ultima.siguiente = null;
-                }
-                return true;
-            }
+            musicas.add(aux.musica);
             aux = aux.siguiente;
         }
-        return false;
-    }
-
-    public List<Musica> toListAdelante() {
-        List<Musica> resultado = new ArrayList<>();
-        if (estaVacia()) return resultado;
-        
-        NMusica aux = primera;
-        for (int i = 0; i < cantidad; i++) {
-            resultado.add(aux.musica);
-            aux = aux.siguiente;
-        }
-        return resultado;
+        return musicas;
     }
 
     public Musica seleccionarMusica(Musica musica) {
-        if (musica == null) return null;
-       
-        NMusica aux = primera;
-        for (int i = 0; i < cantidad; i++) {
-            if (mismaMusica(aux.musica, musica)) {
-                actual = aux;
-                return actual.musica;
-            }
-            aux = aux.siguiente;
-        }
-        return null;
-    }
-
-    public Musica primerMusica() {
-        if (estaVacia()) return null;
-        actual = primera;
+        NMusica encontrada = buscarNMusica(musica);
+        if (encontrada == null) return null;
+        actual = encontrada;
         return actual.musica;
     }
 
-    public Musica ultimaMusica() {
-        if (estaVacia()) return null;
-        actual = ultima;
-        return actual.musica;
+    public boolean puedeAvanzar() {
+        return !estaVacia()
+                && actual != null
+                && cantidad > 1
+                && actual.siguiente != null;
     }
 
-    public Musica siguienteMusica() {
-        if (actual == null || actual.siguiente == null) return null;
+    public Musica avanzar() {
+        if (!puedeAvanzar()) return null;
         actual = actual.siguiente;
         return actual.musica;
     }
 
-    public Musica musicaAnterior() {
-        if (actual == null || actual.anterior == null) return null;
+    public boolean puedeRetroceder() {
+        return !estaVacia()
+                && actual != null
+                && cantidad > 1
+                && actual.anterior != null;
+    }
+
+    public Musica retroceder() {
+        if (!puedeRetroceder()) return null;
         actual = actual.anterior;
         return actual.musica;
     }
 
-    public boolean tieneMusicaSiguiente() {
-        return actual != null && actual.siguiente != null;
-    }
-
-    public boolean tieneMusicaAnterior() {
-        return actual != null && actual.anterior != null;
-    }
-
     public void setCircular(boolean estado) {
-        if (estaVacia()) return;
-
         circular = estado;
-        if (estado) {
+        aplicarModoCircular();
+    }
+
+    public boolean eliminarMusica(Musica musica) {
+        NMusica eliminar = buscarNMusica(musica);
+        if (eliminar == null) return false;
+        if (cantidad == 1) {
+            primera = null;
+            ultima = null;
+            actual = null;
+            cantidad = 0;
+            return true;
+        }
+
+        NMusica anterior = eliminar.anterior;
+        NMusica siguiente = eliminar.siguiente;
+        if (eliminar == primera) {
+            primera = siguiente;
+        }
+        if (eliminar == ultima) {
+            ultima = anterior;
+        }
+        if (anterior != null) {
+            anterior.siguiente = siguiente;
+        }
+        if (siguiente != null) {
+            siguiente.anterior = anterior;
+        }
+        if (actual == eliminar) {
+            if (siguiente != null && siguiente != eliminar) {
+                actual = siguiente;
+            } else {
+                actual = anterior;
+            }
+        }
+        cantidad--;
+        eliminar.siguiente = null;
+        eliminar.anterior = null;
+        aplicarModoCircular();
+        return true;
+    }
+
+    private void aplicarModoCircular() {
+        if (estaVacia()) return;
+        if (circular) {
             primera.anterior = ultima;
             ultima.siguiente = primera;
         } else {
@@ -195,14 +160,16 @@ public class ListaMusicas {
         }
     }
 
-    private boolean mismaMusica(Musica a, Musica b) {
-        if (a == null || b == null) return false;
-        if (a.getId() > 0 && b.getId() > 0) {
-            return a.getId() == b.getId();
+    private NMusica buscarNMusica(Musica musica) {
+        if (musica == null || estaVacia()) return null;
+        NMusica aux = primera;
+        int idBuscado = musica.getId();
+        for (int i = 0; i < cantidad; i++) {
+            if (aux.musica.getId() == idBuscado) {
+                return aux;
+            }
+            aux = aux.siguiente;
         }
-        if (a.getRuta() != null && b.getRuta() != null) {
-            return a.getRuta().trim().equalsIgnoreCase(b.getRuta().trim());
-        }
-        return false;
+        return null;
     }
 }

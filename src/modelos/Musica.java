@@ -1,11 +1,5 @@
 package modelos;
 
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.RenderingHints;
-import java.awt.image.BufferedImage;
-import javax.swing.ImageIcon;
-
 public class Musica {
     private int id;
     private String nombre;
@@ -16,10 +10,9 @@ public class Musica {
     private long tamanio;
     private String ruta;
     private int anio;
-    private ImageIcon portada;
     private int reproducciones;
 
-    public Musica(int id, String nombre, String artista, String album, String genero, int duracion, long tamanio, String ruta, int anio, ImageIcon portada) {
+    public Musica(int id, String nombre, String artista, String album, String genero, int duracion, long tamanio, String ruta, int anio) {
         this.id = id;
         this.nombre = nombre;
         this.artista = artista;
@@ -29,7 +22,6 @@ public class Musica {
         this.tamanio = tamanio;
         this.ruta = ruta;
         this.anio = anio;
-        this.portada = portada;
         this.reproducciones = 0;
     }
 
@@ -105,14 +97,6 @@ public class Musica {
         this.anio = anio;
     }
 
-    public ImageIcon getPortada() {
-        return portada;
-    }
-
-    public void setPortada(ImageIcon portada) {
-        this.portada = portada;
-    }
-
     public int getReproducciones() {
         return reproducciones;
     }
@@ -157,30 +141,5 @@ public class Musica {
             return "Desconocido";
         }
         return String.valueOf(anio);
-    }
-    
-    public ImageIcon getPortadaGrande(int ancho, int alto) {
-        Image img = this.portada.getImage();
-        BufferedImage buffered = new BufferedImage(ancho, alto, BufferedImage.TYPE_INT_ARGB);
-
-        Graphics2D g2d = buffered.createGraphics();
-        g2d.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-        g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2d.drawImage(img, 0, 0, ancho, alto, null);
-        g2d.dispose();
-
-        return new ImageIcon(buffered);
-    }
-    
-    public ImageIcon getPortadaPequenia() {
-        Image imagenOriginal = this.portada.getImage();
-
-        Image imagenEscalada = imagenOriginal.getScaledInstance(
-                45,
-                45,
-                Image.SCALE_SMOOTH
-        );
-        return new ImageIcon(imagenEscalada);
     }
 }

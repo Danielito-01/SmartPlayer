@@ -20,139 +20,259 @@ public class ArbolAVL {
 
     private NMusica raiz;
     private int cantidad;
-    
+
+    public ArbolAVL() {
+        raiz = null;
+        cantidad = 0;
+    }
+
     public int getCantidad() {
         return cantidad;
     }
 
-    public int getAltura() {
-        return altura(raiz);
+    private boolean estaVacio() {
+        return cantidad == 0;
     }
 
-    public boolean estaVacio() {
-        return raiz == null;
-    }
-    
-// INSERCIÓN
-    public boolean insertar(Musica musica) {
-        if (musica == null || musica.getId() <= 0) return false;
-        boolean[] insertado = {false};
-        raiz = insertarRec(raiz, musica, insertado);
-        if (insertado[0]) {
-            cantidad++;
+    public boolean agregarMusica(Musica musica) {
+        if (!esMusicaValida(musica)) {
+            return false;
         }
-        return insertado[0];
+
+        if (existeId(raiz, musica.getId())) {
+            return false;
+        }
+
+        raiz = agregarMusica(raiz, musica);
+        cantidad++;
+
+        return true;
     }
 
-    private NMusica insertarRec(NMusica nodo, Musica musica, boolean[] insertado) {
+    private NMusica agregarMusica(NMusica nodo, Musica musica) {
         if (nodo == null) {
-            insertado[0] = true;
             return new NMusica(musica);
         }
-        int comparacion = comparar(musica, nodo.musica);
+
+        int comparacion = compararMusicas(musica, nodo.musica);
+
         if (comparacion < 0) {
-            nodo.izquierdo = insertarRec(nodo.izquierdo, musica, insertado);
-        } else if (comparacion > 0) {
-            nodo.derecho = insertarRec(nodo.derecho, musica, insertado);
+            nodo.izquierdo = agregarMusica(nodo.izquierdo, musica);
         } else {
-            return nodo;
+            nodo.derecho = agregarMusica(nodo.derecho, musica);
         }
-        actualizarAltura(nodo);
+
         return balancear(nodo);
     }
-   
-    // BÚSQUEDA
-    public List<Musica> buscarPorNombre(String nombre) {
-        List<Musica> resultado = new ArrayList<>();
-        buscarPorNombreRec(raiz, limpiar(nombre), resultado);
-        return resultado;
-    }
 
-    private void buscarPorNombreRec(NMusica nodo, String nombre, List<Musica> resultado) {
-        if (nodo == null) return;
+    public List<Musica> buscarMusica(String nombre) {
+        List<Musica> resultados = new ArrayList<>();
 
-        int comparacion = nombre.compareTo(limpiar(nodo.musica.getNombre()));
-
-        if (comparacion < 0) {
-            buscarPorNombreRec(nodo.izquierdo, nombre, resultado);
-        } else if (comparacion > 0) {
-            buscarPorNombreRec(nodo.derecho, nombre, resultado);
-        } else {
-            resultado.add(nodo.musica);
-
-            buscarPorNombreRec(nodo.izquierdo, nombre, resultado);
-            buscarPorNombreRec(nodo.derecho, nombre, resultado);
-        }
-    }
-
-    public Musica buscarExacta(String nombre, int id) {
-        NMusica aux = raiz;
-
-        while (aux != null) {
-            int comparacion = comparar(nombre, id, aux.musica);
-
-            if (comparacion == 0) {
-                return aux.musica;
-            } else if (comparacion < 0) {
-                aux = aux.izquierdo;
-            } else {
-                aux = aux.derecho;
-            }
+        if (nombre == null || nombre.trim().isEmpty()) {
+            return resultados;
         }
 
-        return null;
+        buscarEnOrden(raiz, nombre.trim(), resultados);
+
+        return resultados;
     }
 
-    // ELIMINACIÓN
-    public boolean eliminar(Musica musica) {
-        if (musica == null) return false;
+    private void buscarEnOrden(NMusica nodo, String nombreBuscado, List<Musica> resultados) {
+        if (nodo == null) {
+            return;
+        }
 
-        return eliminarPorClave(musica.getNombre(), musica.getId());
+        buscarEnOrden(nodo.izquierdo, nombreBuscado, resultados);
+
+        if (coincideDesdeInicio(nodo.musica, nombreBuscado)) {
+            resultados.add(nodo.musica);
+        }
+
+        buscarEnOrden(nodo.derecho, nombreBuscado, resultados);
     }
 
-    public boolean eliminarPorClave(String nombre, int id) {
-        boolean[] eliminado = {false};
+    private boolean coincideDesdeInicio(Musica musica, String nombreBuscado) {
+        if (musica == null || nombreBuscado == null) {
+            return false;
+        }
 
-        raiz = eliminarRec(raiz, nombre, id, eliminado);
+        String nombreMusica = obtenerNombre(musica).toLowerCase();
+        String busqueda = nombreBuscado.trim().toLowerCase();
 
-        if (eliminado[0]) {
+        return nombreMusica.startsWith(busqueda);
+    }
+
+    public boolean eliminarMusica(Musica musica) {
+        if (musica == null || estaVacio()) {
+            return false;
+        }
+
+        boolean[] eliminada = {false};
+        raiz = eliminarPorId(raiz, musica.getId(), eliminada);
+
+        if (eliminada[0]) {
             cantidad--;
         }
 
-        return eliminado[0];
+        return eliminada[0];
     }
 
-    private NMusica eliminarRec(NMusica nodo, String nombre, int id, boolean[] eliminado) {
-        if (nodo == null) return null;
-
-        int comparacion = comparar(nombre, id, nodo.musica);
-
-        if (comparacion < 0) {
-            nodo.izquierdo = eliminarRec(nodo.izquierdo, nombre, id, eliminado);
-        } else if (comparacion > 0) {
-            nodo.derecho = eliminarRec(nodo.derecho, nombre, id, eliminado);
-        } else {
-            eliminado[0] = true;
-
-            if (nodo.izquierdo == null) {
-                return nodo.derecho;
-            }
-            if (nodo.derecho == null) {
-                return nodo.izquierdo;
-            }
-
-            NMusica sucesor = buscarMenor(nodo.derecho);
-            nodo.musica = sucesor.musica;
-            nodo.derecho = eliminarMenor(nodo.derecho);
+    public boolean actualizarMusica(Musica musica) {
+        if (!esMusicaValida(musica) || estaVacio()) {
+            return false;
         }
-        actualizarAltura(nodo);
+
+        boolean eliminada = eliminarMusica(musica);
+
+        if (!eliminada) {
+            return false;
+        }
+
+        return agregarMusica(musica);
+    }
+
+    public String generarDot() {
+        StringBuilder dot = new StringBuilder();
+
+        dot.append("digraph ArbolAVL {\n");
+        dot.append("    rankdir=TB;\n");
+        dot.append("    node [shape=record, style=filled, fillcolor=\"#EAF8EA\", color=\"#3FA34D\"];\n");
+        dot.append("    edge [color=\"#3FA34D\"];\n\n");
+
+        if (raiz == null) {
+            dot.append("    vacio [label=\"Árbol vacío\"];\n");
+        } else {
+            generarDot(raiz, dot);
+        }
+
+        dot.append("}\n");
+
+        return dot.toString();
+    }
+
+    private void generarDot(NMusica nodo, StringBuilder dot) {
+        if (nodo == null) {
+            return;
+        }
+
+        String idNodo = idNodo(nodo);
+        String etiqueta = etiquetaNodo(nodo);
+
+        dot.append("    ")
+                .append(idNodo)
+                .append(" [label=\"")
+                .append(etiqueta)
+                .append("\"];\n");
+
+        if (nodo.izquierdo != null) {
+            dot.append("    ")
+                    .append(idNodo)
+                    .append(" -> ")
+                    .append(idNodo(nodo.izquierdo))
+                    .append(" [label=\"Izq\"];\n");
+
+            generarDot(nodo.izquierdo, dot);
+        } else {
+            agregarNodoVacio(dot, idNodo, "Izq");
+        }
+
+        if (nodo.derecho != null) {
+            dot.append("    ")
+                    .append(idNodo)
+                    .append(" -> ")
+                    .append(idNodo(nodo.derecho))
+                    .append(" [label=\"Der\"];\n");
+
+            generarDot(nodo.derecho, dot);
+        } else {
+            agregarNodoVacio(dot, idNodo, "Der");
+        }
+    }
+
+    private void agregarNodoVacio(StringBuilder dot, String idPadre, String lado) {
+        String idVacio = "null_" + idPadre + "_" + lado.toLowerCase();
+
+        dot.append("    ")
+                .append(idVacio)
+                .append(" [label=\"\", shape=point, color=\"#B7E4BF\"];\n");
+
+        dot.append("    ")
+                .append(idPadre)
+                .append(" -> ")
+                .append(idVacio)
+                .append(" [label=\"")
+                .append(lado)
+                .append("\"];\n");
+    }
+
+    private String idNodo(NMusica nodo) {
+        return "nodo_" + nodo.musica.getId();
+    }
+
+    private String etiquetaNodo(NMusica nodo) {
+        return escaparDot(nodo.musica.getNombre())
+                + "\\nID: "
+                + nodo.musica.getId()
+                + "\\nAltura: "
+                + nodo.altura
+                + "\\nBalance: "
+                + obtenerBalance(nodo);
+    }
+
+    private String escaparDot(String texto) {
+        if (texto == null) {
+            return "";
+        }
+
+        return texto
+                .replace("\\", "\\\\")
+                .replace("\"", "\\\"");
+    }
+
+    private NMusica eliminarPorId(NMusica nodo, int id, boolean[] eliminada) {
+        if (nodo == null) {
+            return null;
+        }
+
+        if (nodo.musica.getId() == id) {
+            eliminada[0] = true;
+            return eliminarNodo(nodo);
+        }
+
+        nodo.izquierdo = eliminarPorId(nodo.izquierdo, id, eliminada);
+
+        if (!eliminada[0]) {
+            nodo.derecho = eliminarPorId(nodo.derecho, id, eliminada);
+        }
+
         return balancear(nodo);
     }
 
-    private NMusica buscarMenor(NMusica nodo) {
+    private NMusica eliminarNodo(NMusica nodo) {
+        if (nodo.izquierdo == null && nodo.derecho == null) {
+            return null;
+        }
+
+        if (nodo.izquierdo == null) {
+            return nodo.derecho;
+        }
+
+        if (nodo.derecho == null) {
+            return nodo.izquierdo;
+        }
+
+        NMusica reemplazo = obtenerMenor(nodo.derecho);
+        nodo.musica = reemplazo.musica;
+        nodo.derecho = eliminarMenor(nodo.derecho);
+
+        return balancear(nodo);
+    }
+
+    private NMusica obtenerMenor(NMusica nodo) {
         while (nodo.izquierdo != null) {
             nodo = nodo.izquierdo;
         }
+
         return nodo;
     }
 
@@ -162,101 +282,113 @@ public class ArbolAVL {
         }
 
         nodo.izquierdo = eliminarMenor(nodo.izquierdo);
-        actualizarAltura(nodo);
+
         return balancear(nodo);
     }
 
-    // BALANCEO AUTOMÁTICO
     private NMusica balancear(NMusica nodo) {
-        int balance = factorBalance(nodo);
-
-        // RD
-        if (balance > 1 && factorBalance(nodo.izquierdo) >= 0) {
-            return rotacionDerecha(nodo);
+        if (nodo == null) {
+            return null;
         }
 
-        // RID
-        if (balance > 1 && factorBalance(nodo.izquierdo) < 0) {
-            return rotacionIzquierdaDerecha(nodo);
+        actualizarAltura(nodo);
+
+        int balance = obtenerBalance(nodo);
+
+        if (balance > 1) {
+            if (obtenerBalance(nodo.izquierdo) < 0) {
+                nodo.izquierdo = rotarIzquierda(nodo.izquierdo);
+            }
+
+            return rotarDerecha(nodo);
         }
 
-        // RI
-        if (balance < -1 && factorBalance(nodo.derecho) <= 0) {
-            return rotacionIzquierda(nodo);
+        if (balance < -1) {
+            if (obtenerBalance(nodo.derecho) > 0) {
+                nodo.derecho = rotarDerecha(nodo.derecho);
+            }
+
+            return rotarIzquierda(nodo);
         }
 
-        // RDI
-        if (balance < -1 && factorBalance(nodo.derecho) > 0) {
-            return rotacionDerechaIzquierda(nodo);
-        }
         return nodo;
     }
 
-    // RI: Rotación izquierda
-    private NMusica rotacionIzquierda(NMusica x) {
-        NMusica y = x.derecho;
-        NMusica temp = y.izquierdo;
+    private NMusica rotarDerecha(NMusica nodo) {
+        NMusica nuevaRaiz = nodo.izquierdo;
+        NMusica temporal = nuevaRaiz.derecho;
 
-        y.izquierdo = x;
-        x.derecho = temp;
+        nuevaRaiz.derecho = nodo;
+        nodo.izquierdo = temporal;
 
-        actualizarAltura(x);
-        actualizarAltura(y);
+        actualizarAltura(nodo);
+        actualizarAltura(nuevaRaiz);
 
-        return y;
+        return nuevaRaiz;
     }
 
-    // RD: Rotación derecha
-    private NMusica rotacionDerecha(NMusica y) {
-        NMusica x = y.izquierdo;
-        NMusica temp = x.derecho;
+    private NMusica rotarIzquierda(NMusica nodo) {
+        NMusica nuevaRaiz = nodo.derecho;
+        NMusica temporal = nuevaRaiz.izquierdo;
 
-        x.derecho = y;
-        y.izquierdo = temp;
+        nuevaRaiz.izquierdo = nodo;
+        nodo.derecho = temporal;
 
-        actualizarAltura(y);
-        actualizarAltura(x);
+        actualizarAltura(nodo);
+        actualizarAltura(nuevaRaiz);
 
-        return x;
+        return nuevaRaiz;
     }
 
-    // RID: Rotación izquierda-derecha
-    private NMusica rotacionIzquierdaDerecha(NMusica nodo) {
-        nodo.izquierdo = rotacionIzquierda(nodo.izquierdo);
-        return rotacionDerecha(nodo);
-    }
-
-    // RDI: Rotación derecha-izquierda
-    private NMusica rotacionDerechaIzquierda(NMusica nodo) {
-        nodo.derecho = rotacionDerecha(nodo.derecho);
-        return rotacionIzquierda(nodo);
+    private void actualizarAltura(NMusica nodo) {
+        nodo.altura = 1 + Math.max(
+                altura(nodo.izquierdo),
+                altura(nodo.derecho)
+        );
     }
 
     private int altura(NMusica nodo) {
         return nodo == null ? 0 : nodo.altura;
     }
 
-    private void actualizarAltura(NMusica nodo) {
-        nodo.altura = 1 + Math.max(altura(nodo.izquierdo), altura(nodo.derecho));
+    private int obtenerBalance(NMusica nodo) {
+        if (nodo == null) {
+            return 0;
+        }
+
+        return altura(nodo.izquierdo) - altura(nodo.derecho);
     }
 
-    private int factorBalance(NMusica nodo) {
-        return nodo == null ? 0 : altura(nodo.izquierdo) - altura(nodo.derecho);
+    private boolean existeId(NMusica nodo, int id) {
+        if (nodo == null) {
+            return false;
+        }
+
+        if (nodo.musica.getId() == id) {
+            return true;
+        }
+
+        return existeId(nodo.izquierdo, id)
+                || existeId(nodo.derecho, id);
     }
 
-    private int comparar(Musica a, Musica b) {
-        return comparar(a.getNombre(), a.getId(), b);
-    }
+    private int compararMusicas(Musica a, Musica b) {
+        int comparacionNombre = obtenerNombre(a).compareToIgnoreCase(obtenerNombre(b));
 
-    private int comparar(String nombre, int id, Musica b) {
-        int comparacionNombre = limpiar(nombre).compareTo(limpiar(b.getNombre()));
         if (comparacionNombre != 0) {
             return comparacionNombre;
         }
-        return Integer.compare(id, b.getId());
+
+        return Integer.compare(a.getId(), b.getId());
     }
 
-    private String limpiar(String texto) {
-        return texto == null ? "" : texto.trim().toLowerCase();
+    private boolean esMusicaValida(Musica musica) {
+        return musica != null
+                && musica.getNombre() != null
+                && !musica.getNombre().trim().isEmpty();
+    }
+
+    private String obtenerNombre(Musica musica) {
+        return musica.getNombre().trim();
     }
 }

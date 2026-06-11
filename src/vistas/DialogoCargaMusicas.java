@@ -1,6 +1,6 @@
 package vistas;
 
-import servicios.GestorCargaMusicas;
+import servicios.GestorCargaDeMusicas;
 import modelos.Musica;
 import java.io.File;
 import java.util.List;
@@ -8,9 +8,8 @@ import estructuras.BibliotecaGeneral;
 import java.awt.Color;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
-import modelos.ReporteCargaMusicas;
-import utilidades.Estilos;
-import utilidades.TablaHelper;
+import utilidades.Presentacion;
+import utilidades.Tabla;
 
 public class DialogoCargaMusicas extends javax.swing.JDialog {
     private final BibliotecaGeneral biblioteca = BibliotecaGeneral.getInstance();
@@ -20,7 +19,7 @@ public class DialogoCargaMusicas extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         configurarTabla();
-        Estilos.aplicar(this);
+        Presentacion.aplicarCargaMusicas(this);
     }
 
     @SuppressWarnings("unchecked")
@@ -44,17 +43,9 @@ public class DialogoCargaMusicas extends javax.swing.JDialog {
 
             },
             new String [] {
-                "No.", "Nombre", "Artista", "Album", "Genero", "Duracion", "Tamaño", "Ruta", "Año", "Portada"
+                "No.", "Nombre", "Artista", "Album", "Genero", "Duracion", "Tamaño", "Ruta", "Año"
             }
         ){
-            @Override
-            public Class<?> getColumnClass(int columnIndex) {
-                if(columnIndex == 9){
-                    return javax.swing.ImageIcon.class;
-                }
-                return Object.class;
-            }
-
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -111,83 +102,33 @@ public class DialogoCargaMusicas extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void configurarTabla() {
-        TablaHelper.establecerAnchoMaximo(tblMusicasCargadas, 0, 45);
-        TablaHelper.establecerAnchoMaximo(tblMusicasCargadas, 5, 60);
-        TablaHelper.establecerAnchoMaximo(tblMusicasCargadas, 6, 80);
-        TablaHelper.establecerAnchoMaximo(tblMusicasCargadas, 8, 80);
-        TablaHelper.establecerAnchoMaximo(tblMusicasCargadas, 9, 60);
+        Tabla.establecerAnchoMaximo(tblMusicasCargadas, 0, 55);
+        Tabla.establecerAnchoMaximo(tblMusicasCargadas, 5, 60);
+        Tabla.establecerAnchoMaximo(tblMusicasCargadas, 6, 80);
+        Tabla.establecerAnchoMaximo(tblMusicasCargadas, 8, 80);
     }
     
     private void btnCargarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCargarActionPerformed
-        List<File> mp3s = GestorCargaMusicas.seleccionarArchivos(this);
-        musicasCargadas = GestorCargaMusicas.extraerDatosDeMusicas(mp3s);
-        TablaHelper.cargarMusicasConDetalles(tblMusicasCargadas, musicasCargadas);
+        List<File> mp3s = GestorCargaDeMusicas.seleccionarArchivos(this);
+        musicasCargadas = GestorCargaDeMusicas.extraerDatosDeMusicas(mp3s);
+        Tabla.cargarMusicasConDetalles(tblMusicasCargadas, musicasCargadas);
     }//GEN-LAST:event_btnCargarActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        if (musicasCargadas.isEmpty()) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "No hay musicas cargadas para guardar",
-                    "Biblioteca",
-                    JOptionPane.WARNING_MESSAGE
-            );
-            return;
+        if (musicasCargadas == null) {
+            musicasCargadas = new ArrayList<>();
         }
 
-        ReporteCargaMusicas reporte = biblioteca.agregarMusicasConReporte(musicasCargadas);
-
-        String mensaje = String.format(
-                """
-                Resumen de carga
-
-                Recibidas: %d
-                Omitidas inválidas: %d
-                Omitidas duplicadas: %d
-
-                Ingresadas en esta carga:
-                Biblioteca/lista: %d
-                ABB: %d
-                AVL: %d
-
-                Tamaño total actual:
-                Biblioteca: %d
-                ABB: %d
-                AVL: %d
-
-                Tiempos de inserción:
-                Biblioteca: %.6f ms
-                ABB: %.6f ms
-                AVL: %.6f ms
-
-                Tiempo total: %.6f ms
-                """,
-                reporte.getRecibidas(),
-                reporte.getOmitidasInvalidas(),
-                reporte.getOmitidasDuplicadas(),
-
-                reporte.getIngresadasBiblioteca(),
-                reporte.getIngresadasABB(),
-                reporte.getIngresadasAVL(),
-
-                reporte.getTotalBiblioteca(),
-                reporte.getTotalABB(),
-                reporte.getTotalAVL(),
-
-                reporte.getTiempoBibliotecaMs(),
-                reporte.getTiempoABBMs(),
-                reporte.getTiempoAVLMs(),
-
-                reporte.getTiempoTotalMs()
-        );
-
+        String reporte = biblioteca.insertarMusicas(musicasCargadas);
         JOptionPane.showMessageDialog(
                 this,
-                mensaje,
+                reporte,
                 "Biblioteca",
                 JOptionPane.INFORMATION_MESSAGE
         );
 
+        musicasCargadas.clear();
+        Tabla.cargarMusicasConDetalles(tblMusicasCargadas, musicasCargadas);
         dispose();
     }//GEN-LAST:event_btnGuardarActionPerformed
 

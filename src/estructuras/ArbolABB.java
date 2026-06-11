@@ -19,156 +19,257 @@ public class ArbolABB {
     private NMusica raiz;
     private int cantidad;
 
+    public ArbolABB() {
+        raiz = null;
+        cantidad = 0;
+    }
+
     public int getCantidad() {
         return cantidad;
     }
 
-    public boolean estaVacio() {
-        return raiz == null;
+    private boolean estaVacio() {
+        return cantidad == 0;
     }
 
-    // INSERCIÓN
-    public boolean insertar(Musica musica) {
-        if (musica == null || musica.getId() <= 0) return false;
-        boolean[] insertado = {false};
-        raiz = insertarRec(raiz, musica, insertado);
-        if (insertado[0]) {
+    public boolean agregarMusica(Musica musica) {
+        if (!esMusicaValida(musica)) {
+            return false;
+        }
+
+        NMusica nueva = new NMusica(musica);
+
+        if (estaVacio()) {
+            raiz = nueva;
             cantidad++;
+            return true;
         }
-        return insertado[0];
-    }
 
-    private NMusica insertarRec(NMusica nodo, Musica musica, boolean[] insertado) {
-        if (nodo == null) {
-            insertado[0] = true;
-            return new NMusica(musica);
-        }
-        int comparacion = comparar(musica, nodo.musica);
-        if (comparacion < 0) {
-            nodo.izquierdo = insertarRec(nodo.izquierdo, musica, insertado);
-        } else if (comparacion > 0) {
-            nodo.derecho = insertarRec(nodo.derecho, musica, insertado);
-        }
-        return nodo;
-    }
-
-    // BÚSQUEDA POR NOMBRE
-    public List<Musica> buscarPorNombre(String nombre) {
-        List<Musica> resultado = new ArrayList<>();
-        buscarPorNombreRec(raiz, limpiar(nombre), resultado);
-        return resultado;
-    }
-
-    private void buscarPorNombreRec(NMusica nodo, String nombre, List<Musica> resultado) {
-        if (nodo == null) return;
-
-        int comparacion = nombre.compareTo(limpiar(nodo.musica.getNombre()));
-
-        if (comparacion < 0) {
-            buscarPorNombreRec(nodo.izquierdo, nombre, resultado);
-        } else if (comparacion > 0) {
-            buscarPorNombreRec(nodo.derecho, nombre, resultado);
-        } else {
-            resultado.add(nodo.musica);
-
-            buscarPorNombreRec(nodo.izquierdo, nombre, resultado);
-            buscarPorNombreRec(nodo.derecho, nombre, resultado);
-        }
-    }
-
-    public Musica buscarExacta(String nombre, int id) {
         NMusica aux = raiz;
+        NMusica padre = null;
 
         while (aux != null) {
-            int comparacion = comparar(nombre, id, aux.musica);
+            padre = aux;
+
+            int comparacion = compararMusicas(musica, aux.musica);
 
             if (comparacion == 0) {
-                return aux.musica;
-            } else if (comparacion < 0) {
+                return false;
+            }
+
+            if (comparacion < 0) {
                 aux = aux.izquierdo;
             } else {
                 aux = aux.derecho;
             }
         }
-        return null;
-    }
 
-    // MODIFICACIÓN
-    public boolean modificar(String nombreActual, int id, Musica datosNuevos) {
-        Musica musica = buscarExacta(nombreActual, id);
-
-        if (musica == null || datosNuevos == null) {
-            return false;
+        if (compararMusicas(musica, padre.musica) < 0) {
+            padre.izquierdo = nueva;
+        } else {
+            padre.derecho = nueva;
         }
 
-        eliminarPorClave(nombreActual, id);
-
-        musica.setNombre(datosNuevos.getNombre());
-        musica.setArtista(datosNuevos.getArtista());
-        musica.setAlbum(datosNuevos.getAlbum());
-        musica.setGenero(datosNuevos.getGenero());
-        musica.setDuracion(datosNuevos.getDuracion());
-        musica.setTamanio(datosNuevos.getTamanio());
-        musica.setRuta(datosNuevos.getRuta());
-        musica.setAnio(datosNuevos.getAnio());
-        musica.setPortada(datosNuevos.getPortada());
-        musica.setReproducciones(datosNuevos.getReproducciones());
-
-        musica.setId(id);
-
-        insertar(musica);
-
+        cantidad++;
         return true;
     }
 
-    // ELIMINACIÓN
-    public boolean eliminar(Musica musica) {
-        if (musica == null) return false;
+    public List<Musica> buscarMusica(String nombre) {
+        List<Musica> resultados = new ArrayList<>();
 
-        return eliminarPorClave(musica.getNombre(), musica.getId());
-    }
-
-    public boolean eliminarPorClave(String nombre, int id) {
-        boolean[] eliminado = {false};
-
-        raiz = eliminarRec(raiz, nombre, id, eliminado);
-
-        if (eliminado[0]) {
-            cantidad--;
+        if (nombre == null || nombre.trim().isEmpty()) {
+            return resultados;
         }
 
-        return eliminado[0];
+        buscarEnOrden(raiz, nombre.trim(), resultados);
+        return resultados;
     }
 
-    private NMusica eliminarRec(NMusica nodo, String nombre, int id, boolean[] eliminado) {
-        if (nodo == null) return null;
+    private void buscarEnOrden(NMusica nodo, String nombreBuscado, List<Musica> resultados) {
+        if (nodo == null) {
+            return;
+        }
 
-        int comparacion = comparar(nombre, id, nodo.musica);
+        buscarEnOrden(nodo.izquierdo, nombreBuscado, resultados);
 
-        if (comparacion < 0) {
-            nodo.izquierdo = eliminarRec(nodo.izquierdo, nombre, id, eliminado);
-        } else if (comparacion > 0) {
-            nodo.derecho = eliminarRec(nodo.derecho, nombre, id, eliminado);
+        if (coincideDesdeInicio(nodo.musica, nombreBuscado)) {
+            resultados.add(nodo.musica);
+        }
+
+        buscarEnOrden(nodo.derecho, nombreBuscado, resultados);
+    }
+
+    private boolean coincideDesdeInicio(Musica musica, String nombreBuscado) {
+        if (musica == null || nombreBuscado == null) {
+            return false;
+        }
+
+        String nombreMusica = obtenerNombre(musica).toLowerCase();
+        String busqueda = nombreBuscado.trim().toLowerCase();
+
+        return nombreMusica.startsWith(busqueda);
+    }
+
+    public boolean eliminarMusica(Musica musica) {
+        if (musica == null || estaVacio()) {
+            return false;
+        }
+
+        boolean[] eliminada = {false};
+        raiz = eliminarPorId(raiz, musica.getId(), eliminada);
+
+        return eliminada[0];
+    }
+
+    public boolean actualizarMusica(Musica musica) {
+        if (!esMusicaValida(musica) || estaVacio()) {
+            return false;
+        }
+
+        boolean eliminada = eliminarMusica(musica);
+
+        if (!eliminada) {
+            return false;
+        }
+
+        return agregarMusica(musica);
+    }
+
+    public String generarDot() {
+        StringBuilder dot = new StringBuilder();
+
+        dot.append("digraph ArbolABB {\n");
+        dot.append("    rankdir=TB;\n");
+        dot.append("    node [shape=record, style=filled, fillcolor=\"#EAF2FF\", color=\"#4A90E2\"];\n");
+        dot.append("    edge [color=\"#4A90E2\"];\n\n");
+
+        if (raiz == null) {
+            dot.append("    vacio [label=\"Árbol vacío\"];\n");
         } else {
-            eliminado[0] = true;
+            generarDot(raiz, dot);
+        }
 
-            if (nodo.izquierdo == null) {
-                return nodo.derecho;
-            }
+        dot.append("}\n");
 
-            if (nodo.derecho == null) {
-                return nodo.izquierdo;
-            }
+        return dot.toString();
+    }
 
-            NMusica sucesor = buscarMenor(nodo.derecho);
-            nodo.musica = sucesor.musica;
-            nodo.derecho = eliminarMenor(nodo.derecho);
+    private void generarDot(NMusica nodo, StringBuilder dot) {
+        if (nodo == null) {
+            return;
+        }
+
+        String idNodo = idNodo(nodo);
+        String etiqueta = etiquetaNodo(nodo.musica);
+
+        dot.append("    ")
+                .append(idNodo)
+                .append(" [label=\"")
+                .append(etiqueta)
+                .append("\"];\n");
+
+        if (nodo.izquierdo != null) {
+            dot.append("    ")
+                    .append(idNodo)
+                    .append(" -> ")
+                    .append(idNodo(nodo.izquierdo))
+                    .append(" [label=\"Izq\"];\n");
+
+            generarDot(nodo.izquierdo, dot);
+        } else {
+            agregarNodoVacio(dot, idNodo, "Izq");
+        }
+
+        if (nodo.derecho != null) {
+            dot.append("    ")
+                    .append(idNodo)
+                    .append(" -> ")
+                    .append(idNodo(nodo.derecho))
+                    .append(" [label=\"Der\"];\n");
+
+            generarDot(nodo.derecho, dot);
+        } else {
+            agregarNodoVacio(dot, idNodo, "Der");
+        }
+    }
+
+    private void agregarNodoVacio(StringBuilder dot, String idPadre, String lado) {
+        String idVacio = "null_" + idPadre + "_" + lado.toLowerCase();
+
+        dot.append("    ")
+                .append(idVacio)
+                .append(" [label=\"\", shape=point, color=\"#BFD7F5\"];\n");
+
+        dot.append("    ")
+                .append(idPadre)
+                .append(" -> ")
+                .append(idVacio)
+                .append(" [label=\"")
+                .append(lado)
+                .append("\"];\n");
+    }
+
+    private String idNodo(NMusica nodo) {
+        return "nodo_" + nodo.musica.getId();
+    }
+
+    private String etiquetaNodo(Musica musica) {
+        return escaparDot(musica.getNombre())
+                + "\\nID: "
+                + musica.getId();
+    }
+
+    private String escaparDot(String texto) {
+        if (texto == null) {
+            return "";
+        }
+
+        return texto
+                .replace("\\", "\\\\")
+                .replace("\"", "\\\"");
+    }
+
+    private NMusica eliminarPorId(NMusica nodo, int id, boolean[] eliminada) {
+        if (nodo == null) {
+            return null;
+        }
+
+        if (nodo.musica.getId() == id) {
+            eliminada[0] = true;
+            cantidad--;
+            return eliminarNodo(nodo);
+        }
+
+        nodo.izquierdo = eliminarPorId(nodo.izquierdo, id, eliminada);
+
+        if (!eliminada[0]) {
+            nodo.derecho = eliminarPorId(nodo.derecho, id, eliminada);
         }
 
         return nodo;
     }
 
-    private NMusica buscarMenor(NMusica nodo) {
+    private NMusica eliminarNodo(NMusica nodo) {
+        if (nodo.izquierdo == null && nodo.derecho == null) {
+            return null;
+        }
+
+        if (nodo.izquierdo == null) {
+            return nodo.derecho;
+        }
+
+        if (nodo.derecho == null) {
+            return nodo.izquierdo;
+        }
+
+        NMusica reemplazo = obtenerMenor(nodo.derecho);
+        nodo.musica = reemplazo.musica;
+        nodo.derecho = eliminarMenor(nodo.derecho);
+
+        return nodo;
+    }
+
+    private NMusica obtenerMenor(NMusica nodo) {
         while (nodo.izquierdo != null) {
             nodo = nodo.izquierdo;
         }
@@ -182,67 +283,27 @@ public class ArbolABB {
         }
 
         nodo.izquierdo = eliminarMenor(nodo.izquierdo);
+
         return nodo;
     }
 
-    // RECORRIDOS
-    public List<Musica> inOrden() {
-        List<Musica> lista = new ArrayList<>();
-        inOrdenRec(raiz, lista);
-        return lista;
-    }
-
-    private void inOrdenRec(NMusica nodo, List<Musica> lista) {
-        if (nodo == null) return;
-
-        inOrdenRec(nodo.izquierdo, lista);
-        lista.add(nodo.musica);
-        inOrdenRec(nodo.derecho, lista);
-    }
-
-    public List<Musica> preOrden() {
-        List<Musica> lista = new ArrayList<>();
-        preOrdenRec(raiz, lista);
-        return lista;
-    }
-
-    private void preOrdenRec(NMusica nodo, List<Musica> lista) {
-        if (nodo == null) return;
-
-        lista.add(nodo.musica);
-        preOrdenRec(nodo.izquierdo, lista);
-        preOrdenRec(nodo.derecho, lista);
-    }
-
-    public List<Musica> postOrden() {
-        List<Musica> lista = new ArrayList<>();
-        postOrdenRec(raiz, lista);
-        return lista;
-    }
-
-    private void postOrdenRec(NMusica nodo, List<Musica> lista) {
-        if (nodo == null) return;
-
-        postOrdenRec(nodo.izquierdo, lista);
-        postOrdenRec(nodo.derecho, lista);
-        lista.add(nodo.musica);
-    }
-
-    private int comparar(Musica a, Musica b) {
-        return comparar(a.getNombre(), a.getId(), b);
-    }
-
-    private int comparar(String nombre, int id, Musica b) {
-        int comparacionNombre = limpiar(nombre).compareTo(limpiar(b.getNombre()));
+    private int compararMusicas(Musica a, Musica b) {
+        int comparacionNombre = obtenerNombre(a).compareToIgnoreCase(obtenerNombre(b));
 
         if (comparacionNombre != 0) {
             return comparacionNombre;
         }
 
-        return Integer.compare(id, b.getId());
+        return Integer.compare(a.getId(), b.getId());
     }
 
-    private String limpiar(String texto) {
-        return texto == null ? "" : texto.trim().toLowerCase();
+    private boolean esMusicaValida(Musica musica) {
+        return musica != null
+                && musica.getNombre() != null
+                && !musica.getNombre().trim().isEmpty();
+    }
+
+    private String obtenerNombre(Musica musica) {
+        return musica.getNombre().trim();
     }
 }

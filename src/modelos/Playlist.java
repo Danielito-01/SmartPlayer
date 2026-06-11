@@ -4,13 +4,15 @@ import estructuras.ListaMusicas;
 import java.util.List;
 
 public class Playlist {
+
     private final int id;
     private String nombre;
-    private final ListaMusicas playlist = new ListaMusicas();
+    private final ListaMusicas playlist;
 
     public Playlist(int id, String nombre) {
         this.id = id;
-        setNombre(nombre);
+        this.nombre = nombre;
+        this.playlist = new ListaMusicas();
     }
 
     public int getId() {
@@ -21,6 +23,12 @@ public class Playlist {
         return nombre;
     }
 
+    public void setNombre(String nombre) {
+        if (nombre != null && !nombre.trim().isEmpty()) {
+            this.nombre = nombre.trim();
+        }
+    }
+
     public ListaMusicas getPlaylist() {
         return playlist;
     }
@@ -29,35 +37,48 @@ public class Playlist {
         return playlist.getCantidad();
     }
 
-    public final void setNombre(String nombre) {
-        this.nombre = (nombre == null || nombre.isBlank())
-                ? "Sin nombre"
-                : nombre.trim();
+    public boolean estaVacia() {
+        return playlist.estaVacia();
     }
 
-    public boolean agregarMusica(Musica musica) {
+    public List<Musica> getMusicas() {
+        return playlist.listaMusicas();
+    }
+
+    public boolean contieneMusica(Musica musica) {
         if (musica == null) {
             return false;
         }
+        return contieneId(musica.getId());
+    }
 
-        if (tieneMusica(musica)) {
+    private boolean contieneId(int idMusica) {
+        if (idMusica <= 0) {
             return false;
         }
+        for (Musica musica : playlist.listaMusicas()) {
+            if (musica.getId() == idMusica) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-        playlist.agregarMusica(musica);
-        return true;
+    public boolean agregarMusica(Musica musica) {
+        if (musica == null || musica.getId() <= 0) {
+            return false;
+        }
+        if (contieneMusica(musica)) {
+            return false;
+        }
+        return playlist.agregarMusica(musica);
     }
 
     public boolean eliminarMusica(Musica musica) {
+        if (musica == null) {
+            return false;
+        }
         return playlist.eliminarMusica(musica);
-    }
-
-    public boolean tieneMusica(Musica musica) {
-        return playlist.tieneMusica(musica);
-    }
-
-    public List<Musica> toListAdelante() {
-        return playlist.toListAdelante();
     }
 
     @Override

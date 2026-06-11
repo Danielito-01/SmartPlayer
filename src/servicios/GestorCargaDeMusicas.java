@@ -1,16 +1,12 @@
 package servicios;
 
 import modelos.Musica;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileSystemView;
@@ -22,9 +18,8 @@ import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
 import org.jaudiotagger.tag.TagException;
-import org.jaudiotagger.tag.images.Artwork;
 
-public class GestorCargaMusicas {
+public class GestorCargaDeMusicas {
 
     public static List<File> seleccionarArchivos(java.awt.Component parent) {
         FileSystemView vistaSistema = FileSystemView.getFileSystemView();
@@ -119,7 +114,6 @@ public class GestorCargaMusicas {
                 String album = "Desconocido";
                 String genero = "Desconocido";
                 int anio = 0;
-                ImageIcon portada = null;
                 int duracion = 0;
                 long tamanio = archivo.length();
 
@@ -134,21 +128,10 @@ public class GestorCargaMusicas {
                     album = valorSeguro(audio.getFirst(FieldKey.ALBUM), "Desconocido");
                     genero = valorSeguro(audio.getFirst(FieldKey.GENRE), "Desconocido");
 
-                    String anioS = audio.getFirst(FieldKey.YEAR);// Obtiene año
-
-                    if (anioS != null && !anioS.isBlank()) {
-                        try {
-                            anioS = anioS.replaceAll("[^0-9]", "");// Limpia caracteres raros
-                            if (!anioS.isBlank()) {// Convierte a entero
-                                anio = Integer.parseInt(anioS);
-                            }
-                        }catch (NumberFormatException e) {
-                            anio = 0;
-                        }
-                    }
+                    String anioS = audio.getFirst(FieldKey.YEAR);
+                    anio = extraerAnio(anioS);
                 }
-                portada = extraerPortada(audio);// Obtiene portada
-                Musica musica = new Musica(0, nombre, artista, album, genero, duracion, tamanio, rutaCanonica, anio, portada); // Crea objeto audio
+                Musica musica = new Musica(0, nombre, artista, album, genero, duracion, tamanio, rutaCanonica, anio); // Crea objeto audio
                 musicas.add(musica);// Agrega a lista
             }catch (CannotReadException |
                    IOException |
@@ -158,37 +141,6 @@ public class GestorCargaMusicas {
             }
         }
         return musicas;
-    }
-
-    private static ImageIcon extraerPortada(Tag tag) {
-        if (tag == null) return obtenerPortadaPorDefecto();
-
-        try {
-            Artwork imageBytes = tag.getFirstArtwork();
-            if (imageBytes == null || imageBytes.getBinaryData() == null) {
-                return obtenerPortadaPorDefecto();
-            }
-            BufferedImage imagen = ImageIO.read(
-                    new ByteArrayInputStream(imageBytes.getBinaryData())
-            );
-            if (imagen == null) {
-                return obtenerPortadaPorDefecto();
-            }
-            return new ImageIcon(imagen);
-        }catch (Exception e) {
-            return obtenerPortadaPorDefecto();
-        }
-    }
-    
-    private static ImageIcon obtenerPortadaPorDefecto() {
-        try {
-            BufferedImage imagen = ImageIO.read(GestorCargaMusicas.class.getResource("/recursos/SmartPlayerLogo.png"));
-            if (imagen != null) {
-                return new ImageIcon(imagen);
-            }
-        }catch (Exception e) {
-        }
-        return new ImageIcon();
     }
 
     private static String valorSeguro(String valor, String defecto) {
@@ -204,5 +156,21 @@ public class GestorCargaMusicas {
             return nombreArchivo.substring(0, punto);
         }
         return nombreArchivo;
+    }
+    
+    private static int extraerAnio(String textoAnio) {
+        if (textoAnio == null || textoAnio.isBlank()) {
+            return 0;
+        }
+
+        String soloNumeros = textoAnio.replaceAll("[^0-9]", "");
+        if (soloNumeros.length() < 4) {
+            return 0;
+        }
+        try {
+            return Integer.parseInt(soloNumeros.substring(0, 4));
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 }

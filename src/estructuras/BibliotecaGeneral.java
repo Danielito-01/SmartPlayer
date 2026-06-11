@@ -1,29 +1,31 @@
 package estructuras;
 
-import modelos.Playlist;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import modelos.Musica;
-import modelos.ReporteCargaMusicas;
+import modelos.Playlist;
+import servicios.GestorHistorial;
 
 public final class BibliotecaGeneral {
+
     private static final BibliotecaGeneral INSTANCE = new BibliotecaGeneral();
-    
+
+    private final ListaMusicas biblioteca = new ListaMusicas();
     private final ArbolABB abb = new ArbolABB();
     private final ArbolAVL avl = new ArbolAVL();
-    private final TablaHashMusicas hash = new TablaHashMusicas();
+    private final TablaHash hash = new TablaHash();
+    private final GestorHistorial historial = new GestorHistorial();
 
-    private int idMusica = 1;
-    private final ListaMusicas biblioteca = new ListaMusicas();
     private final Set<String> rutas = new HashSet<>();
+    private int idMusica = 1;
 
-    private int idPlaylist = 1;
     private final List<Playlist> playlists = new ArrayList<>();
-    private final Set<String> nombresPlaylists = new HashSet<>();
+    private int idPlaylist = 1;
 
-    private BibliotecaGeneral() {}
+    private BibliotecaGeneral() {
+    }
 
     public static BibliotecaGeneral getInstance() {
         return INSTANCE;
@@ -41,177 +43,302 @@ public final class BibliotecaGeneral {
         return avl;
     }
 
-    public TablaHashMusicas getHash() {
+    public TablaHash getHash() {
         return hash;
     }
-    
-    public List<Playlist> getPlaylists() {
-        return playlists;
+
+    public GestorHistorial getHistorial() {
+        return historial;
     }
 
-    // AGREGA EN LISTA + ABB + AVL + HASH
-    public int agregarMusicas(List<Musica> nuevas) {
-        return agregarMusicasConReporte(nuevas).getIngresadasBiblioteca();
-    }
+    public String insertarMusicas(List<Musica> musicas) {
+        int recibidas = 0;
+        int insertadas = 0;
+        int duplicadas = 0;
+        int invalidas = 0;
+        int fallidas = 0;
 
-    public ReporteCargaMusicas agregarMusicasConReporte(List<Musica> nuevas) {
-        ReporteCargaMusicas reporte = new ReporteCargaMusicas();
-
+        long tiempoABB = 0;
+        long tiempoAVL = 0;
         long inicioTotal = System.nanoTime();
-        if (nuevas == null) {
-            reporte.setTotalBiblioteca(biblioteca.getCantidad());
-            reporte.setTotalABB(abb.getCantidad());
-            reporte.setTotalAVL(avl.getCantidad());
-            reporte.setTiempoTotalNs(System.nanoTime() - inicioTotal);
-            return reporte;
+
+        if (musicas != null) {
+            recibidas = musicas.size();
+
+            for (Musica musica : musicas) {
+                if (!esMusicaValida(musica)) {
+                    invalidas++;
+                    continue;
+                }
+
+                String ruta = normalizarRuta(musica.getRuta());
+
+                if (rutas.contains(ruta)) {
+                    duplicadas++;
+                    continue;
+                }
+
+                if (musica.getId() > 0 && hash.buscarPorId(musica.getId()) != null) {
+                    duplicadas++;
+                    continue;
+                }
+
+                asignarId(musica);
+
+                boolean okLista = biblioteca.agregarMusica(musica);
+
+                long inicioABB = System.nanoTime();
+                boolean okABB = abb.agregarMusica(musica);
+                tiempoABB += System.nanoTime() - inicioABB;
+
+                long inicioAVL = System.nanoTime();
+                boolean okAVL = avl.agregarMusica(musica);
+                tiempoAVL += System.nanoTime() - inicioAVL;
+
+                boolean okHash = hash.insertarMusica(musica);
+
+                if (okLista && okABB && okAVL && okHash) {
+                    rutas.add(ruta);
+                    insertadas++;
+                } else {
+                    if (okLista) {
+                        biblioteca.eliminarMusica(musica);
+                    }
+
+                    if (okABB) {
+                        abb.eliminarMusica(musica);
+                    }
+
+                    if (okAVL) {
+                        avl.eliminarMusica(musica);
+                    }
+
+                    if (okHash) {
+                        hash.eliminarMusica(musica);
+                    }
+
+                    fallidas++;
+                }
+            }
         }
-        reporte.setRecibidas(nuevas.size());
 
-        for (Musica musica : nuevas) {
-            if (musica == null || musica.getRuta() == null || musica.getRuta().isBlank()) {
-                reporte.incrementarOmitidasInvalidas();
-                continue;
-            }
+        long tiempoTotal = System.nanoTime() - inicioTotal;
 
-            String key = normalizarRuta(musica.getRuta());
-            if (!rutas.add(key)) {
-                reporte.incrementarOmitidasDuplicadas();
-                continue;
-            }
-
-            if (musica.getId() <= 0) {
-                musica.setId(idMusica++);
-            } else if (musica.getId() >= idMusica) {
-                idMusica = musica.getId() + 1;
-            }
-
-            long inicioBiblioteca = System.nanoTime();
-            biblioteca.agregarMusica(musica);
-            reporte.sumarTiempoBibliotecaNs(System.nanoTime() - inicioBiblioteca);
-            reporte.incrementarIngresadasBiblioteca();
-            long inicioABB = System.nanoTime();
-            boolean ingresoABB = abb.insertar(musica);
-            reporte.sumarTiempoABBNs(System.nanoTime() - inicioABB);
-            if (ingresoABB) {
-                reporte.incrementarIngresadasABB();
-            }
-            long inicioAVL = System.nanoTime();
-            boolean ingresoAVL = avl.insertar(musica);
-            reporte.sumarTiempoAVLNs(System.nanoTime() - inicioAVL);
-            if (ingresoAVL) {
-                reporte.incrementarIngresadasAVL();
-            }
-
-            hash.insertar(musica);
-        }
-        reporte.setTotalBiblioteca(biblioteca.getCantidad());
-        reporte.setTotalABB(abb.getCantidad());
-        reporte.setTotalAVL(avl.getCantidad());
-        reporte.setTiempoTotalNs(System.nanoTime() - inicioTotal);
-        return reporte;
+        return historial.registrarCarga(
+                recibidas,
+                insertadas,
+                duplicadas,
+                invalidas,
+                fallidas,
+                biblioteca.getCantidad(),
+                abb.getCantidad(),
+                avl.getCantidad(),
+                hash.getCantidad(),
+                tiempoABB,
+                tiempoAVL,
+                tiempoTotal
+        );
     }
 
-    // ELIMINA DE LISTA + ABB + AVL + PLAYLISTS
+    /*
+     * Búsqueda general para vistas.
+     *
+     * Usa:
+     * - ABB por nombre
+     * - AVL por nombre
+     * - Hash por artista
+     * - Hash por álbum
+     * - Hash por género
+     * - Hash por ID exacto, si el texto es número
+     * - Hash por año exacto, si el texto es número
+     *
+     * No registra historial.
+     */
+    public List<Musica> buscarMusicas(String texto) {
+        List<Musica> resultados = new ArrayList<>();
+        Set<Integer> idsAgregados = new HashSet<>();
+
+        if (texto == null || texto.trim().isEmpty()) {
+            return biblioteca.listaMusicas();
+        }
+
+        String busqueda = texto.trim();
+
+        agregarSinDuplicar(resultados, idsAgregados, abb.buscarMusica(busqueda));
+        agregarSinDuplicar(resultados, idsAgregados, avl.buscarMusica(busqueda));
+        agregarSinDuplicar(resultados, idsAgregados, buscarPorArtista(busqueda));
+        agregarSinDuplicar(resultados, idsAgregados, buscarPorAlbum(busqueda));
+        agregarSinDuplicar(resultados, idsAgregados, buscarPorGenero(busqueda));
+
+        try {
+            int numero = Integer.parseInt(busqueda);
+
+            Musica musicaPorId = buscarPorId(numero);
+
+            if (musicaPorId != null && idsAgregados.add(musicaPorId.getId())) {
+                resultados.add(musicaPorId);
+            }
+
+            agregarSinDuplicar(resultados, idsAgregados, buscarPorAnio(numero));
+        } catch (NumberFormatException e) {
+        }
+
+        return resultados;
+    }
+
+    /*
+     * Búsqueda especial para medir rendimiento.
+     *
+     * Esta sí compara ABB contra AVL, registra tiempos
+     * y guarda el reporte en el historial.
+     *
+     * Úsala solo cuando quieras mostrar o registrar la comparación.
+     */
+    public List<Musica> buscarPorNombre(String nombre) {
+        long inicioABB = System.nanoTime();
+        List<Musica> encontradasABB = abb.buscarMusica(nombre);
+        long tiempoABB = System.nanoTime() - inicioABB;
+
+        long inicioAVL = System.nanoTime();
+        List<Musica> encontradasAVL = avl.buscarMusica(nombre);
+        long tiempoAVL = System.nanoTime() - inicioAVL;
+
+        List<Musica> encontradas;
+        String estructuraMasRapida;
+
+        if (!encontradasABB.isEmpty() && !encontradasAVL.isEmpty()) {
+            if (tiempoABB <= tiempoAVL) {
+                encontradas = encontradasABB;
+                estructuraMasRapida = "ABB";
+            } else {
+                encontradas = encontradasAVL;
+                estructuraMasRapida = "AVL";
+            }
+        } else if (!encontradasABB.isEmpty()) {
+            encontradas = encontradasABB;
+            estructuraMasRapida = "ABB";
+        } else if (!encontradasAVL.isEmpty()) {
+            encontradas = encontradasAVL;
+            estructuraMasRapida = "AVL";
+        } else {
+            encontradas = new ArrayList<>();
+            estructuraMasRapida = "Ninguna";
+        }
+
+        historial.registrarBusquedaNombre(
+                nombre,
+                encontradas,
+                encontradasABB,
+                encontradasAVL,
+                estructuraMasRapida,
+                tiempoABB,
+                tiempoAVL
+        );
+
+        return encontradas;
+    }
+
     public boolean eliminarMusica(Musica musica) {
-        if (musica == null) return false;
-
-        boolean eliminadaLista = biblioteca.eliminarMusica(musica);
-        boolean eliminadaAbb = abb.eliminar(musica);
-        boolean eliminadaAvl = avl.eliminar(musica);
-        boolean eliminadaHash = hash.buscarPorId(musica.getId()) != null;
-
-        hash.eliminar(musica);
-
-        for (Playlist playlist : playlists) {
-            playlist.eliminarMusica(musica);
-        }
-
-        if (musica.getRuta() != null) {
-            rutas.remove(normalizarRuta(musica.getRuta()));
-        }
-
-        return eliminadaLista || eliminadaAbb || eliminadaAvl || eliminadaHash;
-    }
-
-    // MODIFICA LA MISMA MÚSICA EN TODAS LAS ESTRUCTURAS
-    public boolean modificarMusica(Musica musica, Musica datosNuevos) {
-        if (musica == null || datosNuevos == null) return false;
-
-        int idOriginal = musica.getId();
-        String nombreAnterior = musica.getNombre();
-        String rutaAnterior = musica.getRuta();
-
-        String rutaNueva = datosNuevos.getRuta();
-
-        if (rutaNueva == null || rutaNueva.isBlank()) {
-            rutaNueva = rutaAnterior;
-        }
-
-        String keyAnterior = rutaAnterior == null ? "" : normalizarRuta(rutaAnterior);
-        String keyNueva = rutaNueva == null ? "" : normalizarRuta(rutaNueva);
-
-        if (!keyNueva.isBlank()
-                && !keyNueva.equals(keyAnterior)
-                && rutas.contains(keyNueva)) {
+        if (musica == null) {
             return false;
         }
 
-        // Sacar de las estructuras que dependen de claves
-        abb.eliminarPorClave(nombreAnterior, idOriginal);
-        avl.eliminarPorClave(nombreAnterior, idOriginal);
-        hash.eliminar(musica);
-
-        if (!keyAnterior.isBlank()) {
-            rutas.remove(keyAnterior);
-        }
-
-        // Modificar el mismo objeto Musica
-        musica.setNombre(datosNuevos.getNombre());
-        musica.setArtista(datosNuevos.getArtista());
-        musica.setAlbum(datosNuevos.getAlbum());
-        musica.setGenero(datosNuevos.getGenero());
-        musica.setDuracion(datosNuevos.getDuracion());
-        musica.setTamanio(datosNuevos.getTamanio());
-        musica.setRuta(rutaNueva);
-        musica.setAnio(datosNuevos.getAnio());
-        musica.setPortada(datosNuevos.getPortada());
-        musica.setReproducciones(datosNuevos.getReproducciones());
-
-        // El ID se conserva
-        musica.setId(idOriginal);
-
-        if (!keyNueva.isBlank()) {
-            rutas.add(keyNueva);
-        }
-
-        // Volver a insertar con los datos nuevos
-        abb.insertar(musica);
-        avl.insertar(musica);
-        hash.insertar(musica);
-
-        return true;
+        return eliminarMusicaPorId(musica.getId());
     }
 
-    public Playlist crearPlaylist(String nombre) {
-        String nombreLimpio = nombre == null ? "" : nombre.trim();
-        String key = normalizarNombrePlaylist(nombreLimpio);
+    public boolean eliminarMusicaPorId(int id) {
+        Musica musica = hash.buscarPorId(id);
 
-        if (key.isBlank()) {
-            return null;
+        if (musica == null) {
+            historial.registrarEliminacion(id, null, false, 0, 0);
+            return false;
         }
 
-        if (!nombresPlaylists.add(key)) {
-            return null;
+        boolean okLista = biblioteca.eliminarMusica(musica);
+
+        long inicioABB = System.nanoTime();
+        boolean okABB = abb.eliminarMusica(musica);
+        long tiempoABB = System.nanoTime() - inicioABB;
+
+        long inicioAVL = System.nanoTime();
+        boolean okAVL = avl.eliminarMusica(musica);
+        long tiempoAVL = System.nanoTime() - inicioAVL;
+
+        boolean okHash = hash.eliminarMusica(musica);
+
+        String ruta = normalizarRuta(musica.getRuta());
+
+        if (!ruta.isEmpty()) {
+            rutas.remove(ruta);
         }
 
-        Playlist playlist = new Playlist(idPlaylist++, nombreLimpio);
-        playlists.add(playlist);
+        boolean eliminada = okLista || okABB || okAVL || okHash;
 
-        return playlist;
+        historial.registrarEliminacion(
+                id,
+                musica,
+                eliminada,
+                tiempoABB,
+                tiempoAVL
+        );
+
+        return eliminada;
+    }
+
+    public Musica buscarPorId(int id) {
+        return hash.buscarPorId(id);
+    }
+
+    public List<Musica> buscarPorArtista(String artista) {
+        return hash.buscarPorArtista(artista);
+    }
+
+    public List<Musica> buscarPorAlbum(String album) {
+        return hash.buscarPorAlbum(album);
+    }
+
+    public List<Musica> buscarPorGenero(String genero) {
+        return hash.buscarPorGenero(genero);
+    }
+
+    public List<Musica> buscarPorAnio(int anio) {
+        return hash.buscarPorAnio(anio);
+    }
+
+    public List<Playlist> getPlaylists() {
+        return new ArrayList<>(playlists);
     }
 
     public boolean existePlaylist(String nombre) {
-        return nombresPlaylists.contains(normalizarNombrePlaylist(nombre));
+        if (nombre == null || nombre.trim().isEmpty()) {
+            return false;
+        }
+
+        String nombreBuscado = nombre.trim();
+
+        for (Playlist playlist : playlists) {
+            if (playlist.getNombre().equalsIgnoreCase(nombreBuscado)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public Playlist buscarPlaylistPorNombre(String nombre) {
+        if (nombre == null || nombre.trim().isEmpty()) {
+            return null;
+        }
+
+        String nombreBuscado = nombre.trim();
+
+        for (Playlist playlist : playlists) {
+            if (playlist.getNombre().equalsIgnoreCase(nombreBuscado)) {
+                return playlist;
+            }
+        }
+
+        return null;
     }
 
     public Playlist buscarPlaylistPorId(int id) {
@@ -224,11 +351,147 @@ public final class BibliotecaGeneral {
         return null;
     }
 
-    private String normalizarRuta(String ruta) {
-        return ruta == null ? "" : ruta.trim().toLowerCase();
+    public String crearPlaylist(String nombre) {
+        if (nombre == null || nombre.trim().isEmpty()) {
+            historial.registrarCreacionPlaylist(
+                    null,
+                    false,
+                    "Nombre inválido"
+            );
+
+            return "No se pudo crear la playlist.\n"
+                    + "Motivo: Nombre inválido.";
+        }
+
+        nombre = nombre.trim();
+
+        if (existePlaylist(nombre)) {
+            historial.registrarCreacionPlaylist(
+                    null,
+                    false,
+                    "Ya existe una playlist con ese nombre"
+            );
+
+            return "No se pudo crear la playlist.\n"
+                    + "Motivo: Ya existe una playlist con ese nombre.";
+        }
+
+        Playlist playlist = new Playlist(idPlaylist++, nombre);
+        playlists.add(playlist);
+
+        historial.registrarCreacionPlaylist(
+                playlist,
+                true,
+                "Playlist creada correctamente"
+        );
+
+        return "Playlist creada correctamente.\n"
+                + "Nombre: " + playlist.getNombre();
     }
 
-    private String normalizarNombrePlaylist(String nombre) {
-        return nombre == null ? "" : nombre.trim().toLowerCase();
+    public String agregarMusicasAPlaylist(int idPlaylist, List<Musica> musicas) {
+        Playlist playlist = buscarPlaylistPorId(idPlaylist);
+
+        if (playlist == null) {
+            int invalidas = musicas == null ? 0 : musicas.size();
+
+            historial.registrarMusicasAgregadasAPlaylist(
+                    null,
+                    musicas,
+                    0,
+                    0,
+                    invalidas,
+                    false,
+                    "Playlist no encontrada"
+            );
+
+            return "No se pudieron agregar músicas.\n"
+                    + "Motivo: Playlist no encontrada.";
+        }
+
+        int recibidas = musicas == null ? 0 : musicas.size();
+        int agregadas = 0;
+        int duplicadas = 0;
+        int invalidas = 0;
+
+        if (musicas != null) {
+            for (Musica musica : musicas) {
+                if (musica == null || musica.getId() <= 0) {
+                    invalidas++;
+                    continue;
+                }
+
+                if (playlist.contieneMusica(musica)) {
+                    duplicadas++;
+                    continue;
+                }
+
+                if (playlist.agregarMusica(musica)) {
+                    agregadas++;
+                } else {
+                    invalidas++;
+                }
+            }
+        }
+
+        historial.registrarMusicasAgregadasAPlaylist(
+                playlist,
+                musicas,
+                agregadas,
+                duplicadas,
+                invalidas,
+                true,
+                "Proceso terminado"
+        );
+
+        return "Músicas agregadas a la playlist.\n"
+                + "Playlist: " + playlist.getNombre() + "\n"
+                + "Recibidas: " + recibidas + "\n"
+                + "Agregadas: " + agregadas + "\n"
+                + "Duplicadas: " + duplicadas + "\n"
+                + "Inválidas: " + invalidas;
+    }
+
+    private void asignarId(Musica musica) {
+        if (musica.getId() <= 0) {
+            musica.setId(idMusica++);
+            return;
+        }
+
+        if (musica.getId() >= idMusica) {
+            idMusica = musica.getId() + 1;
+        }
+    }
+
+    private boolean esMusicaValida(Musica musica) {
+        return musica != null
+                && musica.getNombre() != null
+                && !musica.getNombre().trim().isEmpty()
+                && musica.getRuta() != null
+                && !musica.getRuta().trim().isEmpty();
+    }
+
+    private String normalizarRuta(String ruta) {
+        if (ruta == null) {
+            return "";
+        }
+
+        return ruta.trim().toLowerCase();
+    }
+
+    private void agregarSinDuplicar(
+            List<Musica> destino,
+            Set<Integer> idsAgregados,
+            List<Musica> origen
+    ) {
+        if (origen == null) {
+            return;
+        }
+
+        for (Musica musica : origen) {
+            if (musica != null && idsAgregados.add(musica.getId())) {
+                destino.add(musica);
+            }
+        }
     }
 }

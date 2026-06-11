@@ -1,8 +1,6 @@
 package vistas;
 
-import estructuras.ArbolAVL;
 import estructuras.BibliotecaGeneral;
-import modelos.Playlist;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -10,7 +8,9 @@ import java.util.Set;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelos.Musica;
-import utilidades.TablaHelper;
+import modelos.Playlist;
+import utilidades.Presentacion;
+import utilidades.Tabla;
 
 public class DialogoNuevaPlaylist extends javax.swing.JDialog {
     private final BibliotecaGeneral biblioteca = BibliotecaGeneral.getInstance();
@@ -27,11 +27,10 @@ public class DialogoNuevaPlaylist extends javax.swing.JDialog {
     }
     
     private void inicializar() {
+        Presentacion.aplicarNuevaPlaylist(this);
         configurarTablas();
-        configurarEventos();
         lblNombrePlaylist.setText(nombrePlaylist);
         cargarBiblioteca();
-        cargarMusicasSeleccionadas();
     }
 
     @SuppressWarnings("unchecked")
@@ -66,7 +65,7 @@ public class DialogoNuevaPlaylist extends javax.swing.JDialog {
 
             },
             new String [] {
-                "No.", "Nombre"
+                "No.", "Nombre", "Id"
             }
         ){
             @Override
@@ -74,6 +73,7 @@ public class DialogoNuevaPlaylist extends javax.swing.JDialog {
                 return false;
             }
         });
+        tblMusicasPlaylist.getColumnModel().getColumn(0).setResizable(false);
         jScrollPane1.setViewportView(tblMusicasPlaylist);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
@@ -92,9 +92,13 @@ public class DialogoNuevaPlaylist extends javax.swing.JDialog {
                 return false;
             }
         });
+        tblMusicas.getColumnModel().getColumn(0).setResizable(false);
         jScrollPane3.setViewportView(tblMusicas);
 
+        txtBusqueda.addActionListener(this::txtBusquedaActionPerformed);
+
         btnBuscar.setText("Buscar");
+        btnBuscar.addActionListener(this::btnBuscarActionPerformed);
 
         btnAgregar.setText("Agregar");
         btnAgregar.addActionListener(this::btnAgregarActionPerformed);
@@ -108,38 +112,38 @@ public class DialogoNuevaPlaylist extends javax.swing.JDialog {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(125, 125, 125)
-                        .addComponent(jLabel2))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(txtBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(btnBuscar))
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(btnAgregar)
-                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 336, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel1)
                         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                            .addGap(99, 99, 99)
-                            .addComponent(btnGuardar)
-                            .addGap(14, 14, 14)))
+                            .addContainerGap()
+                            .addComponent(btnAgregar))
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGap(12, 12, 12)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(txtBusqueda)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(btnBuscar))
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 429, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 167, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(174, 174, 174)
+                        .addComponent(jLabel2)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 78, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(btnGuardar)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(16, 16, 16))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(93, 93, 93))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1))
@@ -152,10 +156,10 @@ public class DialogoNuevaPlaylist extends javax.swing.JDialog {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 457, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnGuardar)
-                    .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnGuardar, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -168,31 +172,31 @@ public class DialogoNuevaPlaylist extends javax.swing.JDialog {
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lblNombrePlaylist, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(29, 29, 29))
+                .addComponent(lblNombrePlaylist, javax.swing.GroupLayout.PREFERRED_SIZE, 420, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(254, 254, 254))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lblNombrePlaylist, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE)
+                .addComponent(lblNombrePlaylist, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void configurarTablas() {
-        TablaHelper.establecerAnchoMaximo(tblMusicas, 0, 30);
-        TablaHelper.establecerAnchoMaximo(tblMusicasPlaylist, 0, 30);
-        TablaHelper.ocultarColumna(tblMusicas, 5);
+        Tabla.establecerAnchoMaximo(tblMusicas, 0, 55);
+        Tabla.establecerAnchoMaximo(tblMusicasPlaylist, 0, 55);
+        Tabla.ocultarColumna(tblMusicas, 5);
+        Tabla.ocultarColumna(tblMusicasPlaylist, 2);
     }
-
-    private void configurarEventos() {
-        btnBuscar.addActionListener(e -> filtrarBiblioteca());
-        txtBusqueda.addActionListener(e -> filtrarBiblioteca());
+    
+    private void cargarBiblioteca() {
+        Tabla.cargarMusicasParaBusqueda(tblMusicas, biblioteca.getBiblioteca().listaMusicas());
     }
     
     private void cargarMusicasSeleccionadas() {
@@ -201,89 +205,98 @@ public class DialogoNuevaPlaylist extends javax.swing.JDialog {
 
         int no = 1;
         for (Musica musica : seleccionadas) {
-            tabla.addRow(new Object[]{ no++, musica.getNombre() });
+            tabla.addRow(new Object[]{ no++, musica.getNombre(), musica.getId() });
         }
     }
     
-    private void cargarBiblioteca() {
-        cargarMusicasEnTabla(biblioteca.getBiblioteca().toListAdelante());
-    }
-
-    private void cargarMusicasEnTabla(List<Musica> musicas) {
-        DefaultTableModel tabla = (DefaultTableModel) tblMusicas.getModel();
-        tabla.setRowCount(0);
-
-        int no = 1;
-        for (Musica musica : musicas) {
-            tabla.addRow(new Object[]{
-                no++,
-                musica.getNombre(),
-                musica.getArtista(),
-                musica.getAlbum(),
-                musica.getGenero(),
-                musica.getId()
-            });
+    private void buscarMusicas() {
+        String texto = txtBusqueda.getText();
+        List<Musica> resultados = biblioteca.buscarMusicas(texto);
+        Tabla.cargarMusicasParaBusqueda(tblMusicas, resultados);
+        if (texto != null && !texto.trim().isEmpty() && resultados.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No se encontraron músicas.");
         }
-    }
-
-    private void filtrarBiblioteca() {
-        String busqueda = txtBusqueda.getText().trim().toLowerCase();
-        if (busqueda.isBlank()) {
-            cargarBiblioteca();
-            return;
-        }
-
-        List<Musica> resultado = new java.util.ArrayList<>();
-        for (Musica musica : biblioteca.getBiblioteca().toListAdelante()) {
-            if (musica.getNombre().toLowerCase().contains(busqueda)
-                    || musica.getArtista().toLowerCase().contains(busqueda)
-                    || musica.getAlbum().toLowerCase().contains(busqueda)
-                    || musica.getGenero().toLowerCase().contains(busqueda)) {
-
-                resultado.add(musica);
-            }
-        }
-        cargarMusicasEnTabla(resultado);
     }
     
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
+        if (nombrePlaylist == null || nombrePlaylist.trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Nombre de playlist inválido.");
+            return;
+        }
+
+        if (biblioteca.existePlaylist(nombrePlaylist)) {
+            JOptionPane.showMessageDialog(this, "Ya existe una playlist con ese nombre.");
+            return;
+        }
+
         if (seleccionadas.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Agrega al menos una musica antes de guardar");
+            int opcion = JOptionPane.showConfirmDialog(
+                    this,
+                    "No has agregado músicas.\n¿Deseas guardar la playlist vacía?",
+                    "Guardar playlist",
+                    JOptionPane.YES_NO_OPTION
+            );
+
+            if (opcion != JOptionPane.YES_OPTION) {
+                return;
+            }
+        }
+
+        String mensajeCreacion = biblioteca.crearPlaylist(nombrePlaylist);
+        Playlist playlistCreada = biblioteca.buscarPlaylistPorNombre(nombrePlaylist);
+
+        if (playlistCreada == null) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    mensajeCreacion + "\n\nNo se pudo encontrar la playlist creada.",
+                    "Playlist",
+                    JOptionPane.ERROR_MESSAGE
+            );
             return;
         }
-        Playlist playlist = biblioteca.crearPlaylist(nombrePlaylist);
-        if (playlist == null) {
-            JOptionPane.showMessageDialog(this, "No se pudo crear: nombre invalido o duplicado");
-            return;
-        }
-        for (Musica musica : seleccionadas) {
-            playlist.agregarMusica(musica); 
-        }
-        
+
+        String mensajeAgregado = biblioteca.agregarMusicasAPlaylist(
+                playlistCreada.getId(),
+                seleccionadas
+        );
+
         JOptionPane.showMessageDialog(
                 this,
-                "Playlist creada correctamente",
+                mensajeCreacion + "\n\n" + mensajeAgregado,
                 "Playlist",
                 JOptionPane.INFORMATION_MESSAGE
         );
+
         dispose();
     }//GEN-LAST:event_btnGuardarActionPerformed
 
     private void btnAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarActionPerformed
         int[] filas = tblMusicas.getSelectedRows();
+
         if (filas.length == 0) {
-            JOptionPane.showMessageDialog(this, "Selecciona una o mas musicas de la biblioteca");
+            JOptionPane.showMessageDialog(this, "Selecciona una o más músicas de la biblioteca.");
             return;
         }
 
         int agregadas = 0;
         int repetidas = 0;
         int noEncontradas = 0;
-
         for (int fila : filas) {
-            Object valor = tblMusicas.getValueAt(fila, 5);
-            int id = Integer.parseInt(valor.toString());
-            Musica seleccionada = biblioteca.getHash().buscarPorId(id);
+            int filaModelo = tblMusicas.convertRowIndexToModel(fila);
+            Object valor = tblMusicas.getModel().getValueAt(filaModelo, 5);
+            if (valor == null) {
+                noEncontradas++;
+                continue;
+            }
+
+            int id;
+            try {
+                id = Integer.parseInt(valor.toString());
+            } catch (NumberFormatException e) {
+                noEncontradas++;
+                continue;
+            }
+            Musica seleccionada = biblioteca.buscarPorId(id);
             if (seleccionada == null) {
                 noEncontradas++;
                 continue;
@@ -295,15 +308,25 @@ public class DialogoNuevaPlaylist extends javax.swing.JDialog {
             seleccionadas.add(seleccionada);
             agregadas++;
         }
-        
+
         cargarMusicasSeleccionadas();
         if (repetidas > 0 || noEncontradas > 0) {
-            JOptionPane.showMessageDialog(this,
-                    "Agregadas: " + agregadas +
-                    "\nExisten ignoradas: " + repetidas +
-                    "\nNo encontradas: " + noEncontradas);
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Agregadas: " + agregadas
+                    + "\nRepetidas ignoradas: " + repetidas
+                    + "\nNo encontradas: " + noEncontradas
+            );
         }
     }//GEN-LAST:event_btnAgregarActionPerformed
+
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        buscarMusicas();
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void txtBusquedaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBusquedaActionPerformed
+        buscarMusicas();
+    }//GEN-LAST:event_txtBusquedaActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregar;
