@@ -757,6 +757,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         reproductor.setEventos(new GestorReproductor.Eventos() {
             @Override
             public void alActualizarTiempo(double actual, double total) {
+                if (musicaReproduciendo == null) return;
+
                 duracionActualSegundos = total;
                 lblTiempoActual.setText(formatearTiempo(actual));
 
