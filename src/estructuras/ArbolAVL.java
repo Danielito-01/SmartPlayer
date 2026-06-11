@@ -26,6 +26,10 @@ public class ArbolAVL {
         cantidad = 0;
     }
 
+    public Musica getRaiz() {
+        return raiz.musica;
+    }
+    
     public int getCantidad() {
         return cantidad;
     }

@@ -23,6 +23,10 @@ public class ArbolABB {
         raiz = null;
         cantidad = 0;
     }
+    
+    public Musica getRaiz() {
+        return raiz.musica;
+    }
 
     public int getCantidad() {
         return cantidad;
@@ -312,5 +316,20 @@ public class ArbolABB {
 
     private String obtenerNombre(Musica musica) {
         return musica.getNombre().trim();
+    }
+    
+    public List<Musica> recorridoInOrden() {
+        List<Musica> resultado = new ArrayList<>();
+        recorridoInOrden(raiz, resultado);
+        return resultado;
+    }
+
+    private void recorridoInOrden(NMusica nodo, List<Musica> resultado) {
+        if (nodo == null) {
+            return;
+        }
+        recorridoInOrden(nodo.izquierdo, resultado);
+        resultado.add(nodo.musica);
+        recorridoInOrden(nodo.derecho, resultado);
     }
 }
