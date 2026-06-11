@@ -28,8 +28,6 @@ public class DialogoVisualizacionArboles extends javax.swing.JDialog {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        scpInOrden = new javax.swing.JScrollPane();
-        jtxtInOrden = new javax.swing.JTextArea();
         lblArboles = new javax.swing.JLabel();
         scpABB = new javax.swing.JScrollPane();
         panABB = new javax.swing.JPanel();
@@ -37,19 +35,17 @@ public class DialogoVisualizacionArboles extends javax.swing.JDialog {
         panAVL = new javax.swing.JPanel();
         sldZoom = new javax.swing.JSlider();
         lblZoom = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
+        lblRaizABB = new javax.swing.JLabel();
+        lblCantidadABB = new javax.swing.JLabel();
+        lblRaizAVL = new javax.swing.JLabel();
+        lblCantidadAVL = new javax.swing.JLabel();
+        lblArboles1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
-        jtxtInOrden.setColumns(20);
-        jtxtInOrden.setRows(5);
-        scpInOrden.setViewportView(jtxtInOrden);
-
         lblArboles.setFont(new java.awt.Font("Segoe UI Black", 3, 36)); // NOI18N
         lblArboles.setForeground(new java.awt.Color(51, 51, 51));
-        lblArboles.setText("ARBOLES");
+        lblArboles.setText("ABB");
 
         javax.swing.GroupLayout panABBLayout = new javax.swing.GroupLayout(panABB);
         panABB.setLayout(panABBLayout);
@@ -79,75 +75,88 @@ public class DialogoVisualizacionArboles extends javax.swing.JDialog {
 
         sldZoom.setMaximum(300);
         sldZoom.setMinimum(10);
-        sldZoom.setValue(100);
+        sldZoom.setValue(150);
 
         lblZoom.setText("Zoom");
 
-        jLabel1.setFont(new java.awt.Font("Segoe UI Black", 3, 18)); // NOI18N
-        jLabel1.setText("InOrden");
+        lblRaizABB.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
+        lblRaizABB.setForeground(new java.awt.Color(51, 51, 51));
+        lblRaizABB.setText("Raiz:");
 
-        jLabel2.setText("Raiz:");
+        lblCantidadABB.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
+        lblCantidadABB.setForeground(new java.awt.Color(51, 51, 51));
+        lblCantidadABB.setText("Cantidad:");
 
-        jLabel3.setText("Cantidad");
+        lblRaizAVL.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
+        lblRaizAVL.setText("Raiz");
+
+        lblCantidadAVL.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
+        lblCantidadAVL.setText("Cantidad:");
+
+        lblArboles1.setFont(new java.awt.Font("Segoe UI Black", 3, 36)); // NOI18N
+        lblArboles1.setForeground(new java.awt.Color(51, 51, 51));
+        lblArboles1.setText("AVL");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(scpInOrden)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(scpABB, javax.swing.GroupLayout.PREFERRED_SIZE, 530, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(scpAVL, javax.swing.GroupLayout.PREFERRED_SIZE, 530, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addGap(144, 144, 144)
-                                .addComponent(lblZoom, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(sldZoom, javax.swing.GroupLayout.PREFERRED_SIZE, 559, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(306, 306, 306)
-                                .addComponent(lblArboles, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(39, 39, 39)
-                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addComponent(lblRaizABB, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblCantidadABB, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(scpABB, javax.swing.GroupLayout.PREFERRED_SIZE, 530, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblRaizAVL, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(113, 113, 113)
+                        .addComponent(lblCantidadAVL, javax.swing.GroupLayout.PREFERRED_SIZE, 180, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(scpAVL, javax.swing.GroupLayout.PREFERRED_SIZE, 530, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(15, 15, 15))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(455, 455, 455))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(172, 172, 172)
+                .addComponent(lblZoom, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(sldZoom, javax.swing.GroupLayout.PREFERRED_SIZE, 559, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(209, 209, 209)
+                .addComponent(lblArboles)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblArboles1)
+                .addGap(219, 219, 219))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(lblArboles, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(scpABB, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(scpAVL, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(1, 1, 1)
-                        .addComponent(lblZoom))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblArboles1, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblArboles, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblRaizABB, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblCantidadABB, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(37, 37, 37)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblRaizAVL, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblCantidadAVL, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(scpABB, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(scpAVL, javax.swing.GroupLayout.PREFERRED_SIZE, 509, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblZoom)
                     .addComponent(sldZoom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(scpInOrden, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(12, 12, 12))
         );
 
         pack();
@@ -159,7 +168,6 @@ public class DialogoVisualizacionArboles extends javax.swing.JDialog {
         scpAVL.setViewportView(panelAVL);
         generarYMostrarArboles();
         configurarZoom();
-
     }
     
     private void configurarZoom() {
@@ -231,6 +239,10 @@ public class DialogoVisualizacionArboles extends javax.swing.JDialog {
             File imagenAVL = GestorGraphviz.generarSvgDesdeDot(dotAVL, "arbol_avl");
 
             mostrarImagenes(imagenABB, imagenAVL);
+            lblRaizABB.setText("Raiz: " + biblioteca.getAbb().getRaiz().getNombre());
+            lblCantidadABB.setText("Cantidad: " + biblioteca.getAbb().getCantidad());
+            lblRaizAVL.setText("Raiz: " + biblioteca.getAvl().getRaiz().getNombre());
+            lblCantidadAVL.setText("Cantidad: " + biblioteca.getAvl().getCantidad());
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(
@@ -274,17 +286,17 @@ public class DialogoVisualizacionArboles extends javax.swing.JDialog {
     }
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JTextArea jtxtInOrden;
     private javax.swing.JLabel lblArboles;
+    private javax.swing.JLabel lblArboles1;
+    private javax.swing.JLabel lblCantidadABB;
+    private javax.swing.JLabel lblCantidadAVL;
+    private javax.swing.JLabel lblRaizABB;
+    private javax.swing.JLabel lblRaizAVL;
     private javax.swing.JLabel lblZoom;
     private javax.swing.JPanel panABB;
     private javax.swing.JPanel panAVL;
     private javax.swing.JScrollPane scpABB;
     private javax.swing.JScrollPane scpAVL;
-    private javax.swing.JScrollPane scpInOrden;
     private javax.swing.JSlider sldZoom;
     // End of variables declaration//GEN-END:variables
 }
