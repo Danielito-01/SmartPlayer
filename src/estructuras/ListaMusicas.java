@@ -29,6 +29,11 @@ public class ListaMusicas {
         circular = false;
         cantidad = 0;
     }
+    
+    public Musica getPrimera() {
+        actual = primera;
+        return actual.musica;
+    }
 
     public Musica getActual() {
         return actual == null ? null : actual.musica;
