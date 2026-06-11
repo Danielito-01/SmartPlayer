@@ -256,7 +256,7 @@ public final class BibliotecaGeneral {
         return eliminarMusicaPorId(musica.getId());
     }
 
-    public boolean eliminarMusicaPorId(int id) {
+    private boolean eliminarMusicaPorId(int id) {
         Musica musica = hash.buscarPorId(id);
 
         if (musica == null) {
