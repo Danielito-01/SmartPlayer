@@ -30,7 +30,8 @@ public class ListaMusicas {
         cantidad = 0;
     }
     
-    public Musica getPrimera() {
+    public Musica seleccionarPrimera() {
+        if (estaVacia()) return null;
         actual = primera;
         return actual.musica;
     }
@@ -176,5 +177,55 @@ public class ListaMusicas {
             aux = aux.siguiente;
         }
         return null;
+    }
+    
+    public List<Musica> buscarMusicas(String texto) {
+        List<Musica> encontradas = new ArrayList<>();
+
+        if (estaVacia()) return encontradas;
+
+        if (texto == null || texto.isBlank()) {
+            return listaMusicas();
+        }
+
+        String busqueda = normalizar(texto);
+
+        NMusica aux = primera;
+        for (int i = 0; i < cantidad; i++) {
+            Musica musica = aux.musica;
+            if (coincideBusqueda(musica, busqueda)) {
+                encontradas.add(musica);
+            }
+            aux = aux.siguiente;
+        }
+        return encontradas;
+    }
+    
+    private boolean coincideBusqueda(Musica musica, String busqueda) {
+        if (musica == null) {
+            return false;
+        }
+
+        if (empiezaCon(musica.getNombre(), busqueda)) {
+            return true;
+        }
+        if (empiezaCon(musica.getArtista(), busqueda)) {
+            return true;
+        }
+        if (empiezaCon(musica.getAlbum(), busqueda)) {
+            return true;
+        }
+        if (empiezaCon(musica.getGenero(), busqueda)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean empiezaCon(String valor, String busqueda) {
+        return valor != null && normalizar(valor).startsWith(busqueda);
+    }
+
+    private String normalizar(String texto) {
+        return texto == null ? "" : texto.trim().toLowerCase();
     }
 }

@@ -104,6 +104,10 @@ public class Musica {
     public void setReproducciones(int reproducciones) {
         this.reproducciones = reproducciones;
     }
+    
+    public void aumentarReproducciones() {
+        reproducciones++;
+    }
 
     @Override
     public String toString() {

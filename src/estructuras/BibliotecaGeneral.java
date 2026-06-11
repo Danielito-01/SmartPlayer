@@ -9,13 +9,15 @@ import modelos.Playlist;
 import servicios.GestorHistorial;
 
 public final class BibliotecaGeneral {
-
     private static final BibliotecaGeneral INSTANCE = new BibliotecaGeneral();
-
     private final ListaMusicas biblioteca = new ListaMusicas();
+    
     private final ArbolABB abb = new ArbolABB();
     private final ArbolAVL avl = new ArbolAVL();
     private final TablaHash hash = new TablaHash();
+    
+    private final PilaHistorial pilaHistorial = new PilaHistorial();
+    private final ColaReproduccion colaReproduccion = new ColaReproduccion();
     private final GestorHistorial historial = new GestorHistorial();
 
     private final Set<String> rutas = new HashSet<>();
@@ -45,6 +47,14 @@ public final class BibliotecaGeneral {
 
     public TablaHash getHash() {
         return hash;
+    }
+    
+    public ColaReproduccion getColaReproduccion() {
+        return colaReproduccion;
+    }
+    
+    public PilaHistorial getPilaHistorial() {
+        return pilaHistorial;
     }
 
     public GestorHistorial getHistorial() {

@@ -39,7 +39,7 @@ public class Tabla {
         int no = 1;
         DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
         modelo.setRowCount(0);
-        tabla.setRowHeight(50);
+        tabla.setRowHeight(35);
 
         for (Musica musica : musicas) {
             modelo.addRow(new Object[]{
@@ -52,6 +52,7 @@ public class Tabla {
                 musica.formatearTamanio(),
                 musica.getRuta(),
                 musica.anioReal(),
+                musica.getId()
             });
         }
     }
@@ -60,7 +61,7 @@ public class Tabla {
         int no = 1;
         DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
         modelo.setRowCount(0);
-        tabla.setRowHeight(50);
+        tabla.setRowHeight(35);
 
         for (Musica musica : musicas) {
             modelo.addRow(new Object[]{

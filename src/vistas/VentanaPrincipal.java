@@ -3,8 +3,9 @@ package vistas;
 import estructuras.BibliotecaGeneral;
 import estructuras.ColaReproduccion;
 import estructuras.ListaMusicas;
-import java.awt.Color;
+import estructuras.PilaHistorial;
 import java.awt.Component;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -26,7 +27,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private Musica musicaSeleccionada;
     private Musica musicaReproduciendo;
     
-    private final ColaReproduccion colaReproduccion = new ColaReproduccion();
+    private PilaHistorial pilaHistorial = biblioteca.getPilaHistorial();
+    private ColaReproduccion colaReproduccion = biblioteca.getColaReproduccion();
     private boolean reproduciendoDesdeCola;
     
     private final GestorReproductor reproductor = new GestorReproductor();
@@ -74,6 +76,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         tblMusicas = new javax.swing.JTable();
         lblTituloLista = new javax.swing.JLabel();
         btnReproducirLista = new javax.swing.JButton();
+        txtBusqueda = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
         panReproduccion = new javax.swing.JPanel();
         lblNombreMusica = new javax.swing.JLabel();
         lblTxtArtista = new javax.swing.JLabel();
@@ -101,6 +105,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         menuPlaylist = new javax.swing.JMenu();
         jmiTodas = new javax.swing.JMenuItem();
         jmiNueva = new javax.swing.JMenuItem();
+        menuRequisitos = new javax.swing.JMenu();
+        jmiPilaHistorial = new javax.swing.JMenuItem();
+        jmiBusquedaArboles = new javax.swing.JMenuItem();
 
         agregarACola.setText("Agregar a cola");
         agregarACola.addActionListener(this::agregarAColaActionPerformed);
@@ -117,7 +124,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         tblPlaylist.setBackground(new java.awt.Color(21, 153, 245));
         tblPlaylist.setForeground(new java.awt.Color(255, 255, 255));
-        scpPlaylist.getViewport().setBackground(new Color(161,214,252));
         tblPlaylist.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -156,7 +162,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         lblCola.setText("COLA");
         panPlaylist.add(lblCola, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 310, 320, 36));
 
-        scpCola.getViewport().setBackground(new Color(120,166,235));
         tblCola.setBackground(new java.awt.Color(51, 204, 255));
         tblCola.setForeground(new java.awt.Color(255, 255, 255));
         tblCola.setModel(new javax.swing.table.DefaultTableModel(
@@ -186,7 +191,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         tblMusicas.setBackground(new java.awt.Color(0, 93, 232));
         tblMusicas.setForeground(new java.awt.Color(255, 255, 255));
-        scpMusicas.getViewport().setBackground(new Color(120,166,235));
         tblMusicas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -227,6 +231,12 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         btnReproducirLista.setOpaque(true);
         btnReproducirLista.addActionListener(this::btnReproducirListaActionPerformed);
 
+        txtBusqueda.addActionListener(this::txtBusquedaActionPerformed);
+
+        jButton1.setText("Buscar");
+        jButton1.setActionCommand("btnBusqueda");
+        jButton1.addActionListener(this::jButton1ActionPerformed);
+
         javax.swing.GroupLayout panCancionesLayout = new javax.swing.GroupLayout(panCanciones);
         panCanciones.setLayout(panCancionesLayout);
         panCancionesLayout.setHorizontalGroup(
@@ -234,9 +244,16 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             .addGroup(panCancionesLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(panCancionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnReproducirLista, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panCancionesLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btnReproducirLista, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(lblTituloLista, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
-                    .addComponent(scpMusicas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                    .addComponent(scpMusicas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addGroup(panCancionesLayout.createSequentialGroup()
+                        .addComponent(txtBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         panCancionesLayout.setVerticalGroup(
@@ -245,9 +262,13 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(lblTituloLista, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(scpMusicas, javax.swing.GroupLayout.PREFERRED_SIZE, 502, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(btnReproducirLista, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(panCancionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE)
+                    .addComponent(txtBusqueda))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(scpMusicas, javax.swing.GroupLayout.PREFERRED_SIZE, 497, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnReproducirLista, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -479,6 +500,18 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         jmbMenu.add(menuPlaylist);
 
+        menuRequisitos.setText("Requisitos");
+
+        jmiPilaHistorial.setText("PilaHistorial");
+        jmiPilaHistorial.addActionListener(this::jmiPilaHistorialActionPerformed);
+        menuRequisitos.add(jmiPilaHistorial);
+
+        jmiBusquedaArboles.setText("BusquedaArboles");
+        jmiBusquedaArboles.addActionListener(this::jmiBusquedaArbolesActionPerformed);
+        menuRequisitos.add(jmiBusquedaArboles);
+
+        jmbMenu.add(menuRequisitos);
+
         setJMenuBar(jmbMenu);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -513,9 +546,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         Tabla.ocultarColumna(tblPlaylist, 2);
         Tabla.ocultarColumna(tblCola, 2);
 
-        Tabla.establecerAnchoMaximo(tblMusicas, 0, 55);
-        Tabla.establecerAnchoMaximo(tblPlaylist, 0, 55);
-        Tabla.establecerAnchoMaximo(tblCola, 0, 55);
+        Tabla.establecerAnchoMaximo(tblMusicas, 0, 45);
+        Tabla.establecerAnchoMaximo(tblPlaylist, 0, 45);
+        Tabla.establecerAnchoMaximo(tblCola, 0, 45);
 
         tblMusicas.getColumnModel().getColumn(1).setCellRenderer(new DefaultTableCellRenderer() {
             @Override
@@ -678,7 +711,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     private void reproducirMusica(Musica musica) {
         if (musica == null) return;
-
+        registrarReproduccion(musica);
         musicaReproduciendo = musica;
 
         lblNombreMusica.setText("<html><div style='width:250px; text-align:center;'>" + musica.getNombre() + "</div></html>");
@@ -701,6 +734,13 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         reproductor.reproducir(musica);
         btnPlayPausa.setText("⏸");
+    }
+    
+    private void registrarReproduccion(Musica musica) {
+        if (musica == null) return;
+
+        musica.aumentarReproducciones();
+        pilaHistorial.push(musica);
     }
     
     private void conectarReproductor() {
@@ -979,6 +1019,19 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         tblCola.repaint();
     }
     
+    private void buscarMusicas() {
+        String texto = txtBusqueda.getText();
+        List<Musica> resultados;
+        if (listaSeleccionada != biblioteca.getBiblioteca()) {
+            resultados = listaSeleccionada.buscarMusicas(texto);
+        }else {
+            resultados = biblioteca.buscarMusicas(texto);
+        }
+        
+        Tabla.cargarMusicas(tblMusicas, resultados);
+        actualizarVistaReproduccion();
+    }
+    
     private void jmiCargarMusicasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiCargarMusicasActionPerformed
         DialogoCargaMusicas interfazCargaDeMusicas = new DialogoCargaMusicas(this, true);
         interfazCargaDeMusicas.setVisible(true);
@@ -1004,12 +1057,12 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         }
 
         musicaSeleccionada = musica;
-        actualizarVistaReproduccion();
 
         if (evt.getClickCount() != 2) {
             return;
         }
-
+        refrescar();
+        actualizarVistaReproduccion();
         listaReproduciendo = listaSeleccionada;
 
         if (listaReproduciendo != null) {
@@ -1027,7 +1080,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             return;
         }
         
-        musicaSeleccionada = listaSeleccionada.getPrimera();
+        musicaSeleccionada = listaSeleccionada.seleccionarPrimera();
+        refrescar();
         actualizarVistaReproduccion();
         listaReproduciendo = listaSeleccionada;
         reproduciendoDesdeCola = false;
@@ -1072,6 +1126,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             }
             reproducirMusica(musicaSeleccionada);
             cargarTablaCola();
+            refrescar();
             actualizarVistaReproduccion();
             return;
         }
@@ -1155,6 +1210,24 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_tblColaMousePressed
 
+    private void txtBusquedaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBusquedaActionPerformed
+        buscarMusicas();
+    }//GEN-LAST:event_txtBusquedaActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        buscarMusicas();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jmiBusquedaArbolesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiBusquedaArbolesActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jmiBusquedaArbolesActionPerformed
+
+    private void jmiPilaHistorialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiPilaHistorialActionPerformed
+        DialogoPilaHistorial interfazPilaHistorial = new DialogoPilaHistorial(this, true);
+        interfazPilaHistorial.setVisible(true);
+        refrescar();
+    }//GEN-LAST:event_jmiPilaHistorialActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem agregarACola;
     private javax.swing.JButton btnAnterior;
@@ -1162,9 +1235,12 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton btnPlayPausa;
     private javax.swing.JButton btnReproducirLista;
     private javax.swing.JButton btnSiguiente;
+    private javax.swing.JButton jButton1;
     private javax.swing.JMenuBar jmbMenu;
+    private javax.swing.JMenuItem jmiBusquedaArboles;
     private javax.swing.JMenuItem jmiCargarMusicas;
     private javax.swing.JMenuItem jmiNueva;
+    private javax.swing.JMenuItem jmiPilaHistorial;
     private javax.swing.JMenuItem jmiTodas;
     private javax.swing.JLabel lblAlbum;
     private javax.swing.JLabel lblAnio;
@@ -1184,6 +1260,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel lblTxtTamanio;
     private javax.swing.JMenu menuAdministrador;
     private javax.swing.JMenu menuPlaylist;
+    private javax.swing.JMenu menuRequisitos;
     private javax.swing.JPopupMenu pMenuCola;
     private javax.swing.JPopupMenu pMenuMusicas;
     private javax.swing.JPanel panCanciones;
@@ -1199,5 +1276,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JTable tblPlaylist;
     private javax.swing.JToggleButton tglCircular;
     private javax.swing.JToggleButton tglContinua;
+    private javax.swing.JTextField txtBusqueda;
     // End of variables declaration//GEN-END:variables
 }

@@ -1,5 +1,7 @@
 package estructuras;
 
+import java.util.ArrayList;
+import java.util.List;
 import modelos.Musica;
 
 public class PilaHistorial {
@@ -18,19 +20,26 @@ public class PilaHistorial {
     private int tamanio;
     
     public PilaHistorial() {
-        this.cima = null;
-        this.tamanio = 0;
+        cima = null;
+        tamanio = 0;
     }
    
     public boolean estaVacia() {
         return cima == null;
     }
+
+    public int getTamanio() {
+        return tamanio;
+    }
     
-    public void push(Musica musica) {
+    public boolean push(Musica musica) {
+        if (musica == null) return false;
+
         NMusica nueva = new NMusica(musica);
         nueva.siguiente = cima;
         cima = nueva;
         tamanio++;
+        return true;
     }
     
     public Musica pop() {
@@ -44,6 +53,19 @@ public class PilaHistorial {
     
     public Musica peek() {
         return estaVacia() ? null : cima.musica;
+    }
+
+    public List<Musica> listaMusicas() {
+        List<Musica> musicas = new ArrayList<>();
+
+        NMusica aux = cima;
+
+        while (aux != null) {
+            musicas.add(aux.musica);
+            aux = aux.siguiente;
+        }
+
+        return musicas;
     }
     
     public void limpiar() {

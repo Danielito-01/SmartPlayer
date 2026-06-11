@@ -90,6 +90,10 @@ public class Presentacion {
     public static void aplicarNuevaPlaylist(JDialog dialogo) {
         aplicarDialogo(dialogo, "Nueva Playlist");
     }
+    
+    public static void aplicarPilaHistorial(JDialog dialogo) {
+        aplicarDialogo(dialogo, "PilaHistorial");
+    }
 
     public static void refrescarToggle(JToggleButton toggle) {
         if (toggle.isSelected()) {
@@ -364,7 +368,7 @@ public class Presentacion {
             return;
         }
 
-        if (es(label, "lblNombrePlaylist", "lblTituloPlaylist", "lblNuevaPlaylist")
+        if (es(label, "lblNombrePlaylist", "lblTituloPlaylist", "lblNuevaPlaylist", "lblPilaHistorial", "lblCargandoMusicas")
                 || nombreContiene(label, "nombreplaylist")
                 || nombreContiene(label, "nuevaplaylist")) {
             label.setHorizontalAlignment(SwingConstants.CENTER);

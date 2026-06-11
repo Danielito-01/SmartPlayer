@@ -5,7 +5,6 @@ import modelos.Musica;
 import java.io.File;
 import java.util.List;
 import estructuras.BibliotecaGeneral;
-import java.awt.Color;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import utilidades.Presentacion;
@@ -30,6 +29,7 @@ public class DialogoCargaMusicas extends javax.swing.JDialog {
         tblMusicasCargadas = new javax.swing.JTable();
         btnCargar = new javax.swing.JButton();
         btnGuardar = new javax.swing.JButton();
+        lblCargandoMusicas = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setBackground(new java.awt.Color(204, 255, 255));
@@ -37,13 +37,12 @@ public class DialogoCargaMusicas extends javax.swing.JDialog {
 
         tblMusicasCargadas.setBackground(new java.awt.Color(0, 93, 232));
         tblMusicasCargadas.setForeground(new java.awt.Color(255, 255, 255));
-        scpMusicasCargadas.getViewport().setBackground(new Color(232,255,255));
         tblMusicasCargadas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "No.", "Nombre", "Artista", "Album", "Genero", "Duracion", "Tamaño", "Ruta", "Año"
+                "No.", "Nombre", "Artista", "Album", "Genero", "Duracion", "Tamaño", "Ruta", "Año", "Id"
             }
         ){
             @Override
@@ -72,6 +71,10 @@ public class DialogoCargaMusicas extends javax.swing.JDialog {
     btnGuardar.setOpaque(true);
     btnGuardar.addActionListener(this::btnGuardarActionPerformed);
 
+    lblCargandoMusicas.setFont(new java.awt.Font("Segoe UI Black", 3, 36)); // NOI18N
+    lblCargandoMusicas.setForeground(new java.awt.Color(51, 51, 51));
+    lblCargandoMusicas.setText("Cargando Musicas");
+
     javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
     getContentPane().setLayout(layout);
     layout.setHorizontalGroup(
@@ -85,27 +88,33 @@ public class DialogoCargaMusicas extends javax.swing.JDialog {
                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnGuardar)))
             .addContainerGap(14, Short.MAX_VALUE))
+        .addGroup(layout.createSequentialGroup()
+            .addGap(88, 88, 88)
+            .addComponent(lblCargandoMusicas, javax.swing.GroupLayout.PREFERRED_SIZE, 955, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
     );
     layout.setVerticalGroup(
         layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
             .addContainerGap()
+            .addComponent(lblCargandoMusicas)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                 .addComponent(btnCargar)
                 .addComponent(btnGuardar))
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addComponent(scpMusicasCargadas, javax.swing.GroupLayout.PREFERRED_SIZE, 533, javax.swing.GroupLayout.PREFERRED_SIZE)
-            .addGap(16, 16, 16))
+            .addGap(12, 12, 12))
     );
 
     pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void configurarTabla() {
-        Tabla.establecerAnchoMaximo(tblMusicasCargadas, 0, 55);
+        Tabla.ocultarColumna(tblMusicasCargadas, 9);
+        Tabla.establecerAnchoMaximo(tblMusicasCargadas, 0, 45);
         Tabla.establecerAnchoMaximo(tblMusicasCargadas, 5, 60);
         Tabla.establecerAnchoMaximo(tblMusicasCargadas, 6, 80);
-        Tabla.establecerAnchoMaximo(tblMusicasCargadas, 8, 80);
     }
     
     private void btnCargarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCargarActionPerformed
@@ -135,6 +144,7 @@ public class DialogoCargaMusicas extends javax.swing.JDialog {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCargar;
     private javax.swing.JButton btnGuardar;
+    private javax.swing.JLabel lblCargandoMusicas;
     private javax.swing.JScrollPane scpMusicasCargadas;
     private javax.swing.JTable tblMusicasCargadas;
     // End of variables declaration//GEN-END:variables
