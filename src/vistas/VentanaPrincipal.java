@@ -155,7 +155,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         panPlaylist.add(scpPlaylist, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 60, 330, 240));
 
         btnBiblioteca.setBackground(new java.awt.Color(21, 153, 245));
-        btnBiblioteca.setFont(new java.awt.Font("Segoe UI", 3, 24)); // NOI18N
+        btnBiblioteca.setFont(new java.awt.Font("Segoe UI Symbol", 3, 30)); // NOI18N
         btnBiblioteca.setForeground(new java.awt.Color(255, 255, 255));
         btnBiblioteca.setText("Biblioteca");
         btnBiblioteca.setToolTipText("");
@@ -845,7 +845,12 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             @Override
             public void alError(String mensaje) {
                 JOptionPane.showMessageDialog(VentanaPrincipal.this, mensaje);
-                btnPlayPausa.setText("▶");
+
+                if (reproduciendoDesdeCola) {
+                    colaReproduccion.desencolar();
+                }
+
+                finalizarReproduccion();
             }
         });
 
@@ -1039,26 +1044,32 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         return false;
     }
     
-    private void actualizarVistaReproduccion() {
-        tblMusicas.clearSelection();
+private void actualizarVistaReproduccion() {
+    tblMusicas.clearSelection();
 
-        if (musicaSeleccionada != null) {
-            seleccionarFilaPorId(tblMusicas, musicaSeleccionada.getId());
-        }
-
-        tblPlaylist.clearSelection();
-
-        for (Playlist playlist : biblioteca.getPlaylists()) {
-            if (playlist.getPlaylist() == listaSeleccionada) {
-                seleccionarFilaPorId(tblPlaylist, playlist.getId());
-                break;
-            }
-        }
-
-        tblMusicas.repaint();
-        tblPlaylist.repaint();
-        tblCola.repaint();
+    if (musicaSeleccionada != null) {
+        seleccionarFilaPorId(tblMusicas, musicaSeleccionada.getId());
     }
+
+    tblPlaylist.clearSelection();
+
+    for (Playlist playlist : biblioteca.getPlaylists()) {
+        if (playlist.getPlaylist() == listaSeleccionada) {
+            seleccionarFilaPorId(tblPlaylist, playlist.getId());
+            break;
+        }
+    }
+
+    if (musicaReproduciendo != null && listaReproduciendo == biblioteca.getBiblioteca()) {
+        btnBiblioteca.setText(reproduciendoDesdeCola ? "⏳ Biblioteca" : "🔊 Biblioteca");
+    } else {
+        btnBiblioteca.setText("Biblioteca");
+    }
+
+    tblMusicas.repaint();
+    tblPlaylist.repaint();
+    tblCola.repaint();
+}
     
     private void buscarMusicas() {
         String texto = txtBusqueda.getText();
@@ -1184,8 +1195,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             listaReproduciendo.setCircular(tglCircular.isSelected());
         }
 
-        reproduciendoDesdeCola = false;
+        if (reproduciendoDesdeCola) {
+            colaReproduccion.desencolar();
+        }
 
+        reproduciendoDesdeCola = false;
         reproducirMusica(musicaSeleccionada, origen, nombreOrigen);
 
         cargarTablaCola();
@@ -1197,18 +1211,25 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Seleccione una lista para reproducir.");
             return;
         }
-        
+
+        if (reproduciendoDesdeCola) {
+            colaReproduccion.desencolar();
+        }
+
         musicaSeleccionada = listaSeleccionada.seleccionarPrimera();
-        refrescar();
-        actualizarVistaReproduccion();
         listaReproduciendo = listaSeleccionada;
         reproduciendoDesdeCola = false;
 
-        reproducirMusica(musicaSeleccionada, obtenerOrigenDeLista(listaReproduciendo),
+        reproducirMusica(
+                musicaSeleccionada,
+                obtenerOrigenDeLista(listaReproduciendo),
                 obtenerNombreOrigenDeLista(listaReproduciendo)
         );
 
         tglContinua.setSelected(true);
+
+        cargarTablaCola();
+        actualizarVistaReproduccion();
     }//GEN-LAST:event_btnReproducirListaActionPerformed
 
     private void tglContinuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglContinuaActionPerformed
@@ -1240,28 +1261,54 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             return;
         }
 
-        if (musicaSeleccionada == null) {
-            musicaSeleccionada = biblioteca.buscarPorId(idSeleccion(tblMusicas));
+        Musica musicaTabla = biblioteca.buscarPorId(idSeleccion(tblMusicas));
+
+        if (musicaTabla != null) {
+            musicaSeleccionada = musicaTabla;
+            listaReproduciendo = listaSeleccionada;
+
+            if (listaReproduciendo != null) {
+                listaReproduciendo.seleccionarMusica(musicaSeleccionada);
+                listaReproduciendo.setCircular(tglCircular.isSelected());
+            }
+
+            reproduciendoDesdeCola = false;
+
+            reproducirMusica(
+                    musicaSeleccionada,
+                    obtenerOrigenDeLista(listaReproduciendo),
+                    obtenerNombreOrigenDeLista(listaReproduciendo)
+            );
+
+            cargarTablaCola();
+            actualizarVistaReproduccion();
+            return;
         }
 
-        if (musicaSeleccionada == null) {
-            JOptionPane.showMessageDialog(this, "Selecciona una música de\n  la lista para reproducir\n                  ⬅️");
-            return; 
-        }
+        Musica actualLista = listaReproduciendo == null ? null : listaReproduciendo.getActual();
 
-        reproduciendoDesdeCola = false;
-        listaReproduciendo = listaSeleccionada;
-
-        if (listaReproduciendo != null) {
-            listaReproduciendo.seleccionarMusica(musicaSeleccionada);
+        if (actualLista != null) {
+            reproduciendoDesdeCola = false;
             listaReproduciendo.setCircular(tglCircular.isSelected());
+
+            if (listaSeleccionada == listaReproduciendo) {
+                musicaSeleccionada = actualLista;
+            } else {
+                musicaSeleccionada = null;
+            }
+
+            reproducirMusica(
+                    actualLista,
+                    obtenerOrigenDeLista(listaReproduciendo),
+                    obtenerNombreOrigenDeLista(listaReproduciendo)
+            );
+
+            cargarTablaCola();
+            actualizarVistaReproduccion();
+            return;
         }
 
-        reproducirMusica(musicaSeleccionada, obtenerOrigenDeLista(listaReproduciendo),
-                obtenerNombreOrigenDeLista(listaReproduciendo));
-
-        cargarTablaCola();
-        actualizarVistaReproduccion();
+        JOptionPane.showMessageDialog(this, "Selecciona una música de\n  la lista para reproducir\n                  ⬅️");
     }//GEN-LAST:event_btnPlayPausaActionPerformed
 
     private void jmiNuevaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiNuevaActionPerformed
