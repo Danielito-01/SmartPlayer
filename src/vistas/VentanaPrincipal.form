@@ -64,11 +64,6 @@
             <Property name="text" type="java.lang.String" value="Playlists"/>
           </Properties>
           <SubComponents>
-            <MenuItem class="javax.swing.JMenuItem" name="jmiTodas">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Todas"/>
-              </Properties>
-            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jmiNueva">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Nueva"/>
@@ -76,6 +71,11 @@
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmiNuevaActionPerformed"/>
               </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jmiTodas">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Todas"/>
+              </Properties>
             </MenuItem>
           </SubComponents>
         </Menu>
