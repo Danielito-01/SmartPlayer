@@ -102,12 +102,13 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jmbMenu = new javax.swing.JMenuBar();
         menuAdministrador = new javax.swing.JMenu();
         jmiCargarMusicas = new javax.swing.JMenuItem();
+        jmiHistorial = new javax.swing.JMenuItem();
         menuPlaylist = new javax.swing.JMenu();
         jmiTodas = new javax.swing.JMenuItem();
         jmiNueva = new javax.swing.JMenuItem();
         menuRequisitos = new javax.swing.JMenu();
         jmiPilaHistorial = new javax.swing.JMenuItem();
-        jmiBusquedaArboles = new javax.swing.JMenuItem();
+        jmiBusquedaEnArboles = new javax.swing.JMenuItem();
         jmiVisualizacionArboles = new javax.swing.JMenuItem();
         jmiRecorridos = new javax.swing.JMenuItem();
 
@@ -489,6 +490,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jmiCargarMusicas.addActionListener(this::jmiCargarMusicasActionPerformed);
         menuAdministrador.add(jmiCargarMusicas);
 
+        jmiHistorial.setText("Historial");
+        jmiHistorial.addActionListener(this::jmiHistorialActionPerformed);
+        menuAdministrador.add(jmiHistorial);
+
         jmbMenu.add(menuAdministrador);
 
         menuPlaylist.setText("Playlists");
@@ -508,9 +513,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jmiPilaHistorial.addActionListener(this::jmiPilaHistorialActionPerformed);
         menuRequisitos.add(jmiPilaHistorial);
 
-        jmiBusquedaArboles.setText("BusquedaArboles");
-        jmiBusquedaArboles.addActionListener(this::jmiBusquedaArbolesActionPerformed);
-        menuRequisitos.add(jmiBusquedaArboles);
+        jmiBusquedaEnArboles.setText("Busqueda en Arboles");
+        jmiBusquedaEnArboles.addActionListener(this::jmiBusquedaEnArbolesActionPerformed);
+        menuRequisitos.add(jmiBusquedaEnArboles);
 
         jmiVisualizacionArboles.setText("Visualizacion Arboles");
         jmiVisualizacionArboles.addActionListener(this::jmiVisualizacionArbolesActionPerformed);
@@ -1158,8 +1163,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Ya existe una playlist con ese nombre.");
             return;
         }
-        DialogoNuevaPlaylist interfaz = new DialogoNuevaPlaylist(this, true, nombre);
-        interfaz.setVisible(true);
+        DialogoNuevaPlaylist dialogo = new DialogoNuevaPlaylist(this, false, nombre);
+        dialogo.setVisible(true);
         refrescar();
     }//GEN-LAST:event_jmiNuevaActionPerformed
 
@@ -1230,25 +1235,35 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         buscarMusicas();
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jmiBusquedaArbolesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiBusquedaArbolesActionPerformed
-        
-    }//GEN-LAST:event_jmiBusquedaArbolesActionPerformed
+    private void jmiBusquedaEnArbolesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiBusquedaEnArbolesActionPerformed
+        DialogoBusquedaEnArboles dialogo = new DialogoBusquedaEnArboles(this, false);
+        dialogo.setVisible(true);
+        refrescar();
+    }//GEN-LAST:event_jmiBusquedaEnArbolesActionPerformed
 
     private void jmiPilaHistorialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiPilaHistorialActionPerformed
-        DialogoPilaHistorial interfazPilaHistorial = new DialogoPilaHistorial(this, true);
-        interfazPilaHistorial.setVisible(true);
+        DialogoPilaHistorial dialogo = new DialogoPilaHistorial(this, false);
+        dialogo.setVisible(true);
         refrescar();
     }//GEN-LAST:event_jmiPilaHistorialActionPerformed
 
     private void jmiVisualizacionArbolesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiVisualizacionArbolesActionPerformed
-        DialogoVisualizacionArboles dialogo = new DialogoVisualizacionArboles(this, true);
+        DialogoVisualizacionArboles dialogo = new DialogoVisualizacionArboles(this, false);
         dialogo.setVisible(true);
+        refrescar();
     }//GEN-LAST:event_jmiVisualizacionArbolesActionPerformed
 
     private void jmiRecorridosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiRecorridosActionPerformed
-        DialogoRecorrido dialogo = new DialogoRecorrido(this, true);
+        DialogoRecorrido dialogo = new DialogoRecorrido(this, false);
         dialogo.setVisible(true);
+        refrescar();
     }//GEN-LAST:event_jmiRecorridosActionPerformed
+
+    private void jmiHistorialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiHistorialActionPerformed
+        DialogoHistorial dialogo = new DialogoHistorial(this, false);
+        dialogo.setVisible(true);
+        refrescar();
+    }//GEN-LAST:event_jmiHistorialActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem agregarACola;
@@ -1259,8 +1274,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton btnSiguiente;
     private javax.swing.JButton jButton1;
     private javax.swing.JMenuBar jmbMenu;
-    private javax.swing.JMenuItem jmiBusquedaArboles;
+    private javax.swing.JMenuItem jmiBusquedaEnArboles;
     private javax.swing.JMenuItem jmiCargarMusicas;
+    private javax.swing.JMenuItem jmiHistorial;
     private javax.swing.JMenuItem jmiNueva;
     private javax.swing.JMenuItem jmiPilaHistorial;
     private javax.swing.JMenuItem jmiRecorridos;
