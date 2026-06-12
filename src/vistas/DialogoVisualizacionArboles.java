@@ -244,16 +244,14 @@ public class DialogoVisualizacionArboles extends javax.swing.JDialog {
             File imagenAVL = GestorGraphviz.generarSvgDesdeDot(dotAVL, "arbol_avl");
 
             mostrarImagenes(imagenABB, imagenAVL);
+            if (biblioteca.getAvl().getRaiz() !=null && biblioteca.getAbb().getRaiz() != null) {
             lblRaizABB.setText("Raiz: " + biblioteca.getAbb().getRaiz().getNombre());
             lblCantidadABB.setText("Cantidad: " + biblioteca.getAbb().getCantidad());
             lblRaizAVL.setText("Raiz: " + biblioteca.getAvl().getRaiz().getNombre());
             lblCantidadAVL.setText("Cantidad: " + biblioteca.getAvl().getCantidad());
-
+            }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(
-                    this,
-                    "No se pudieron generar los árboles.\n\n" + e.getMessage()
-            );
+            JOptionPane.showMessageDialog(this, "No se pudieron generar los árboles.\n\n" + e.getMessage());
         }
     }
     
