@@ -732,11 +732,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         actualizarVistaReproduccion();
     }
 
-    private void reproducirMusica(
-            Musica musica,
-            GestorHistorial.Origen origen,
-            String nombreOrigen
-    ) {
+    private void reproducirMusica(Musica musica, GestorHistorial.Origen origen, String nombreOrigen) {
         if (musica == null) {
             return;
         }
@@ -766,11 +762,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         btnPlayPausa.setText("⏸");
     }
     
-    private void registrarReproduccion(
-            Musica musica,
-            GestorHistorial.Origen origen,
-            String nombreOrigen
-    ) {
+    private void registrarReproduccion(Musica musica, GestorHistorial.Origen origen, String nombreOrigen) {
         if (musica == null) {
             return;
         }
