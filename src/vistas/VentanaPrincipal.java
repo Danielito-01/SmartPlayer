@@ -15,6 +15,7 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import modelos.Musica;
 import modelos.Playlist;
+import servicios.GestorHistorial;
 import servicios.GestorPortada;
 import servicios.GestorReproductor;
 import utilidades.Presentacion;
@@ -30,6 +31,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private PilaHistorial pilaHistorial = biblioteca.getPilaHistorial();
     private ColaReproduccion colaReproduccion = biblioteca.getColaReproduccion();
     private boolean reproduciendoDesdeCola;
+    
+    private boolean busquedaActiva;
+    private String textoBusquedaActiva = "";
     
     private final GestorReproductor reproductor = new GestorReproductor();
     private boolean actualizandoSlider;
@@ -654,11 +658,15 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }
 
     private void cargarTablaMusicas(ListaMusicas lista) {
+        busquedaActiva = false;
+        textoBusquedaActiva = "";
+
         if (lista == null) {
             listaSeleccionada = biblioteca.getBiblioteca();
         } else {
             listaSeleccionada = lista;
         }
+
         Tabla.cargarMusicas(tblMusicas, listaSeleccionada.listaMusicas());
     }
 
@@ -724,9 +732,16 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         actualizarVistaReproduccion();
     }
 
-    private void reproducirMusica(Musica musica) {
-        if (musica == null) return;
-        registrarReproduccion(musica);
+    private void reproducirMusica(
+            Musica musica,
+            GestorHistorial.Origen origen,
+            String nombreOrigen
+    ) {
+        if (musica == null) {
+            return;
+        }
+
+        registrarReproduccion(musica, origen, nombreOrigen);
         musicaReproduciendo = musica;
 
         lblNombreMusica.setText("<html><div style='width:250px; text-align:center;'>" + musica.getNombre() + "</div></html>");
@@ -751,11 +766,23 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         btnPlayPausa.setText("⏸");
     }
     
-    private void registrarReproduccion(Musica musica) {
-        if (musica == null) return;
+    private void registrarReproduccion(
+            Musica musica,
+            GestorHistorial.Origen origen,
+            String nombreOrigen
+    ) {
+        if (musica == null) {
+            return;
+        }
 
         musica.aumentarReproducciones();
         pilaHistorial.push(musica);
+
+        biblioteca.getHistorial().registrarReproduccion(
+                musica,
+                origen,
+                nombreOrigen
+        );
     }
     
     private void conectarReproductor() {
@@ -877,15 +904,23 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     
     private boolean reproducirCola() {
         Musica musicaCola = colaReproduccion.peek();
+
         if (musicaCola == null) {
             reproduciendoDesdeCola = false;
             cargarTablaCola();
             actualizarVistaReproduccion();
             return false;
         }
+
         reproduciendoDesdeCola = true;
         musicaReproduciendo = musicaCola;
-        reproducirMusica(musicaCola);
+
+        reproducirMusica(
+                musicaCola,
+                GestorHistorial.Origen.COLA,
+                "Cola de reproducción"
+        );
+
         cargarTablaCola();
         actualizarVistaReproduccion();
         return true;
@@ -942,7 +977,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             musicaSeleccionada = siguiente;
         }
 
-        reproducirMusica(siguiente);
+        reproducirMusica(siguiente, obtenerOrigenDeLista(listaReproduciendo), 
+                obtenerNombreOrigenDeLista(listaReproduciendo));
         cargarTablaCola();
         actualizarVistaReproduccion();
 
@@ -970,7 +1006,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             musicaSeleccionada = anterior;
         }
 
-        reproducirMusica(anterior);
+        reproducirMusica(anterior, obtenerOrigenDeLista(listaReproduciendo), 
+                obtenerNombreOrigenDeLista(listaReproduciendo));
         cargarTablaCola();
         actualizarVistaReproduccion();
 
@@ -1039,14 +1076,85 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private void buscarMusicas() {
         String texto = txtBusqueda.getText();
         List<Musica> resultados;
+
+        busquedaActiva = texto != null && !texto.trim().isEmpty();
+        textoBusquedaActiva = busquedaActiva ? texto.trim() : "";
+
         if (listaSeleccionada != biblioteca.getBiblioteca()) {
             resultados = listaSeleccionada.buscarMusicas(texto);
-        }else {
+        } else {
             resultados = biblioteca.buscarMusicas(texto);
         }
-        
+
         Tabla.cargarMusicas(tblMusicas, resultados);
         actualizarVistaReproduccion();
+    }
+    
+    private GestorHistorial.Origen obtenerOrigenTablaMusicas() {
+        if (busquedaActiva) {
+            return GestorHistorial.Origen.BUSQUEDA;
+        }
+
+        return obtenerOrigenDeLista(listaSeleccionada);
+    }
+
+    private String obtenerNombreOrigenTablaMusicas() {
+        if (busquedaActiva) {
+            return "Búsqueda en " + obtenerNombreOrigenDeLista(listaSeleccionada)
+                    + ": " + textoBusquedaActiva;
+        }
+
+        return obtenerNombreOrigenDeLista(listaSeleccionada);
+    }
+
+    private GestorHistorial.Origen obtenerOrigenDeLista(ListaMusicas lista) {
+        if (lista == null) {
+            return GestorHistorial.Origen.DESCONOCIDO;
+        }
+
+        if (lista == biblioteca.getBiblioteca()) {
+            return GestorHistorial.Origen.BIBLIOTECA;
+        }
+
+        Playlist playlist = obtenerPlaylistDeLista(lista);
+
+        if (playlist != null) {
+            return GestorHistorial.Origen.PLAYLIST;
+        }
+
+        return GestorHistorial.Origen.DESCONOCIDO;
+    }
+
+    private String obtenerNombreOrigenDeLista(ListaMusicas lista) {
+        if (lista == null) {
+            return "Origen desconocido";
+        }
+
+        if (lista == biblioteca.getBiblioteca()) {
+            return "Biblioteca general";
+        }
+
+        Playlist playlist = obtenerPlaylistDeLista(lista);
+
+        if (playlist != null) {
+            return "Playlist " + playlist.getNombre();
+        }
+
+        return "Origen desconocido";
+    }
+
+    private Playlist obtenerPlaylistDeLista(ListaMusicas lista) {
+        if (lista == null) {
+            return null;
+        }
+
+        for (Playlist playlist : biblioteca.getPlaylists()) {
+            if (playlist.getPlaylist() == lista) {
+                return playlist;
+            }
+        }
+
+        return null;
     }
     
     private void jmiCargarMusicasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiCargarMusicasActionPerformed
@@ -1088,7 +1196,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         }
 
         reproduciendoDesdeCola = false;
-        reproducirMusica(musicaSeleccionada);
+
+        reproducirMusica(musicaSeleccionada, obtenerOrigenTablaMusicas(), obtenerNombreOrigenTablaMusicas());
     }//GEN-LAST:event_tblMusicasMouseClicked
 
     private void btnReproducirListaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReproducirListaActionPerformed
@@ -1102,7 +1211,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         actualizarVistaReproduccion();
         listaReproduciendo = listaSeleccionada;
         reproduciendoDesdeCola = false;
-        reproducirMusica(musicaSeleccionada);
+
+        reproducirMusica(musicaSeleccionada, obtenerOrigenDeLista(listaReproduciendo),
+                obtenerNombreOrigenDeLista(listaReproduciendo)
+        );
+
         tglContinua.setSelected(true);
     }//GEN-LAST:event_btnReproducirListaActionPerformed
 
@@ -1141,7 +1254,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 listaReproduciendo.seleccionarMusica(musicaSeleccionada);
                 listaReproduciendo.setCircular(tglCircular.isSelected());
             }
-            reproducirMusica(musicaSeleccionada);
+            reproducirMusica(musicaSeleccionada, obtenerOrigenTablaMusicas(),
+                    obtenerNombreOrigenTablaMusicas());
             cargarTablaCola();
             refrescar();
             actualizarVistaReproduccion();
