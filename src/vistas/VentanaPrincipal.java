@@ -1269,7 +1269,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "Ya existe una playlist con ese nombre.");
             return;
         }
-        DialogoNuevaPlaylist dialogo = new DialogoNuevaPlaylist(this, false, nombre);
+        DialogoNuevaPlaylist dialogo = new DialogoNuevaPlaylist(this, true, nombre);
         dialogo.setVisible(true);
         refrescar();
     }//GEN-LAST:event_jmiNuevaActionPerformed
