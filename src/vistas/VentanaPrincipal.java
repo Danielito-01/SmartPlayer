@@ -618,7 +618,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 int filaModelo = table.convertRowIndexToModel(row);
                 Object valorId = table.getModel().getValueAt(filaModelo, 2);
 
-                if (valorId != null && listaReproduciendo != null) {
+                if (valorId != null && listaReproduciendo != null && musicaReproduciendo != null) {
                     try {
                         int idPlaylist = Integer.parseInt(valorId.toString());
 
@@ -919,10 +919,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     }
     
     private boolean reproducirSiguiente() {
-        if (musicaReproduciendo == null) {
-            return false;
-        }
-
         boolean veniaDeCola = reproduciendoDesdeCola;
 
         if (reproduciendoDesdeCola) {
@@ -969,11 +965,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             musicaSeleccionada = siguiente;
         }
 
-        reproducirMusica(siguiente, obtenerOrigenDeLista(listaReproduciendo), 
-                obtenerNombreOrigenDeLista(listaReproduciendo));
+        reproducirMusica(siguiente, obtenerOrigenDeLista(listaReproduciendo), obtenerNombreOrigenDeLista(listaReproduciendo));
         cargarTablaCola();
         actualizarVistaReproduccion();
-
         return true;
     }
     
@@ -982,7 +976,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             return false;
         }
 
-        if (listaReproduciendo == null || musicaReproduciendo == null) {
+        if (listaReproduciendo == null) {
             return false;
         }
 
@@ -994,12 +988,13 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             return false;
         }
 
+        reproduciendoDesdeCola = false;
+
         if (listaSeleccionada == listaReproduciendo) {
             musicaSeleccionada = anterior;
         }
 
-        reproducirMusica(anterior, obtenerOrigenDeLista(listaReproduciendo), 
-                obtenerNombreOrigenDeLista(listaReproduciendo));
+        reproducirMusica(anterior, obtenerOrigenDeLista(listaReproduciendo), obtenerNombreOrigenDeLista(listaReproduciendo));
         cargarTablaCola();
         actualizarVistaReproduccion();
 
@@ -1241,7 +1236,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             }
 
             if (musicaSeleccionada == null) {
-                JOptionPane.showMessageDialog(this, "Selecciona una música para reproducir.");
+                JOptionPane.showMessageDialog(this, "Selecciona una música de\nla lista para reproducir.\n                 ⬅️");
                 return;
             }
 
