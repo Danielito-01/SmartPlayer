@@ -134,7 +134,7 @@ public final class BibliotecaGeneral {
 
         long tiempoTotal = System.nanoTime() - inicioTotal;
 
-        return historial.registrarCarga(
+        historial.registrarCarga(
                 recibidas,
                 insertadas,
                 duplicadas,
@@ -148,6 +148,63 @@ public final class BibliotecaGeneral {
                 tiempoAVL,
                 tiempoTotal
         );
+
+        return crearResumenCargaUsuario(
+                recibidas,
+                insertadas,
+                duplicadas,
+                invalidas,
+                fallidas,
+                biblioteca.getCantidad(),
+                abb.getCantidad(),
+                avl.getCantidad(),
+                hash.getCantidad(),
+                tiempoABB,
+                tiempoAVL
+        );
+    }
+    
+    private String crearResumenCargaUsuario(
+            int recibidas,
+            int insertadas,
+            int duplicadas,
+            int invalidas,
+            int fallidas,
+            int totalBiblioteca,
+            int totalABB,
+            int totalAVL,
+            int totalHash,
+            long tiempoABB,
+            long tiempoAVL
+    ) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("Carga finalizada\n\n");
+
+        sb.append("Músicas recibidas: ").append(recibidas).append("\n");
+        sb.append("Músicas insertadas en esta carga: ").append(insertadas).append("\n");
+        sb.append("Músicas duplicadas: ").append(duplicadas).append("\n");
+        sb.append("Músicas inválidas: ").append(invalidas).append("\n");
+        sb.append("Músicas fallidas: ").append(fallidas).append("\n\n");
+
+        sb.append("Total en lista general: ").append(totalBiblioteca).append("\n");
+        sb.append("Total en ABB: ").append(totalABB).append("\n");
+        sb.append("Total en AVL: ").append(totalAVL).append("\n");
+        sb.append("Total en tabla hash: ").append(totalHash).append("\n\n");
+
+        sb.append("Tiempo de inserción ABB: ")
+                .append(formatearMilisegundos(tiempoABB))
+                .append(" ms\n");
+
+        sb.append("Tiempo de inserción AVL: ")
+                .append(formatearMilisegundos(tiempoAVL))
+                .append(" ms");
+
+        return sb.toString();
+    }
+
+    private String formatearMilisegundos(long nanosegundos) {
+        return String.format("%.4f", nanosegundos / 1_000_000.0);
     }
 
     /*
@@ -260,7 +317,15 @@ public final class BibliotecaGeneral {
         Musica musica = hash.buscarPorId(id);
 
         if (musica == null) {
-            historial.registrarEliminacion(id, null, false, 0, 0);
+            historial.registrarEliminacionMusica(
+                    id,
+                    null,
+                    false,
+                    0,
+                    0,
+                    0,
+                    "Música no encontrada"
+            );
             return false;
         }
 
@@ -276,20 +341,30 @@ public final class BibliotecaGeneral {
 
         boolean okHash = hash.eliminarMusica(musica);
 
-        String ruta = normalizarRuta(musica.getRuta());
-
-        if (!ruta.isEmpty()) {
-            rutas.remove(ruta);
-        }
-
         boolean eliminada = okLista || okABB || okAVL || okHash;
 
-        historial.registrarEliminacion(
+        int playlistsAfectadas = 0;
+
+        if (eliminada) {
+            String ruta = normalizarRuta(musica.getRuta());
+
+            if (!ruta.isEmpty()) {
+                rutas.remove(ruta);
+            }
+
+            playlistsAfectadas = eliminarMusicaDePlaylists(musica);
+        }
+
+        historial.registrarEliminacionMusica(
                 id,
                 musica,
                 eliminada,
                 tiempoABB,
-                tiempoAVL
+                tiempoAVL,
+                playlistsAfectadas,
+                eliminada
+                        ? "Música eliminada correctamente de la biblioteca general"
+                        : "No se pudo eliminar la música completamente"
         );
 
         return eliminada;
@@ -364,7 +439,8 @@ public final class BibliotecaGeneral {
     public String crearPlaylist(String nombre) {
         if (nombre == null || nombre.trim().isEmpty()) {
             historial.registrarCreacionPlaylist(
-                    null,
+                    0,
+                    "",
                     false,
                     "Nombre inválido"
             );
@@ -377,7 +453,8 @@ public final class BibliotecaGeneral {
 
         if (existePlaylist(nombre)) {
             historial.registrarCreacionPlaylist(
-                    null,
+                    0,
+                    nombre,
                     false,
                     "Ya existe una playlist con ese nombre"
             );
@@ -390,7 +467,8 @@ public final class BibliotecaGeneral {
         playlists.add(playlist);
 
         historial.registrarCreacionPlaylist(
-                playlist,
+                playlist.getId(),
+                playlist.getNombre(),
                 true,
                 "Playlist creada correctamente"
         );
@@ -406,7 +484,8 @@ public final class BibliotecaGeneral {
             int invalidas = musicas == null ? 0 : musicas.size();
 
             historial.registrarMusicasAgregadasAPlaylist(
-                    null,
+                    idPlaylist,
+                    "No encontrada",
                     musicas,
                     0,
                     0,
@@ -445,7 +524,8 @@ public final class BibliotecaGeneral {
         }
 
         historial.registrarMusicasAgregadasAPlaylist(
-                playlist,
+                playlist.getId(),
+                playlist.getNombre(),
                 musicas,
                 agregadas,
                 duplicadas,
@@ -503,5 +583,23 @@ public final class BibliotecaGeneral {
                 destino.add(musica);
             }
         }
+    }
+    
+    private int eliminarMusicaDePlaylists(Musica musica) {
+        if (musica == null) {
+            return 0;
+        }
+
+        int playlistsAfectadas = 0;
+
+        for (Playlist playlist : playlists) {
+            if (playlist != null && playlist.contieneMusica(musica)) {
+                if (playlist.eliminarMusica(musica)) {
+                    playlistsAfectadas++;
+                }
+            }
+        }
+
+        return playlistsAfectadas;
     }
 }

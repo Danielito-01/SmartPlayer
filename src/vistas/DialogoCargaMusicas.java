@@ -124,11 +124,18 @@ public class DialogoCargaMusicas extends javax.swing.JDialog {
     }//GEN-LAST:event_btnCargarActionPerformed
 
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        if (musicasCargadas == null) {
-            musicasCargadas = new ArrayList<>();
+        if (musicasCargadas == null || musicasCargadas.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "No hay músicas cargadas para guardar.",
+                    "Biblioteca",
+                    JOptionPane.WARNING_MESSAGE
+            );
+            return;
         }
 
         String reporte = biblioteca.insertarMusicas(musicasCargadas);
+
         JOptionPane.showMessageDialog(
                 this,
                 reporte,
