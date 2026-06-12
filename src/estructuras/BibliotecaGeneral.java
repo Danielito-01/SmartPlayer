@@ -179,10 +179,10 @@ public final class BibliotecaGeneral {
     ) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("Carga finalizada\n\n");
+        sb.append("Proceso finalizado.\n\n");
 
         sb.append("Músicas recibidas: ").append(recibidas).append("\n");
-        sb.append("Músicas insertadas en esta carga: ").append(insertadas).append("\n");
+        sb.append("Músicas insertadas: ").append(insertadas).append("\n");
         sb.append("Músicas duplicadas: ").append(duplicadas).append("\n");
         sb.append("Músicas inválidas: ").append(invalidas).append("\n");
         sb.append("Músicas fallidas: ").append(fallidas).append("\n\n");
