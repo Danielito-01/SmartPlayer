@@ -1178,8 +1178,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         if (evt.getClickCount() != 2) {
             return;
         }
-        refrescar();
-        actualizarVistaReproduccion();
+
+        GestorHistorial.Origen origen = obtenerOrigenTablaMusicas();
+        String nombreOrigen = obtenerNombreOrigenTablaMusicas();
+
         listaReproduciendo = listaSeleccionada;
 
         if (listaReproduciendo != null) {
@@ -1189,7 +1191,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         reproduciendoDesdeCola = false;
 
-        reproducirMusica(musicaSeleccionada, obtenerOrigenTablaMusicas(), obtenerNombreOrigenTablaMusicas());
+        reproducirMusica(musicaSeleccionada, origen, nombreOrigen);
+
+        cargarTablaCola();
+        actualizarVistaReproduccion();
     }//GEN-LAST:event_tblMusicasMouseClicked
 
     private void btnReproducirListaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReproducirListaActionPerformed
