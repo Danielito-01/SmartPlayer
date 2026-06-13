@@ -145,7 +145,7 @@ public class ListaMusicas {
             if (siguiente != null && siguiente != eliminar) {
                 actual = siguiente;
             } else {
-                actual = anterior;
+                actual = null;
             }
         }
         cantidad--;

@@ -1012,9 +1012,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         return true;
     }
     
-    private void finalizarReproduccion() {
+    private void finalizarReproduccion(boolean limpiarDatos) {
         reproduciendoDesdeCola = false;
         musicaReproduciendo = null;
+        musicaSeleccionada = null;
 
         btnPlayPausa.setText("▶");
         lblTiempoActual.setText("00:00");
@@ -1024,8 +1025,16 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         sldProgreso.setValue(0);
         actualizandoSlider = false;
 
+        if (limpiarDatos) {
+            limpiarDatosEnPantalla();
+        }
+
         cargarTablaCola();
         actualizarVistaReproduccion();
+    }
+    
+    private void finalizarReproduccion() {
+        finalizarReproduccion(false);
     }
     
     private boolean seleccionarFilaPorId(JTable tabla, int id) {
@@ -1171,34 +1180,47 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         return null;
     }
     
-    private void manejarPlaylistEliminada(ListaMusicas listaEliminada) {
-        if (listaEliminada == null) {
-            return;
+    private void manejarCambiosAdministracion(int idPlaylistAdministrada, ListaMusicas listaPlaylistAntes) {
+        Playlist playlistDespues = null;
+        boolean listaFueEliminada = false;
+        boolean musicaActualYaNoExiste = false;
+        boolean musicaActualYaNoEstaEnPlaylist = false;
+
+        if (idPlaylistAdministrada > 0) {
+            playlistDespues = biblioteca.buscarPlaylistPorId(idPlaylistAdministrada);
+
+            if (playlistDespues == null && listaPlaylistAntes != null) {
+                listaFueEliminada = true;
+
+                if (listaSeleccionada == listaPlaylistAntes) {
+                    listaSeleccionada = biblioteca.getBiblioteca();
+                    lblTituloLista.setText("BIBLIOTECA");
+                }
+            } else if (playlistDespues != null) {
+                if (listaSeleccionada == playlistDespues.getPlaylist()) {
+                    lblTituloLista.setText(playlistDespues.getNombre());
+                }
+
+                if (listaReproduciendo == playlistDespues.getPlaylist()
+                        && musicaReproduciendo != null
+                        && !playlistDespues.contieneMusica(musicaReproduciendo)) {
+                    musicaActualYaNoEstaEnPlaylist = true;
+                }
+            }
         }
 
-        boolean eraListaSeleccionada = listaSeleccionada == listaEliminada;
-        boolean eraListaReproduciendo = listaReproduciendo == listaEliminada;
-
-        if (eraListaReproduciendo) {
-            reproductor.detener();
-
-            listaReproduciendo = null;
-            musicaReproduciendo = null;
-            musicaSeleccionada = null;
-            reproduciendoDesdeCola = false;
-
-            btnPlayPausa.setText("▶");
-            lblTiempoActual.setText("00:00");
-            duracionActualSegundos = 0;
-
-            actualizandoSlider = true;
-            sldProgreso.setValue(0);
-            actualizandoSlider = false;
+        if (musicaReproduciendo != null
+                && biblioteca.buscarPorId(musicaReproduciendo.getId()) == null) {
+            musicaActualYaNoExiste = true;
         }
 
-        if (eraListaSeleccionada) {
-            listaSeleccionada = biblioteca.getBiblioteca();
-            lblTituloLista.setText("BIBLIOTECA");
+        boolean musicaActualFueAfectada =
+                listaFueEliminada && listaReproduciendo == listaPlaylistAntes && musicaReproduciendo != null
+                || musicaActualYaNoExiste
+                || musicaActualYaNoEstaEnPlaylist;
+
+        if (musicaActualFueAfectada) {
+            continuarDespuesDeEliminarActual(listaFueEliminada);
         }
 
         cargarTablaMusicas(listaSeleccionada);
@@ -1207,46 +1229,60 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         actualizarVistaReproduccion();
     }
     
-    private void manejarCambiosPlaylist(Playlist playlist) {
-        if (playlist == null) {
-            return;
-        }
-
-        if (listaReproduciendo != playlist.getPlaylist()) {
-            return;
-        }
-
-        if (musicaReproduciendo == null) {
-            return;
-        }
-
-        if (playlist.contieneMusica(musicaReproduciendo)) {
-            return;
-        }
-
+    private void continuarDespuesDeEliminarActual(boolean listaFueEliminada) {
         reproductor.detener();
 
-        musicaReproduciendo = null;
-        musicaSeleccionada = null;
-        reproduciendoDesdeCola = false;
+        if (!tglContinua.isSelected()) {
+            finalizarReproduccion(true);
+            return;
+        }
 
-        btnPlayPausa.setText("▶");
+        if (!colaReproduccion.estaVacia()) {
+            reproducirCola();
+            return;
+        }
+
+        if (listaFueEliminada || listaReproduciendo == null) {
+            finalizarReproduccion(true);
+            return;
+        }
+
+        Musica siguiente = listaReproduciendo.getActual();
+
+        if (siguiente == null || biblioteca.buscarPorId(siguiente.getId()) == null) {
+            finalizarReproduccion(true);
+            return;
+        }
+
+        musicaSeleccionada = listaSeleccionada == listaReproduciendo ? siguiente : null;
+
+        reproducirMusica(
+                siguiente,
+                obtenerOrigenDeLista(listaReproduciendo),
+                obtenerNombreOrigenDeLista(listaReproduciendo)
+        );
+
+        cargarTablaCola();
+        actualizarVistaReproduccion();
+    }
+    
+    private void limpiarDatosEnPantalla() {
+        lblNombreMusica.setText("Sin reproducción");
+        lblArtista.setText("-");
+        lblAlbum.setText("-");
+        lblGenero.setText("-");
+        lblTamanio.setText("-");
+        lblAnio.setText("-");
+        lblDuracion.setText("00:00");
         lblTiempoActual.setText("00:00");
+
         duracionActualSegundos = 0;
 
         actualizandoSlider = true;
         sldProgreso.setValue(0);
         actualizandoSlider = false;
 
-        cargarTablaMusicas(playlist.getPlaylist());
-        cargarTablaCola();
-        actualizarVistaReproduccion();
-
-        JOptionPane.showMessageDialog(
-                this,
-                "La música que se estaba reproduciendo fue quitada de la playlist.\n"
-                + "La reproducción se detuvo."
-        );
+        lblPortada.setIcon(GestorPortada.obtenerPortadaGrande(null, 425, 298));
     }
     
     private void jmiCargarMusicasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiCargarMusicasActionPerformed
@@ -1531,21 +1567,14 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         DialogoAdministrarPlaylist dialogo = new DialogoAdministrarPlaylist(this, true, idPlaylist);
         dialogo.setVisible(true);
 
-        Playlist playlistDespues = biblioteca.buscarPlaylistPorId(idPlaylist);
-
-        if (playlistDespues == null) {
-            manejarPlaylistEliminada(listaPlaylistAntes);
-        } else {
-            manejarCambiosPlaylist(playlistDespues);
-        }
-
-        refrescar();
+        manejarCambiosAdministracion(idPlaylist, listaPlaylistAntes);
     }//GEN-LAST:event_jmiAdministrarActionPerformed
 
     private void jmiBibliotecaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiBibliotecaActionPerformed
         DialogoBibliotecaGeneral dialogo = new DialogoBibliotecaGeneral(this, true);
         dialogo.setVisible(true);
-        refrescar();
+
+        manejarCambiosAdministracion(0, null);
     }//GEN-LAST:event_jmiBibliotecaActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
