@@ -63,7 +63,7 @@ public class DialogoBibliotecaGeneral extends javax.swing.JDialog {
 
             },
             new String [] {
-                "No.", "Nombre", "Artista", "Album", "Genero", "Duracion", "Tamaño", "Ruta", "Año", "Id"
+                "No.", "Nombre", "Artista", "Album", "Genero", "Duracion", "Tamaño", "Ruta", "Año", "Repr", "Id"
             }
         ){
             @Override
@@ -185,11 +185,12 @@ public class DialogoBibliotecaGeneral extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void inicializar(){
-        Tabla.ocultarColumna(tblMusicas, 9);
+        Tabla.ocultarColumna(tblMusicas, 10);
         Tabla.establecerAnchoMaximo(tblMusicas, 0, 45);
         Tabla.establecerAnchoMaximo(tblMusicas, 5, 60);
         Tabla.establecerAnchoMaximo(tblMusicas, 6, 80);
-        Tabla.cargarMusicasConDetalles(tblMusicas, biblioteca.getBiblioteca().listaMusicas());
+        Tabla.establecerAnchoMaximo(tblMusicas, 9, 55);
+        Tabla.cargarMusicasConDetallesYReproducciones(tblMusicas, biblioteca.getBiblioteca().listaMusicas());
     }
     
     private void buscarMusicas() {
@@ -206,7 +207,7 @@ public class DialogoBibliotecaGeneral extends javax.swing.JDialog {
                     "Biblioteca General"
             );
         }
-        Tabla.cargarMusicasConDetalles(tblMusicas, resultados);
+        Tabla.cargarMusicasConDetallesYReproducciones(tblMusicas, resultados);
     }
     
     private List<Musica> obtenerMusicasSeleccionadas(JTable tabla) {
@@ -216,7 +217,7 @@ public class DialogoBibliotecaGeneral extends javax.swing.JDialog {
 
         for (int fila : filas) {
             int filaModelo = tabla.convertRowIndexToModel(fila);
-            Object valor = tabla.getModel().getValueAt(filaModelo, 9);
+            Object valor = tabla.getModel().getValueAt(filaModelo, 10);
 
             if (valor == null) {
                 continue;

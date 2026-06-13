@@ -74,4 +74,27 @@ public class Tabla {
             });
         }
     }
+        
+    public static void cargarMusicasConDetallesYReproducciones(JTable tabla, List<Musica> musicas) {
+        int no = 1;
+        DefaultTableModel modelo = (DefaultTableModel) tabla.getModel();
+        modelo.setRowCount(0);
+        tabla.setRowHeight(35);
+
+        for (Musica musica : musicas) {
+            modelo.addRow(new Object[]{
+                no++,
+                musica.getNombre(),
+                musica.getArtista(),
+                musica.getAlbum(),
+                musica.getGenero(),
+                musica.formatearDuracion(),
+                musica.formatearTamanio(),
+                musica.getRuta(),
+                musica.anioReal(),
+                musica.getId(),
+                musica.getReproducciones()
+            });
+        }
+    }
 }

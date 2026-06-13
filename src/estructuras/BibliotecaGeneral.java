@@ -278,7 +278,8 @@ public final class BibliotecaGeneral {
             sb.append("Nombre: ").append(encontrada.getNombre()).append("\n");
             sb.append("Artista: ").append(encontrada.getArtista()).append("\n");
             sb.append("Álbum: ").append(encontrada.getAlbum()).append("\n");
-            sb.append("Género: ").append(encontrada.getGenero());
+            sb.append("Género: ").append(encontrada.getGenero()).append("\n");
+            sb.append("Reproducciones: ").append(encontrada.getReproducciones());
         }
 
         return sb.toString();
