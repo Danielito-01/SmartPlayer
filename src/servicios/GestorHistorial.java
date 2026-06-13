@@ -17,6 +17,7 @@ public class GestorHistorial {
         REPRODUCCION,
         PLAYLIST,
         ELIMINACION,
+        EDICION,
         BUSQUEDA,
         ARCHIVO,
         SEGURIDAD
@@ -534,6 +535,71 @@ public class GestorHistorial {
                 detalle.toString()
         );
     }
+    
+    public RegistroHistorial registrarEdicionMusica(
+            int idMusica,
+            String nombreAnterior,
+            String artistaAnterior,
+            String albumAnterior,
+            String generoAnterior,
+            int anioAnterior,
+            String nombreNuevo,
+            String artistaNuevo,
+            String albumNuevo,
+            String generoNuevo,
+            int anioNuevo,
+            boolean editada,
+            boolean okABB,
+            boolean okAVL,
+            boolean okHash,
+            String mensaje
+    ) {
+        Resultado resultado = editada ? Resultado.CORRECTO : Resultado.ADVERTENCIA;
+
+        String resumen = editada
+                ? "Se editó la música \"" + textoSeguro(nombreAnterior)
+                + "\" a \"" + textoSeguro(nombreNuevo) + "\"."
+                : "No se pudo editar la música con ID " + idMusica + ".";
+
+        StringBuilder detalle = new StringBuilder();
+
+        detalle.append("ID música: ").append(idMusica).append("\n\n");
+
+        detalle.append("Datos anteriores:\n");
+        detalle.append("Nombre: ").append(textoSeguro(nombreAnterior)).append("\n");
+        detalle.append("Artista: ").append(textoSeguro(artistaAnterior)).append("\n");
+        detalle.append("Álbum: ").append(textoSeguro(albumAnterior)).append("\n");
+        detalle.append("Género: ").append(textoSeguro(generoAnterior)).append("\n");
+        detalle.append("Año: ").append(anioAnterior <= 0 ? "Desconocido" : anioAnterior).append("\n\n");
+
+        detalle.append("Datos nuevos:\n");
+        detalle.append("Nombre: ").append(textoSeguro(nombreNuevo)).append("\n");
+        detalle.append("Artista: ").append(textoSeguro(artistaNuevo)).append("\n");
+        detalle.append("Álbum: ").append(textoSeguro(albumNuevo)).append("\n");
+        detalle.append("Género: ").append(textoSeguro(generoNuevo)).append("\n");
+        detalle.append("Año: ").append(anioNuevo <= 0 ? "Desconocido" : anioNuevo).append("\n\n");
+
+        detalle.append("Estructuras actualizadas:\n");
+        detalle.append("ABB: ").append(okABB ? "Sí" : "No").append("\n");
+        detalle.append("AVL: ").append(okAVL ? "Sí" : "No").append("\n");
+        detalle.append("Hash: ").append(okHash ? "Sí" : "No").append("\n\n");
+
+        detalle.append("Editada: ").append(editada ? "Sí" : "No").append("\n");
+        detalle.append("Mensaje: ").append(textoSeguro(mensaje));
+
+        return registrar(
+                Tipo.EDICION,
+                "Editar música",
+                resultado,
+                "Música",
+                String.valueOf(idMusica),
+                editada ? textoSeguro(nombreNuevo) : textoSeguro(nombreAnterior),
+                Origen.BIBLIOTECA,
+                "Biblioteca general",
+                resumen,
+                detalle.toString()
+        );
+    }
 
     public RegistroHistorial registrarBusqueda(
             String textoBuscado,
@@ -839,6 +905,7 @@ public class GestorHistorial {
         sb.append("Reproducciones: ").append(contarPorTipo(Tipo.REPRODUCCION)).append("\n");
         sb.append("Playlists: ").append(contarPorTipo(Tipo.PLAYLIST)).append("\n");
         sb.append("Eliminaciones: ").append(contarPorTipo(Tipo.ELIMINACION)).append("\n");
+        sb.append("Ediciones: ").append(contarPorTipo(Tipo.EDICION)).append("\n");
         sb.append("Búsquedas: ").append(contarPorTipo(Tipo.BUSQUEDA)).append("\n");
         sb.append("Archivos: ").append(contarPorTipo(Tipo.ARCHIVO)).append("\n");
         sb.append("Seguridad: ").append(contarPorTipo(Tipo.SEGURIDAD)).append("\n\n");

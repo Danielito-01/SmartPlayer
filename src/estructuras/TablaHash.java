@@ -66,7 +66,6 @@ public class TablaHash {
         agregarTexto(porAlbum, musica.getAlbum(), musica);
         agregarTexto(porGenero, musica.getGenero(), musica);
         agregarAnio(porAnio, musica.getAnio(), musica);
-
         return true;
     }
 

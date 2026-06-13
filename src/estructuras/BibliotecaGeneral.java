@@ -383,6 +383,183 @@ public final class BibliotecaGeneral {
 
         return eliminada;
     }
+    
+    public String editarMusica(int id, String nombre, String artista, String album, String genero, int anio) {
+        Musica musica = buscarPorId(id);
+
+        if (musica == null) {
+            historial.registrarEdicionMusica(
+                    id,
+                    "",
+                    "",
+                    "",
+                    "",
+                    0,
+                    nombre,
+                    artista,
+                    album,
+                    genero,
+                    anio,
+                    false,
+                    false,
+                    false,
+                    false,
+                    "Música no encontrada"
+            );
+
+            return "No se pudo editar la música.\n"
+                    + "Motivo: Música no encontrada.";
+        }
+
+        if (nombre == null || nombre.trim().isEmpty()) {
+            registrarEdicionFallidaPorValidacion(musica, nombre, artista, album, genero, anio,
+                    "El nombre no puede estar vacío.");
+
+            return "No se pudo editar la música.\n"
+                    + "Motivo: El nombre no puede estar vacío.";
+        }
+
+        if (artista == null || artista.trim().isEmpty()) {
+            registrarEdicionFallidaPorValidacion(musica, nombre, artista, album, genero, anio,
+                    "El artista no puede estar vacío.");
+
+            return "No se pudo editar la música.\n"
+                    + "Motivo: El artista no puede estar vacío.";
+        }
+
+        if (album == null || album.trim().isEmpty()) {
+            registrarEdicionFallidaPorValidacion(musica, nombre, artista, album, genero, anio,
+                    "El álbum no puede estar vacío.");
+
+            return "No se pudo editar la música.\n"
+                    + "Motivo: El álbum no puede estar vacío.";
+        }
+
+        if (genero == null || genero.trim().isEmpty()) {
+            registrarEdicionFallidaPorValidacion(musica, nombre, artista, album, genero, anio,
+                    "El género no puede estar vacío.");
+
+            return "No se pudo editar la música.\n"
+                    + "Motivo: El género no puede estar vacío.";
+        }
+
+        if (anio < 0) {
+            registrarEdicionFallidaPorValidacion(musica, nombre, artista, album, genero, anio,
+                    "El año no es válido.");
+
+            return "No se pudo editar la música.\n"
+                    + "Motivo: El año no es válido.";
+        }
+
+        nombre = nombre.trim();
+        artista = artista.trim();
+        album = album.trim();
+        genero = genero.trim();
+
+        String nombreAnterior = musica.getNombre();
+        String artistaAnterior = musica.getArtista();
+        String albumAnterior = musica.getAlbum();
+        String generoAnterior = musica.getGenero();
+        int anioAnterior = musica.getAnio();
+
+        musica.setNombre(nombre);
+        musica.setArtista(artista);
+        musica.setAlbum(album);
+        musica.setGenero(genero);
+        musica.setAnio(anio);
+
+        boolean okABB = abb.actualizarMusica(musica);
+        boolean okAVL = avl.actualizarMusica(musica);
+        boolean okHash = hash.actualizarMusica(musica);
+
+        boolean editada = okABB && okAVL && okHash;
+
+        if (!editada) {
+            musica.setNombre(nombreAnterior);
+            musica.setArtista(artistaAnterior);
+            musica.setAlbum(albumAnterior);
+            musica.setGenero(generoAnterior);
+            musica.setAnio(anioAnterior);
+
+            abb.actualizarMusica(musica);
+            avl.actualizarMusica(musica);
+            hash.actualizarMusica(musica);
+
+            historial.registrarEdicionMusica(
+                    id,
+                    nombreAnterior,
+                    artistaAnterior,
+                    albumAnterior,
+                    generoAnterior,
+                    anioAnterior,
+                    nombre,
+                    artista,
+                    album,
+                    genero,
+                    anio,
+                    false,
+                    okABB,
+                    okAVL,
+                    okHash,
+                    "No se pudo completar la edición. Se restauraron los datos anteriores."
+            );
+
+            return "No se pudo editar la música completamente.\n"
+                    + "Se restauraron los datos anteriores.";
+        }
+
+        historial.registrarEdicionMusica(
+                id,
+                nombreAnterior,
+                artistaAnterior,
+                albumAnterior,
+                generoAnterior,
+                anioAnterior,
+                nombre,
+                artista,
+                album,
+                genero,
+                anio,
+                true,
+                okABB,
+                okAVL,
+                okHash,
+                "Música editada correctamente."
+        );
+
+        return "Música editada correctamente.\n"
+                + "Antes: " + nombreAnterior + "\n"
+                + "Ahora: " + musica.getNombre();
+    }
+    
+    private void registrarEdicionFallidaPorValidacion(
+            Musica musica,
+            String nombreNuevo,
+            String artistaNuevo,
+            String albumNuevo,
+            String generoNuevo,
+            int anioNuevo,
+            String mensaje
+    ) {
+        historial.registrarEdicionMusica(
+                musica.getId(),
+                musica.getNombre(),
+                musica.getArtista(),
+                musica.getAlbum(),
+                musica.getGenero(),
+                musica.getAnio(),
+                nombreNuevo,
+                artistaNuevo,
+                albumNuevo,
+                generoNuevo,
+                anioNuevo,
+                false,
+                false,
+                false,
+                false,
+                mensaje
+        );
+    }
 
     public Musica buscarPorId(int id) {
         return hash.buscarPorId(id);

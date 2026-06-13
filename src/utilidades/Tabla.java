@@ -92,8 +92,8 @@ public class Tabla {
                 musica.formatearTamanio(),
                 musica.getRuta(),
                 musica.anioReal(),
-                musica.getId(),
-                musica.getReproducciones()
+                musica.getReproducciones(),
+                musica.getId()
             });
         }
     }
