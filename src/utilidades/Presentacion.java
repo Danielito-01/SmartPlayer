@@ -106,6 +106,10 @@ public class Presentacion {
     public static void aplicarHistorial(JDialog dialogo) {
         aplicarDialogo(dialogo, "Historial General");
     }
+    
+    public static void aplicarBusquedaEnArboles(JDialog dialogo) {
+        aplicarDialogo(dialogo, "ABB vs AVL");
+    }
 
     public static void refrescarToggle(JToggleButton toggle) {
         if (toggle.isSelected()) {
