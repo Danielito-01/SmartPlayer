@@ -118,6 +118,10 @@ public class Presentacion {
     public static void aplicarBibliotecaGeneral(JDialog dialogo) {
         aplicarDialogo(dialogo, "Biblioteca General");
     }
+    
+    public static void aplicarEstadisticas(JDialog dialogo) {
+        aplicarDialogo(dialogo, "Estadisticas");
+    }
 
     public static void refrescarToggle(JToggleButton toggle) {
         if (toggle.isSelected()) {
