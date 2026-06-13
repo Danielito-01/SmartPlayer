@@ -1,36 +1,30 @@
 package servicios;
 
+import estructuras.ArbolAVL;
 import estructuras.BibliotecaGeneral;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
-import javax.crypto.AEADBadTagException;
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.GCMParameterSpec;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.SecretKeySpec;
+import java.util.Map;
 import modelos.Musica;
 import modelos.Playlist;
 
 public class GestorArchivoPlaylist {
-
     private static final String CABECERA_PLAYLIST = "SMARTPLAYER_PLAYLIST";
-    private static final String VERSION = "1";
+    private static final String VERSION = "2";
 
     private static final String CABECERA_ENCRIPTADA = "SMARTPLAYER_ENCRYPTED";
-    private static final String ALGORITMO = "AES/GCM/NoPadding";
+    private static final String ALGORITMO = "SPP-MANUAL-XOR-ROT";
+    private static final String COMPRESION = "LZW-MANUAL";
+    private static final String RECORRIDO = "INORDEN";
     private static final int TAMANIO_SALT = 16;
-    private static final int TAMANIO_IV = 12;
-    private static final int TAMANIO_TAG = 128;
-    private static final int ITERACIONES = 65536;
-    private static final int TAMANIO_CLAVE = 256;
 
     private final BibliotecaGeneral biblioteca;
 
@@ -46,7 +40,7 @@ public class GestorArchivoPlaylist {
                     idPlaylist,
                     "No encontrada",
                     rutaArchivo,
-                    encriptada ? "SPP-AES" : "SPP",
+                    encriptada ? ALGORITMO : "SPP",
                     0,
                     encriptada,
                     false,
@@ -62,7 +56,7 @@ public class GestorArchivoPlaylist {
                     playlist.getId(),
                     playlist.getNombre(),
                     "",
-                    encriptada ? "SPP-AES" : "SPP",
+                    encriptada ? ALGORITMO : "SPP",
                     playlist.getCantidad(),
                     encriptada,
                     false,
@@ -78,7 +72,7 @@ public class GestorArchivoPlaylist {
                     playlist.getId(),
                     playlist.getNombre(),
                     rutaArchivo,
-                    "SPP-AES",
+                    ALGORITMO,
                     playlist.getCantidad(),
                     true,
                     false,
@@ -110,22 +104,27 @@ public class GestorArchivoPlaylist {
                     playlist.getId(),
                     playlist.getNombre(),
                     rutaArchivo,
-                    encriptada ? "SPP-AES" : "SPP",
+                    encriptada ? ALGORITMO : "SPP",
                     playlist.getCantidad(),
                     encriptada,
                     true,
-                    "Playlist exportada correctamente"
+                    "Playlist exportada correctamente usando recorrido " + RECORRIDO
             );
 
             return "Playlist exportada correctamente.\n"
-                    + "Archivo: " + rutaArchivo;
+                    + "Archivo: " + rutaArchivo + "\n"
+                    + "Recorrido usado: " + RECORRIDO + "\n"
+                    + (encriptada
+                    ? "Compresión: " + COMPRESION + "\n"
+                    + "Encriptación: " + ALGORITMO
+                    : "");
 
         } catch (Exception e) {
             biblioteca.getHistorial().registrarExportacionPlaylist(
                     playlist.getId(),
                     playlist.getNombre(),
                     rutaArchivo,
-                    encriptada ? "SPP-AES" : "SPP",
+                    encriptada ? ALGORITMO : "SPP",
                     playlist.getCantidad(),
                     encriptada,
                     false,
@@ -338,7 +337,7 @@ public class GestorArchivoPlaylist {
                     + "Duplicadas: " + duplicadas + "\n"
                     + "Faltantes en biblioteca: " + faltantes;
 
-        } catch (AEADBadTagException e) {
+        } catch (ArchivoSeguroException e) {
             biblioteca.getHistorial().registrarImportacionPlaylist(
                     rutaArchivo,
                     "",
@@ -348,11 +347,11 @@ public class GestorArchivoPlaylist {
                     0,
                     true,
                     false,
-                    "Clave incorrecta o archivo dañado"
+                    e.getMessage()
             );
 
             return "No se pudo importar la playlist.\n"
-                    + "Motivo: La clave es incorrecta o el archivo está dañado.";
+                    + "Motivo: " + e.getMessage();
 
         } catch (Exception e) {
             biblioteca.getHistorial().registrarImportacionPlaylist(
@@ -488,11 +487,13 @@ public class GestorArchivoPlaylist {
                     rutaDestino,
                     ALGORITMO,
                     true,
-                    "Archivo encriptado correctamente"
+                    "Archivo encriptado correctamente con compresión manual"
             );
 
             return "Archivo encriptado correctamente.\n"
-                    + "Destino: " + rutaDestino;
+                    + "Destino: " + rutaDestino + "\n"
+                    + "Compresión: " + COMPRESION + "\n"
+                    + "Encriptación: " + ALGORITMO;
 
         } catch (Exception e) {
             biblioteca.getHistorial().registrarEncriptacionPlaylist(
@@ -610,17 +611,17 @@ public class GestorArchivoPlaylist {
             return "Archivo desencriptado correctamente.\n"
                     + "Destino: " + rutaDestino;
 
-        } catch (AEADBadTagException e) {
+        } catch (ArchivoSeguroException e) {
             biblioteca.getHistorial().registrarDesencriptacionPlaylist(
                     rutaOrigen,
                     "Archivo de playlist",
                     ALGORITMO,
                     false,
-                    "Clave incorrecta o archivo dañado"
+                    e.getMessage()
             );
 
             return "No se pudo desencriptar.\n"
-                    + "Motivo: La clave es incorrecta o el archivo está dañado.";
+                    + "Motivo: " + e.getMessage();
 
         } catch (Exception e) {
             biblioteca.getHistorial().registrarDesencriptacionPlaylist(
@@ -638,14 +639,26 @@ public class GestorArchivoPlaylist {
 
     private String crearContenidoPlaylist(Playlist playlist) {
         StringBuilder sb = new StringBuilder();
+        ArbolAVL arbolPlaylist = new ArbolAVL();
+
+        for (Musica musica : playlist.getMusicas()) {
+            if (musica != null) {
+                arbolPlaylist.agregarMusica(musica);
+            }
+        }
+
+        List<Musica> musicasInOrden = arbolPlaylist.recorridoInOrden();
 
         sb.append(CABECERA_PLAYLIST).append("\n");
         sb.append("VERSION=").append(VERSION).append("\n");
+        sb.append("RECORRIDO=").append(RECORRIDO).append("\n");
         sb.append("NOMBRE=").append(codificar(playlist.getNombre())).append("\n");
-        sb.append("CANCIONES=").append(playlist.getCantidad()).append("\n");
+        sb.append("CANCIONES=").append(musicasInOrden.size()).append("\n");
 
-        for (Musica musica : playlist.getMusicas()) {
-            sb.append("RUTA=").append(codificar(musica.getRuta())).append("\n");
+        for (Musica musica : musicasInOrden) {
+            if (musica != null && musica.getRuta() != null) {
+                sb.append("RUTA=").append(codificar(musica.getRuta())).append("\n");
+            }
         }
 
         return sb.toString();
@@ -696,21 +709,21 @@ public class GestorArchivoPlaylist {
     }
 
     private byte[] encriptarBytes(byte[] datos, String clave) throws Exception {
+        byte[] comprimidos = comprimirLZW(datos);
         byte[] salt = generarBytes(TAMANIO_SALT);
-        byte[] iv = generarBytes(TAMANIO_IV);
-
-        SecretKey key = crearClave(clave, salt);
-
-        Cipher cipher = Cipher.getInstance(ALGORITMO);
-        cipher.init(Cipher.ENCRYPT_MODE, key, new GCMParameterSpec(TAMANIO_TAG, iv));
-
-        byte[] cifrado = cipher.doFinal(datos);
+        byte[] cifrados = aplicarCifradoManual(comprimidos, clave, salt, true);
+        long check = calcularVerificacion(comprimidos, clave, salt);
 
         StringBuilder sb = new StringBuilder();
+
         sb.append(CABECERA_ENCRIPTADA).append("\n");
+        sb.append("VERSION=").append(VERSION).append("\n");
+        sb.append("ALGORITMO=").append(ALGORITMO).append("\n");
+        sb.append("COMPRESION=").append(COMPRESION).append("\n");
+        sb.append("RECORRIDO=").append(RECORRIDO).append("\n");
         sb.append("SALT=").append(Base64.getEncoder().encodeToString(salt)).append("\n");
-        sb.append("IV=").append(Base64.getEncoder().encodeToString(iv)).append("\n");
-        sb.append("DATOS=").append(Base64.getEncoder().encodeToString(cifrado)).append("\n");
+        sb.append("CHECK=").append(Long.toUnsignedString(check)).append("\n");
+        sb.append("DATOS=").append(Base64.getEncoder().encodeToString(cifrados)).append("\n");
 
         return sb.toString().getBytes(StandardCharsets.UTF_8);
     }
@@ -719,52 +732,256 @@ public class GestorArchivoPlaylist {
         String contenido = new String(archivo, StandardCharsets.UTF_8);
         String[] lineas = contenido.split("\\R");
 
-        if (lineas.length < 4 || !CABECERA_ENCRIPTADA.equals(lineas[0].trim())) {
-            throw new Exception("El archivo no tiene formato encriptado de SmartPlayer.");
+        if (lineas.length < 8 || !CABECERA_ENCRIPTADA.equals(lineas[0].trim())) {
+            throw new ArchivoSeguroException("El archivo no tiene formato encriptado de SmartPlayer.");
         }
 
         String saltTexto = "";
-        String ivTexto = "";
+        String checkTexto = "";
         String datosTexto = "";
 
         for (String linea : lineas) {
             if (linea.startsWith("SALT=")) {
                 saltTexto = linea.substring("SALT=".length());
-            } else if (linea.startsWith("IV=")) {
-                ivTexto = linea.substring("IV=".length());
+            } else if (linea.startsWith("CHECK=")) {
+                checkTexto = linea.substring("CHECK=".length());
             } else if (linea.startsWith("DATOS=")) {
                 datosTexto = linea.substring("DATOS=".length());
             }
         }
 
-        if (saltTexto.isBlank() || ivTexto.isBlank() || datosTexto.isBlank()) {
-            throw new Exception("El archivo encriptado está incompleto o dañado.");
+        if (saltTexto.isBlank() || checkTexto.isBlank() || datosTexto.isBlank()) {
+            throw new ArchivoSeguroException("El archivo encriptado está incompleto o dañado.");
         }
 
-        byte[] salt = Base64.getDecoder().decode(saltTexto);
-        byte[] iv = Base64.getDecoder().decode(ivTexto);
-        byte[] datos = Base64.getDecoder().decode(datosTexto);
+        try {
+            byte[] salt = Base64.getDecoder().decode(saltTexto);
+            byte[] cifrados = Base64.getDecoder().decode(datosTexto);
+            byte[] comprimidos = aplicarCifradoManual(cifrados, clave, salt, false);
 
-        SecretKey key = crearClave(clave, salt);
+            long checkGuardado = Long.parseUnsignedLong(checkTexto);
+            long checkCalculado = calcularVerificacion(comprimidos, clave, salt);
 
-        Cipher cipher = Cipher.getInstance(ALGORITMO);
-        cipher.init(Cipher.DECRYPT_MODE, key, new GCMParameterSpec(TAMANIO_TAG, iv));
+            if (checkGuardado != checkCalculado) {
+                throw new ArchivoSeguroException("La clave es incorrecta o el archivo está dañado.");
+            }
 
-        return cipher.doFinal(datos);
+            return descomprimirLZW(comprimidos);
+
+        } catch (ArchivoSeguroException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new ArchivoSeguroException("La clave es incorrecta o el archivo está dañado.");
+        }
     }
 
-    private SecretKey crearClave(String clave, byte[] salt) throws Exception {
-        PBEKeySpec spec = new PBEKeySpec(
-                clave.toCharArray(),
-                salt,
-                ITERACIONES,
-                TAMANIO_CLAVE
-        );
+    private byte[] aplicarCifradoManual(byte[] datos, String clave, byte[] salt, boolean encriptar) throws Exception {
+        if (clave == null || clave.isBlank()) {
+            throw new Exception("La clave no puede estar vacía.");
+        }
 
-        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
-        byte[] bytes = factory.generateSecret(spec).getEncoded();
+        byte[] claveBytes = clave.getBytes(StandardCharsets.UTF_8);
+        byte[] resultado = new byte[datos.length];
 
-        return new SecretKeySpec(bytes, "AES");
+        long estado = crearSemilla(claveBytes, salt);
+
+        for (int i = 0; i < datos.length; i++) {
+            estado = siguienteEstado(
+                    estado,
+                    claveBytes[i % claveBytes.length],
+                    salt[i % salt.length],
+                    i
+            );
+
+            int valor = datos[i] & 0xFF;
+            int mascara = (int) (estado & 0xFF);
+            int claveActual = claveBytes[i % claveBytes.length] & 0xFF;
+            int rotacion = (i % 7) + 1;
+
+            if (encriptar) {
+                valor = valor ^ mascara ^ claveActual;
+                valor = rotarIzquierda(valor, rotacion);
+            } else {
+                valor = rotarDerecha(valor, rotacion);
+                valor = valor ^ mascara ^ claveActual;
+            }
+
+            resultado[i] = (byte) (valor & 0xFF);
+        }
+
+        return resultado;
+    }
+
+    private long crearSemilla(byte[] clave, byte[] salt) {
+        long hash = 1469598103934665603L;
+
+        for (byte b : clave) {
+            hash ^= (b & 0xFF);
+            hash *= 1099511628211L;
+        }
+
+        for (byte b : salt) {
+            hash ^= (b & 0xFF);
+            hash *= 1099511628211L;
+        }
+
+        return hash;
+    }
+
+    private long siguienteEstado(long estado, byte clave, byte salt, int posicion) {
+        long valor = estado;
+
+        valor ^= (clave & 0xFF);
+        valor ^= ((long) (salt & 0xFF) << 8);
+        valor ^= ((long) posicion << 16);
+
+        valor ^= (valor << 13);
+        valor ^= (valor >>> 7);
+        valor ^= (valor << 17);
+
+        return valor;
+    }
+
+    private int rotarIzquierda(int valor, int posiciones) {
+        valor &= 0xFF;
+        return ((valor << posiciones) | (valor >>> (8 - posiciones))) & 0xFF;
+    }
+
+    private int rotarDerecha(int valor, int posiciones) {
+        valor &= 0xFF;
+        return ((valor >>> posiciones) | (valor << (8 - posiciones))) & 0xFF;
+    }
+
+    private long calcularVerificacion(byte[] datos, String clave, byte[] salt) {
+        long hash = 1469598103934665603L;
+        byte[] claveBytes = clave.getBytes(StandardCharsets.UTF_8);
+
+        for (byte b : claveBytes) {
+            hash ^= (b & 0xFF);
+            hash *= 1099511628211L;
+        }
+
+        for (byte b : salt) {
+            hash ^= (b & 0xFF);
+            hash *= 1099511628211L;
+        }
+
+        for (byte b : datos) {
+            hash ^= (b & 0xFF);
+            hash *= 1099511628211L;
+        }
+
+        return hash;
+    }
+
+    private byte[] comprimirLZW(byte[] datos) {
+        if (datos == null || datos.length == 0) {
+            return new byte[0];
+        }
+
+        Map<String, Integer> diccionario = new HashMap<>();
+
+        for (int i = 0; i < 256; i++) {
+            diccionario.put(String.valueOf((char) i), i);
+        }
+
+        int siguienteCodigo = 256;
+        String actual = "";
+        List<Integer> codigos = new ArrayList<>();
+
+        for (byte dato : datos) {
+            String caracter = String.valueOf((char) (dato & 0xFF));
+            String combinado = actual + caracter;
+
+            if (diccionario.containsKey(combinado)) {
+                actual = combinado;
+            } else {
+                codigos.add(diccionario.get(actual));
+
+                if (siguienteCodigo <= 65535) {
+                    diccionario.put(combinado, siguienteCodigo);
+                    siguienteCodigo++;
+                }
+
+                actual = caracter;
+            }
+        }
+
+        if (!actual.isEmpty()) {
+            codigos.add(diccionario.get(actual));
+        }
+
+        ByteArrayOutputStream salida = new ByteArrayOutputStream(codigos.size() * 2);
+
+        for (int codigo : codigos) {
+            salida.write((codigo >>> 8) & 0xFF);
+            salida.write(codigo & 0xFF);
+        }
+
+        return salida.toByteArray();
+    }
+
+    private byte[] descomprimirLZW(byte[] datos) throws Exception {
+        if (datos == null || datos.length == 0) {
+            return new byte[0];
+        }
+
+        if (datos.length % 2 != 0) {
+            throw new Exception("Los datos comprimidos están dañados.");
+        }
+
+        List<Integer> codigos = new ArrayList<>();
+
+        for (int i = 0; i < datos.length; i += 2) {
+            int codigo = ((datos[i] & 0xFF) << 8) | (datos[i + 1] & 0xFF);
+            codigos.add(codigo);
+        }
+
+        Map<Integer, String> diccionario = new HashMap<>();
+
+        for (int i = 0; i < 256; i++) {
+            diccionario.put(i, String.valueOf((char) i));
+        }
+
+        int siguienteCodigo = 256;
+        String actual = diccionario.get(codigos.get(0));
+
+        if (actual == null) {
+            throw new Exception("Los datos comprimidos están dañados.");
+        }
+
+        ByteArrayOutputStream salida = new ByteArrayOutputStream();
+        escribirCadenaBytes(salida, actual);
+
+        for (int i = 1; i < codigos.size(); i++) {
+            int codigo = codigos.get(i);
+            String entrada;
+
+            if (diccionario.containsKey(codigo)) {
+                entrada = diccionario.get(codigo);
+            } else if (codigo == siguienteCodigo) {
+                entrada = actual + actual.charAt(0);
+            } else {
+                throw new Exception("Los datos comprimidos están dañados.");
+            }
+
+            escribirCadenaBytes(salida, entrada);
+
+            if (siguienteCodigo <= 65535) {
+                diccionario.put(siguienteCodigo, actual + entrada.charAt(0));
+                siguienteCodigo++;
+            }
+
+            actual = entrada;
+        }
+
+        return salida.toByteArray();
+    }
+
+    private void escribirCadenaBytes(ByteArrayOutputStream salida, String texto) {
+        for (int i = 0; i < texto.length(); i++) {
+            salida.write(texto.charAt(i) & 0xFF);
+        }
     }
 
     private byte[] generarBytes(int cantidad) {
@@ -828,5 +1045,12 @@ public class GestorArchivoPlaylist {
     private static class DatosPlaylist {
         private String nombrePlaylist = "";
         private final List<String> rutas = new ArrayList<>();
+    }
+
+    private static class ArchivoSeguroException extends Exception {
+
+        public ArchivoSeguroException(String mensaje) {
+            super(mensaje);
+        }
     }
 }
