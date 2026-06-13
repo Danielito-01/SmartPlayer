@@ -9,6 +9,7 @@ import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import modelos.Musica;
 import modelos.Playlist;
+import servicios.GestorHistorial;
 import utilidades.Presentacion;
 import utilidades.Tabla;
 
@@ -213,6 +214,18 @@ public class DialogoNuevaPlaylist extends javax.swing.JDialog {
     private void buscarMusicas() {
         String texto = txtBusqueda.getText();
         List<Musica> resultados = biblioteca.buscarMusicas(texto);
+
+        boolean busquedaActiva = texto != null && !texto.trim().isEmpty();
+
+        if (busquedaActiva) {
+            biblioteca.getHistorial().registrarBusqueda(
+                    texto.trim(),
+                    resultados.size(),
+                    GestorHistorial.Origen.BIBLIOTECA,
+                    "Crear playlist - Biblioteca general"
+            );
+        }
+
         Tabla.cargarMusicasParaBusqueda(tblMusicas, resultados);
     }
     

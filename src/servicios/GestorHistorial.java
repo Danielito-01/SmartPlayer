@@ -535,70 +535,47 @@ public class GestorHistorial {
         );
     }
 
-    public RegistroHistorial registrarBusquedaNombre(
-            String nombre,
-            List<Musica> encontradas,
-            List<Musica> encontradasABB,
-            List<Musica> encontradasAVL,
-            String estructuraMasRapida,
-            long tiempoABB,
-            long tiempoAVL
-    ) {
-        int totalEncontradas = encontradas == null ? 0 : encontradas.size();
-        int totalABB = encontradasABB == null ? 0 : encontradasABB.size();
-        int totalAVL = encontradasAVL == null ? 0 : encontradasAVL.size();
-
-        return registrarBusqueda(
-                nombre,
-                "Búsqueda por nombre",
-                totalEncontradas,
-                totalABB,
-                totalAVL,
-                estructuraMasRapida,
-                tiempoABB,
-                tiempoAVL
-        );
-    }
-
     public RegistroHistorial registrarBusqueda(
             String textoBuscado,
-            String tipoBusqueda,
             int encontradas,
-            int encontradasABB,
-            int encontradasAVL,
-            String estructuraMasRapida,
-            long tiempoABB,
-            long tiempoAVL
+            Origen origen,
+            String nombreOrigen
     ) {
-        Resultado resultado = encontradas > 0 ? Resultado.CORRECTO : Resultado.INFORMATIVO;
         String texto = textoSeguro(textoBuscado);
-        String accion = textoSeguro(tipoBusqueda).isEmpty() ? "Buscar música" : textoSeguro(tipoBusqueda);
+        Origen origenFinal = origen == null ? Origen.DESCONOCIDO : origen;
+        String nombreOrigenFinal = textoSeguro(nombreOrigen);
+
+        if (nombreOrigenFinal.isEmpty()) {
+            nombreOrigenFinal = nombreLegibleOrigen(origenFinal);
+        }
+
+        Resultado resultado = encontradas > 0
+                ? Resultado.CORRECTO
+                : Resultado.INFORMATIVO;
 
         String resumen = encontradas > 0
-                ? "Se encontraron " + encontradas + " resultado(s) para \"" + texto + "\"."
-                : "No se encontraron resultados para \"" + texto + "\".";
+                ? "Se buscaron músicas por \"" + texto + "\" y se encontraron "
+                + encontradas + " resultado(s)."
+                : "Se buscaron músicas por \"" + texto + "\" y no se encontraron resultados.";
 
         StringBuilder detalle = new StringBuilder();
 
         detalle.append("Texto buscado: ").append(texto).append("\n");
-        detalle.append("Tipo de búsqueda: ").append(accion).append("\n");
-        detalle.append("Total encontrado: ").append(encontradas).append("\n");
-        detalle.append("Encontradas en ABB: ").append(encontradasABB).append("\n");
-        detalle.append("Encontradas en AVL: ").append(encontradasAVL).append("\n");
-        detalle.append("Estructura más rápida: ").append(textoSeguro(estructuraMasRapida)).append("\n\n");
-
-        detalle.append("Tiempo de búsqueda ABB: ").append(formatearMs(tiempoABB)).append(" ms\n");
-        detalle.append("Tiempo de búsqueda AVL: ").append(formatearMs(tiempoAVL)).append(" ms");
+        detalle.append("Resultados encontrados: ").append(encontradas).append("\n");
+        detalle.append("Origen: ").append(origenFinal).append("\n");
+        detalle.append("Nombre origen: ").append(nombreOrigenFinal).append("\n\n");
+        detalle.append("Nota: esta búsqueda pertenece al uso normal del programa.\n");
+        detalle.append("No corresponde a la comparación ABB vs AVL.");
 
         return registrar(
                 Tipo.BUSQUEDA,
-                accion,
+                "Buscar músicas",
                 resultado,
                 "Búsqueda",
                 "",
                 texto,
-                Origen.BUSQUEDA,
-                accion,
+                origenFinal,
+                nombreOrigenFinal,
                 resumen,
                 detalle.toString()
         );

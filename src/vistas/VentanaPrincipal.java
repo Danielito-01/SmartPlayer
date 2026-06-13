@@ -1084,6 +1084,15 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             resultados = biblioteca.buscarMusicas(texto);
         }
 
+        if (busquedaActiva) {
+            biblioteca.getHistorial().registrarBusqueda(
+                    textoBusquedaActiva,
+                    resultados.size(),
+                    obtenerOrigenDeLista(listaSeleccionada),
+                    obtenerNombreOrigenDeLista(listaSeleccionada)
+            );
+        }
+
         Tabla.cargarMusicas(tblMusicas, resultados);
         actualizarVistaReproduccion();
     }

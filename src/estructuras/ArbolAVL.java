@@ -106,6 +106,32 @@ public class ArbolAVL {
         return nombreMusica.startsWith(busqueda);
     }
 
+    public Musica buscarExactaPorNombre(String nombre) {
+        if (nombre == null || nombre.trim().isEmpty()) {
+            return null;
+        }
+
+        return buscarExactaPorNombre(raiz, nombre.trim());
+    }
+
+    private Musica buscarExactaPorNombre(NMusica nodo, String nombreBuscado) {
+        while (nodo != null) {
+            int comparacion = nombreBuscado.compareToIgnoreCase(obtenerNombre(nodo.musica));
+
+            if (comparacion == 0) {
+                return nodo.musica;
+            }
+
+            if (comparacion < 0) {
+                nodo = nodo.izquierdo;
+            } else {
+                nodo = nodo.derecho;
+            }
+        }
+
+        return null;
+    }
+    
     public boolean eliminarMusica(Musica musica) {
         if (musica == null || estaVacio()) {
             return false;

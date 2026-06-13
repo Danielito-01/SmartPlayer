@@ -164,19 +164,8 @@ public final class BibliotecaGeneral {
         );
     }
     
-    private String crearResumenCargaUsuario(
-            int recibidas,
-            int insertadas,
-            int duplicadas,
-            int invalidas,
-            int fallidas,
-            int totalBiblioteca,
-            int totalABB,
-            int totalAVL,
-            int totalHash,
-            long tiempoABB,
-            long tiempoAVL
-    ) {
+    private String crearResumenCargaUsuario(int recibidas, int insertadas, int duplicadas, int invalidas, int fallidas,
+            int totalBiblioteca, int totalABB, int totalAVL, int totalHash, long tiempoABB, long tiempoAVL) {
         StringBuilder sb = new StringBuilder();
 
         sb.append("Proceso finalizado.\n\n");
@@ -207,20 +196,6 @@ public final class BibliotecaGeneral {
         return String.format("%.4f", nanosegundos / 1_000_000.0);
     }
 
-    /*
-     * Búsqueda general para vistas.
-     *
-     * Usa:
-     * - ABB por nombre
-     * - AVL por nombre
-     * - Hash por artista
-     * - Hash por álbum
-     * - Hash por género
-     * - Hash por ID exacto, si el texto es número
-     * - Hash por año exacto, si el texto es número
-     *
-     * No registra historial.
-     */
     public List<Musica> buscarMusicas(String texto) {
         List<Musica> resultados = new ArrayList<>();
         Set<Integer> idsAgregados = new HashSet<>();
@@ -252,64 +227,67 @@ public final class BibliotecaGeneral {
 
         return resultados;
     }
+    
+    public String compararBusquedaArboles(String nombre) {
+        String texto = nombre == null ? "" : nombre.trim();
 
-    /*
-     * Búsqueda especial para medir rendimiento.
-     *
-     * Esta sí compara ABB contra AVL, registra tiempos
-     * y guarda el reporte en el historial.
-     *
-     * Úsala solo cuando quieras mostrar o registrar la comparación.
-     */
-    public List<Musica> buscarPorNombre(String nombre) {
+        if (texto.isEmpty()) {
+            return "Debes ingresar el nombre exacto de una música.";
+        }
+
         long inicioABB = System.nanoTime();
-        List<Musica> encontradasABB = abb.buscarMusica(nombre);
+        Musica resultadoABB = abb.buscarExactaPorNombre(texto);
         long tiempoABB = System.nanoTime() - inicioABB;
 
         long inicioAVL = System.nanoTime();
-        List<Musica> encontradasAVL = avl.buscarMusica(nombre);
+        Musica resultadoAVL = avl.buscarExactaPorNombre(texto);
         long tiempoAVL = System.nanoTime() - inicioAVL;
 
-        List<Musica> encontradas;
-        String estructuraMasRapida;
+        String masRapido;
 
-        if (!encontradasABB.isEmpty() && !encontradasAVL.isEmpty()) {
-            if (tiempoABB <= tiempoAVL) {
-                encontradas = encontradasABB;
-                estructuraMasRapida = "ABB";
-            } else {
-                encontradas = encontradasAVL;
-                estructuraMasRapida = "AVL";
-            }
-        } else if (!encontradasABB.isEmpty()) {
-            encontradas = encontradasABB;
-            estructuraMasRapida = "ABB";
-        } else if (!encontradasAVL.isEmpty()) {
-            encontradas = encontradasAVL;
-            estructuraMasRapida = "AVL";
+        if (resultadoABB == null && resultadoAVL == null) {
+            masRapido = "Ninguno encontró la música";
+        } else if (tiempoABB < tiempoAVL) {
+            masRapido = "ABB";
+        } else if (tiempoAVL < tiempoABB) {
+            masRapido = "AVL";
         } else {
-            encontradas = new ArrayList<>();
-            estructuraMasRapida = "Ninguna";
+            masRapido = "Empate";
         }
 
-        historial.registrarBusquedaNombre(
-                nombre,
-                encontradas,
-                encontradasABB,
-                encontradasAVL,
-                estructuraMasRapida,
-                tiempoABB,
-                tiempoAVL
-        );
+        StringBuilder sb = new StringBuilder();
 
-        return encontradas;
+        sb.append("Comparación de búsqueda ABB vs AVL\n\n");
+        sb.append("Nombre buscado: ").append(texto).append("\n\n");
+
+        sb.append("ABB\n");
+        sb.append("Resultado: ").append(resultadoABB == null ? "No encontrado" : "Encontrado").append("\n");
+        sb.append("Tiempo: ").append(formatearMilisegundos(tiempoABB)).append(" ms\n\n");
+
+        sb.append("AVL\n");
+        sb.append("Resultado: ").append(resultadoAVL == null ? "No encontrado" : "Encontrado").append("\n");
+        sb.append("Tiempo: ").append(formatearMilisegundos(tiempoAVL)).append(" ms\n\n");
+
+        sb.append("Estructura más rápida: ").append(masRapido);
+
+        if (resultadoABB != null || resultadoAVL != null) {
+            Musica encontrada = resultadoABB != null ? resultadoABB : resultadoAVL;
+
+            sb.append("\n\nMúsica encontrada:\n");
+            sb.append("ID: ").append(encontrada.getId()).append("\n");
+            sb.append("Nombre: ").append(encontrada.getNombre()).append("\n");
+            sb.append("Artista: ").append(encontrada.getArtista()).append("\n");
+            sb.append("Álbum: ").append(encontrada.getAlbum()).append("\n");
+            sb.append("Género: ").append(encontrada.getGenero());
+        }
+
+        return sb.toString();
     }
 
     public boolean eliminarMusica(Musica musica) {
         if (musica == null) {
             return false;
         }
-
         return eliminarMusicaPorId(musica.getId());
     }
 
