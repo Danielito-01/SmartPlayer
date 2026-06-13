@@ -580,6 +580,22 @@ public final class BibliotecaGeneral {
     public List<Musica> buscarPorAnio(int anio) {
         return hash.buscarPorAnio(anio);
     }
+    
+    public Musica buscarPorRuta(String ruta) {
+        String rutaBuscada = normalizarRuta(ruta);
+
+        if (rutaBuscada.isEmpty()) {
+            return null;
+        }
+
+        for (Musica musica : biblioteca.listaMusicas()) {
+            if (musica != null && normalizarRuta(musica.getRuta()).equals(rutaBuscada)) {
+                return musica;
+            }
+        }
+
+        return null;
+    }
 
     public List<Playlist> getPlaylists() {
         return new ArrayList<>(playlists);
