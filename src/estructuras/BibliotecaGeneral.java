@@ -284,13 +284,48 @@ public final class BibliotecaGeneral {
         return sb.toString();
     }
 
-    public boolean eliminarMusica(Musica musica) {
-        if (musica == null) {
-            return false;
-        }
-        return eliminarMusicaPorId(musica.getId());
-    }
+    public String eliminarMusicas(List<Musica> musicas) {
+        int recibidas = musicas == null ? 0 : musicas.size();
+        int eliminadas = 0;
+        int noEncontradas = 0;
+        int invalidas = 0;
+        int repetidas = 0;
 
+        Set<Integer> idsProcesados = new HashSet<>();
+
+        if (musicas == null || musicas.isEmpty()) {
+            return "No se eliminaron músicas.\n"
+                    + "Motivo: No se recibieron músicas.";
+        }
+
+        for (Musica musica : musicas) {
+            if (musica == null || musica.getId() <= 0) {
+                invalidas++;
+                continue;
+            }
+
+            if (!idsProcesados.add(musica.getId())) {
+                repetidas++;
+                continue;
+            }
+
+            boolean eliminada = eliminarMusicaPorId(musica.getId());
+
+            if (eliminada) {
+                eliminadas++;
+            } else {
+                noEncontradas++;
+            }
+        }
+
+        return "Proceso de eliminación finalizado.\n"
+                + "Recibidas: " + recibidas + "\n"
+                + "Eliminadas: " + eliminadas + "\n"
+                + "No encontradas: " + noEncontradas + "\n"
+                + "Inválidas: " + invalidas + "\n"
+                + "Repetidas: " + repetidas;
+    }
+    
     private boolean eliminarMusicaPorId(int id) {
         Musica musica = hash.buscarPorId(id);
 

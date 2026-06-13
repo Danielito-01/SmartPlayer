@@ -96,6 +96,7 @@ public class DialogoAdministrarPlaylist extends javax.swing.JDialog {
     txtNombrePlaylist.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
     txtNombrePlaylist.setHorizontalAlignment(javax.swing.JTextField.CENTER);
     txtNombrePlaylist.setText("Nombre Playlist");
+    txtNombrePlaylist.addActionListener(this::txtNombrePlaylistActionPerformed);
 
     btnRenombrar.setText("Renombrar");
     btnRenombrar.addActionListener(this::btnRenombrarActionPerformed);
@@ -131,7 +132,6 @@ public class DialogoAdministrarPlaylist extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createSequentialGroup()
                     .addComponent(btnRenombrar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGap(2, 2, 2)))
-            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                 .addComponent(jLabel4)
                 .addComponent(txtBusquedaPlaylist, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -516,6 +516,21 @@ public class DialogoAdministrarPlaylist extends javax.swing.JDialog {
 
         cargarDatos();  
     }//GEN-LAST:event_btnRenombrarActionPerformed
+
+    private void txtNombrePlaylistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNombrePlaylistActionPerformed
+        String nuevoNombre = txtNombrePlaylist.getText();
+
+        String mensaje = biblioteca.renombrarPlaylist(idPlaylist, nuevoNombre);
+
+        JOptionPane.showMessageDialog(
+                this,
+                mensaje,
+                "Playlist",
+                JOptionPane.INFORMATION_MESSAGE
+        );
+
+        cargarDatos(); 
+    }//GEN-LAST:event_txtNombrePlaylistActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAgregar;
