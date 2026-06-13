@@ -11,20 +11,8 @@ public class DialogoRecorrido extends javax.swing.JDialog {
     public DialogoRecorrido(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        inicializar();
-    }
-    
-    private void inicializar() {
         Presentacion.aplicarRecorrido(this);
-        cargarRecorridoABB();
-        cargarRecorridoAVL();
-        jtxtABB.setEditable(false);
-        jtxtABB.setLineWrap(false);
-        jtxtABB.setFont(new java.awt.Font("Consolas", java.awt.Font.PLAIN, 12));
-        jtxtAVL.setEditable(false);
-        jtxtAVL.setLineWrap(false);
-        jtxtAVL.setFont(new java.awt.Font("Consolas", java.awt.Font.PLAIN, 12));
-
+        inicializar();
     }
 
     @SuppressWarnings("unchecked")
@@ -141,6 +129,18 @@ public class DialogoRecorrido extends javax.swing.JDialog {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void inicializar() {
+        cargarRecorridoABB();
+        cargarRecorridoAVL();
+        jtxtABB.setEditable(false);
+        jtxtABB.setLineWrap(false);
+        jtxtABB.setFont(new java.awt.Font("Consolas", java.awt.Font.PLAIN, 12));
+        jtxtAVL.setEditable(false);
+        jtxtAVL.setLineWrap(false);
+        jtxtAVL.setFont(new java.awt.Font("Consolas", java.awt.Font.PLAIN, 12));
+
+    }
+    
     private void cargarRecorridoABB() {
         List<Musica> musicas = biblioteca.getAbb().recorridoInOrden();
 

@@ -13,14 +13,7 @@ public class DialogoPilaHistorial extends javax.swing.JDialog {
         initComponents();
         inicializar();
     }
-    
-    private void inicializar() {
-        Presentacion.aplicarPilaHistorial(this);
-        Tabla.cargarMusicasConDetalles(tblMusicas, biblioteca.getPilaHistorial().listaMusicas() );
-        Tabla.ocultarColumna(tblMusicas, 9);
-        Tabla.establecerAnchoMaximo(tblMusicas, 0, 45);
-    }
-    
+       
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -78,6 +71,14 @@ public class DialogoPilaHistorial extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void inicializar() {
+        Presentacion.aplicarPilaHistorial(this);
+        Tabla.cargarMusicasConDetalles(tblMusicas, biblioteca.getPilaHistorial().listaMusicas() );
+        Tabla.ocultarColumna(tblMusicas, 9);
+        Tabla.establecerAnchoMaximo(tblMusicas, 0, 45);
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lblPilaHistorial;

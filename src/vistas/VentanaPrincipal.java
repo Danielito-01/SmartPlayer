@@ -41,23 +41,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     public VentanaPrincipal() {
         initComponents();  
-        inicializar();
-    }
-    
-    private void inicializar() {
         Presentacion.aplicarVentanaPrincipal(this);
-        configurarTablas();
-        cargarTablaMusicas(listaSeleccionada);
-        cargarTablaPlaylists();
-        cargarTablaCola();
-        conectarReproductor();
-    }
-    
-    private void refrescar() {
-        cargarTablaMusicas(listaSeleccionada);
-        cargarTablaPlaylists();
-        cargarTablaCola();
-        actualizarVistaReproduccion();
+        inicializar();
     }
 
     @SuppressWarnings("unchecked")
@@ -560,6 +545,21 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
    
+    private void inicializar() {
+        configurarTablas();
+        cargarTablaMusicas(listaSeleccionada);
+        cargarTablaPlaylists();
+        cargarTablaCola();
+        conectarReproductor();
+    }
+    
+    private void refrescar() {
+        cargarTablaMusicas(listaSeleccionada);
+        cargarTablaPlaylists();
+        cargarTablaCola();
+        actualizarVistaReproduccion();
+    } 
+  
     private void configurarTablas() {
         Tabla.ocultarColumna(tblMusicas, 2);
         Tabla.ocultarColumna(tblPlaylist, 2);

@@ -23,14 +23,8 @@ public class DialogoNuevaPlaylist extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         this.nombrePlaylist = nombrePlaylist;
-        inicializar();
-    }
-    
-    private void inicializar() {
         Presentacion.aplicarNuevaPlaylist(this);
-        configurarTablas();
-        lblNombrePlaylist.setText(nombrePlaylist);
-        cargarBiblioteca();
+        inicializar();
     }
 
     @SuppressWarnings("unchecked")
@@ -188,7 +182,13 @@ public class DialogoNuevaPlaylist extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+  
+    private void inicializar() {
+        configurarTablas();
+        lblNombrePlaylist.setText(nombrePlaylist);
+        cargarBiblioteca();
+    }
+    
     private void configurarTablas() {
         Tabla.establecerAnchoMaximo(tblMusicas, 0, 45);
         Tabla.establecerAnchoMaximo(tblMusicasPlaylist, 0, 45);

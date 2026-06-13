@@ -102,6 +102,10 @@ public class Presentacion {
     public static void aplicarRecorrido(JDialog dialogo) {
         aplicarDialogo(dialogo, "Recorrido");
     }
+    
+    public static void aplicarHistorial(JDialog dialogo) {
+        aplicarDialogo(dialogo, "Historial General");
+    }
 
     public static void refrescarToggle(JToggleButton toggle) {
         if (toggle.isSelected()) {

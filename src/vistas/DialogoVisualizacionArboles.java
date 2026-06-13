@@ -22,6 +22,7 @@ public class DialogoVisualizacionArboles extends javax.swing.JDialog {
     public DialogoVisualizacionArboles(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        Presentacion.aplicarVisualizacionArboles(this);
         inicializar();
     }
 
@@ -167,7 +168,6 @@ public class DialogoVisualizacionArboles extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
  
     private void inicializar() {
-        Presentacion.aplicarVisualizacionArboles(this);
         setLocationRelativeTo(getParent());
         scpABB.setViewportView(panelABB);
         scpAVL.setViewportView(panelAVL);

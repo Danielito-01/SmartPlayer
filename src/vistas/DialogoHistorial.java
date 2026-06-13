@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import servicios.GestorHistorial;
+import utilidades.Presentacion;
 
 public class DialogoHistorial extends javax.swing.JDialog {
     private final BibliotecaGeneral biblioteca = BibliotecaGeneral.getInstance();
@@ -14,6 +15,7 @@ public class DialogoHistorial extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         inicializar();
+        Presentacion.aplicarHistorial(this);
     }
 
     @SuppressWarnings("unchecked")
@@ -114,16 +116,16 @@ public class DialogoHistorial extends javax.swing.JDialog {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(lblTipo, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(cmbTipo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(cmbTipo, 0, 212, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
                         .addComponent(lblBuscar)
                         .addGap(6, 6, 6)
                         .addComponent(txtBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(26, 26, 26)
                         .addComponent(btnBuscar)
-                        .addGap(36, 36, 36)
+                        .addGap(27, 27, 27)
                         .addComponent(btnLimpiar)
-                        .addGap(219, 219, 219)
+                        .addGap(228, 228, 228)
                         .addComponent(jLabel1)
                         .addGap(151, 151, 151))
                     .addGroup(layout.createSequentialGroup()
@@ -138,7 +140,7 @@ public class DialogoHistorial extends javax.swing.JDialog {
                                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(14, 14, 14)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
