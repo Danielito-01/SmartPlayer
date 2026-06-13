@@ -1,10 +1,19 @@
 package vistas;
 
+import estructuras.BibliotecaGeneral;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
+import servicios.GestorHistorial;
+
 public class DialogoHistorial extends javax.swing.JDialog {
+    private final BibliotecaGeneral biblioteca = BibliotecaGeneral.getInstance();
+    private List<GestorHistorial.RegistroHistorial> registrosMostrados = new ArrayList<>();
     
     public DialogoHistorial(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        inicializar();
     }
 
     @SuppressWarnings("unchecked")
@@ -23,7 +32,9 @@ public class DialogoHistorial extends javax.swing.JDialog {
         tblHistorial = new javax.swing.JTable();
         jScrollPane2 = new javax.swing.JScrollPane();
         txtDetalle = new javax.swing.JTextArea();
-        lblResumen = new javax.swing.JLabel();
+        lblMostrados = new javax.swing.JLabel();
+        lblGeneral = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -61,14 +72,14 @@ public class DialogoHistorial extends javax.swing.JDialog {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 755, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 520, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -79,83 +90,297 @@ public class DialogoHistorial extends javax.swing.JDialog {
         txtDetalle.setWrapStyleWord(true);
         jScrollPane2.setViewportView(txtDetalle);
 
-        lblResumen.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
-        lblResumen.setForeground(new java.awt.Color(51, 51, 51));
-        lblResumen.setText("Registros mostrados: 0");
+        lblMostrados.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
+        lblMostrados.setForeground(new java.awt.Color(51, 51, 51));
+        lblMostrados.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        lblMostrados.setText("Registros mostrados: 0");
+        lblMostrados.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+
+        lblGeneral.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
+        lblGeneral.setForeground(new java.awt.Color(51, 51, 51));
+        lblGeneral.setText("Total general: 0");
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 3, 18)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(51, 51, 51));
+        jLabel1.setText("Detalles:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(6, 6, 6)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(lblTipo, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(cmbTipo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(lblBuscar)
+                        .addGap(6, 6, 6)
+                        .addComponent(txtBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(26, 26, 26)
+                        .addComponent(btnBuscar)
+                        .addGap(36, 36, 36)
+                        .addComponent(btnLimpiar)
+                        .addGap(219, 219, 219)
+                        .addComponent(jLabel1)
+                        .addGap(151, 151, 151))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblTipo, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(cmbTipo, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(31, 31, 31)
-                                .addComponent(lblBuscar)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(lblTitulo)
-                                .addGap(18, 18, 18)))
-                        .addGap(9, 9, 9)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGap(6, 6, 6)
+                                .addComponent(lblMostrados, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(lblGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(73, 73, 73))
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(lblResumen)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(9, 9, 9)
-                                .addComponent(btnBuscar)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-                                .addComponent(btnLimpiar)
-                                .addGap(6, 6, 6))))
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 677, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(14, 14, 14)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblTitulo)
+                .addGap(364, 364, 364))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(lblTitulo))
-                    .addComponent(lblResumen))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblTipo)
-                    .addComponent(cmbTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblBuscar)
-                    .addComponent(txtBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnBuscar)
-                    .addComponent(btnLimpiar))
-                .addGap(18, 18, 18)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(8, 8, 8))
+                        .addComponent(lblTitulo)
+                        .addGap(12, 12, 12)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblTipo)
+                            .addComponent(cmbTipo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(lblBuscar)
+                                    .addComponent(txtBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(btnBuscar)
+                                    .addComponent(btnLimpiar))))
+                        .addGap(18, 18, 18))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(64, 64, 64)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblMostrados)
+                            .addComponent(lblGeneral, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void inicializar() {
+        setTitle("Historial General");
+        setLocationRelativeTo(getParent());
+        configurarTablaHistorial();
+        cargarTipos();
+        configurarEventos();
+        cargarHistorialCompleto();
+    }
+
+    private void configurarTablaHistorial() {
+        tblHistorial.setModel(new DefaultTableModel(
+                new Object[][]{},
+                new String[]{
+                    "No.", "Fecha", "Tipo", "Resultado", "Acción", "Resumen", "Id"
+                }
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        });
+
+        tblHistorial.setRowHeight(24);
+        ocultarColumnaId();
+
+        txtDetalle.setEditable(false);
+        txtDetalle.setLineWrap(true);
+        txtDetalle.setWrapStyleWord(true);
+        txtDetalle.setText("");
+    }
+
+    private void configurarEventos() {
+        btnBuscar.addActionListener(e -> aplicarFiltros());
+
+        btnLimpiar.addActionListener(e -> {
+            txtBusqueda.setText("");
+            cmbTipo.setSelectedItem("TODOS");
+            cargarHistorialCompleto();
+        });
+
+        txtBusqueda.addActionListener(e -> aplicarFiltros());
+
+        cmbTipo.addActionListener(e -> aplicarFiltros());
+
+        tblHistorial.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                mostrarDetalleSeleccionado();
+            }
+        });
+    }
+
+    private void cargarTipos() {
+        cmbTipo.removeAllItems();
+        cmbTipo.addItem("TODOS");
+
+        for (GestorHistorial.Tipo tipo : GestorHistorial.Tipo.values()) {
+            cmbTipo.addItem(tipo.name());
+        }
+    }
+
+    private void cargarHistorialCompleto() {
+        registrosMostrados = biblioteca.getHistorial().getRegistrosRecientes();
+        cargarTabla(registrosMostrados);
+    }
+
+    private void aplicarFiltros() {
+        if (cmbTipo.getSelectedItem() == null) {
+            return;
+        }
+
+        String texto = txtBusqueda.getText();
+        String tipoSeleccionado = cmbTipo.getSelectedItem().toString();
+
+        List<GestorHistorial.RegistroHistorial> registros;
+
+        if (texto != null && !texto.trim().isEmpty()) {
+            registros = biblioteca.getHistorial().buscar(texto.trim());
+        } else {
+            registros = biblioteca.getHistorial().getRegistrosRecientes();
+        }
+
+        if (!"TODOS".equals(tipoSeleccionado)) {
+            GestorHistorial.Tipo tipo = GestorHistorial.Tipo.valueOf(tipoSeleccionado);
+            registros = filtrarPorTipo(registros, tipo);
+        }
+
+        registrosMostrados = registros;
+        cargarTabla(registrosMostrados);
+    }
+
+    private List<GestorHistorial.RegistroHistorial> filtrarPorTipo(
+            List<GestorHistorial.RegistroHistorial> registros,
+            GestorHistorial.Tipo tipo
+    ) {
+        List<GestorHistorial.RegistroHistorial> filtrados = new ArrayList<>();
+
+        for (GestorHistorial.RegistroHistorial registro : registros) {
+            if (registro.getTipo() == tipo) {
+                filtrados.add(registro);
+            }
+        }
+
+        return filtrados;
+    }
+
+    private void cargarTabla(List<GestorHistorial.RegistroHistorial> registros) {
+        DefaultTableModel modelo = (DefaultTableModel) tblHistorial.getModel();
+        modelo.setRowCount(0);
+
+        int no = 1;
+
+        for (GestorHistorial.RegistroHistorial registro : registros) {
+            modelo.addRow(new Object[]{
+                no++,
+                registro.getFechaFormateada(),
+                registro.getTipo(),
+                registro.getResultado(),
+                registro.getAccion(),
+                registro.getResumen(),
+                registro.getId()
+            });
+        }
+
+        ocultarColumnaId();
+
+        lblMostrados.setText("Registros mostrados: " + registros.size());
+        lblGeneral.setText("Total general: " + biblioteca.getHistorial().getTotalRegistros());
+
+        txtDetalle.setText("");
+
+        if (tblHistorial.getRowCount() > 0) {
+            tblHistorial.setRowSelectionInterval(0, 0);
+        }
+    }
+
+    private void ocultarColumnaId() {
+        if (tblHistorial.getColumnModel().getColumnCount() > 6) {
+            tblHistorial.getColumnModel().getColumn(6).setMinWidth(0);
+            tblHistorial.getColumnModel().getColumn(6).setMaxWidth(0);
+            tblHistorial.getColumnModel().getColumn(6).setWidth(0);
+            tblHistorial.getColumnModel().getColumn(6).setPreferredWidth(0);
+        }
+    }
+
+    private void mostrarDetalleSeleccionado() {
+        int fila = tblHistorial.getSelectedRow();
+
+        if (fila < 0) {
+            txtDetalle.setText("");
+            return;
+        }
+
+        int filaModelo = tblHistorial.convertRowIndexToModel(fila);
+        Object valorId = tblHistorial.getModel().getValueAt(filaModelo, 6);
+
+        if (valorId == null) {
+            txtDetalle.setText("");
+            return;
+        }
+
+        int id;
+
+        try {
+            id = Integer.parseInt(valorId.toString());
+        } catch (NumberFormatException e) {
+            txtDetalle.setText("");
+            return;
+        }
+
+        GestorHistorial.RegistroHistorial registro = buscarRegistroMostradoPorId(id);
+
+        if (registro == null) {
+            txtDetalle.setText("");
+            return;
+        }
+
+        txtDetalle.setText(registro.getDetalleCompleto());
+        txtDetalle.setCaretPosition(0);
+    }
+
+    private GestorHistorial.RegistroHistorial buscarRegistroMostradoPorId(int id) {
+        for (GestorHistorial.RegistroHistorial registro : registrosMostrados) {
+            if (registro.getId() == id) {
+                return registro;
+            }
+        }
+        return null;
+    }
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JComboBox<String> cmbTipo;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JLabel lblBuscar;
-    private javax.swing.JLabel lblResumen;
+    private javax.swing.JLabel lblGeneral;
+    private javax.swing.JLabel lblMostrados;
     private javax.swing.JLabel lblTipo;
     private javax.swing.JLabel lblTitulo;
     private javax.swing.JTable tblHistorial;
