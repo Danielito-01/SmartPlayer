@@ -49,13 +49,19 @@ public class DialogoHistorial extends javax.swing.JDialog {
         lblTipo.setForeground(new java.awt.Color(51, 51, 51));
         lblTipo.setText("Tipo:");
 
+        cmbTipo.addActionListener(this::cmbTipoActionPerformed);
+
         lblBuscar.setFont(new java.awt.Font("Segoe UI", 3, 14)); // NOI18N
         lblBuscar.setForeground(new java.awt.Color(51, 51, 51));
         lblBuscar.setText("Buscar:");
 
+        txtBusqueda.addActionListener(this::txtBusquedaActionPerformed);
+
         btnBuscar.setText("Buscar");
+        btnBuscar.addActionListener(this::btnBuscarActionPerformed);
 
         btnLimpiar.setText("Limpiar");
+        btnLimpiar.addActionListener(this::btnLimpiarActionPerformed);
 
         jPanel1.setBackground(new java.awt.Color(204, 255, 204));
 
@@ -74,6 +80,11 @@ public class DialogoHistorial extends javax.swing.JDialog {
         }
     );
     tblHistorial.getColumnModel().getColumn(0).setResizable(false);
+    tblHistorial.addMouseListener(new java.awt.event.MouseAdapter() {
+        public void mouseClicked(java.awt.event.MouseEvent evt) {
+            tblHistorialMouseClicked(evt);
+        }
+    });
     jScrollPane1.setViewportView(tblHistorial);
 
     javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -196,7 +207,6 @@ public class DialogoHistorial extends javax.swing.JDialog {
         setLocationRelativeTo(getParent());
         configurarTablaHistorial();
         cargarTipos();
-        configurarEventos();
         cargarHistorialCompleto();
     }
 
@@ -205,26 +215,6 @@ public class DialogoHistorial extends javax.swing.JDialog {
         Tabla.ocultarColumna(tblHistorial, 6);
         txtDetalle.setText("");
         Tabla.establecerAnchoMaximo(tblHistorial, 0, 55);
-    }
-
-    private void configurarEventos() {
-        btnBuscar.addActionListener(e -> aplicarFiltros());
-
-        btnLimpiar.addActionListener(e -> {
-            txtBusqueda.setText("");
-            cmbTipo.setSelectedItem("TODOS");
-            cargarHistorialCompleto();
-        });
-
-        txtBusqueda.addActionListener(e -> aplicarFiltros());
-
-        cmbTipo.addActionListener(e -> aplicarFiltros());
-
-        tblHistorial.getSelectionModel().addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                mostrarDetalleSeleccionado();
-            }
-        });
     }
 
     private void cargarTipos() {
@@ -355,6 +345,28 @@ public class DialogoHistorial extends javax.swing.JDialog {
         }
         return null;
     }
+    
+    private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
+        aplicarFiltros();
+    }//GEN-LAST:event_btnBuscarActionPerformed
+
+    private void btnLimpiarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarActionPerformed
+        txtBusqueda.setText("");txtBusqueda.setText("");
+        cmbTipo.setSelectedItem("TODOS");
+        cargarHistorialCompleto();
+    }//GEN-LAST:event_btnLimpiarActionPerformed
+
+    private void txtBusquedaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBusquedaActionPerformed
+        aplicarFiltros();
+    }//GEN-LAST:event_txtBusquedaActionPerformed
+
+    private void cmbTipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbTipoActionPerformed
+        aplicarFiltros();
+    }//GEN-LAST:event_cmbTipoActionPerformed
+
+    private void tblHistorialMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblHistorialMouseClicked
+        mostrarDetalleSeleccionado();
+    }//GEN-LAST:event_tblHistorialMouseClicked
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;
