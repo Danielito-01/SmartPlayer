@@ -12,6 +12,8 @@ import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -20,9 +22,12 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
@@ -33,36 +38,44 @@ import javax.swing.table.JTableHeader;
 
 public class Presentacion {
 
-    private static final Color FONDO = new Color(241, 247, 255);
+    private static final Color FONDO = new Color(239, 246, 255);
 
     private static final Color PANEL = new Color(252, 254, 255);
-    private static final Color PANEL_SUAVE = new Color(235, 244, 255);
-    private static final Color PANEL_REPRODUCTOR = new Color(228, 240, 255);
+    private static final Color PANEL_SUAVE = new Color(232, 242, 255);
+    private static final Color PANEL_REPRODUCTOR = new Color(222, 236, 255);
     private static final Color PANEL_INTERNO = new Color(255, 255, 255);
+    private static final Color PANEL_SELECCION = new Color(214, 232, 255);
 
-    private static final Color FILA_ALTERNA = new Color(245, 250, 255);
+    private static final Color FILA_ALTERNA = new Color(246, 250, 255);
 
-    private static final Color AZUL = new Color(74, 144, 245);
-    private static final Color AZUL_HOVER = new Color(52, 120, 225);
-    private static final Color AZUL_PRESS = new Color(34, 96, 196);
-    private static final Color AZUL_OSCURO = new Color(30, 78, 160);
+    private static final Color AZUL = new Color(55, 125, 235);
+    private static final Color AZUL_HOVER = new Color(42, 105, 210);
+    private static final Color AZUL_PRESS = new Color(30, 84, 180);
+    private static final Color AZUL_OSCURO = new Color(25, 68, 145);
 
     private static final Color AZUL_SUAVE = new Color(224, 239, 255);
     private static final Color AZUL_SUAVE_HOVER = new Color(207, 228, 252);
     private static final Color AZUL_SUAVE_PRESS = new Color(188, 214, 245);
 
-    private static final Color CONTROL = new Color(242, 248, 255);
-    private static final Color CONTROL_HOVER = new Color(226, 239, 254);
-    private static final Color CONTROL_PRESS = new Color(208, 226, 248);
+    private static final Color CONTROL = new Color(244, 248, 253);
+    private static final Color CONTROL_HOVER = new Color(229, 239, 252);
+    private static final Color CONTROL_PRESS = new Color(211, 226, 246);
 
-    private static final Color TEXTO = new Color(20, 33, 55);
-    private static final Color TEXTO_SUAVE = new Color(88, 104, 128);
+    private static final Color ROJO = new Color(225, 85, 85);
+    private static final Color ROJO_HOVER = new Color(205, 67, 67);
+    private static final Color ROJO_PRESS = new Color(180, 50, 50);
+    private static final Color ROJO_SUAVE = new Color(255, 235, 235);
+    private static final Color ROJO_OSCURO = new Color(150, 45, 45);
+
+    private static final Color TEXTO = new Color(22, 34, 55);
+    private static final Color TEXTO_SUAVE = new Color(87, 105, 130);
     private static final Color TEXTO_BLANCO = Color.WHITE;
 
-    private static final Color BORDE = new Color(190, 216, 248);
-    private static final Color BORDE_SUAVE = new Color(219, 232, 247);
+    private static final Color BORDE = new Color(180, 208, 242);
+    private static final Color BORDE_SUAVE = new Color(216, 230, 247);
+    private static final Color BORDE_FUERTE = new Color(145, 185, 235);
 
-    private static final Color SLIDER_FONDO = new Color(210, 221, 235);
+    private static final Color SLIDER_FONDO = new Color(213, 225, 241);
 
     private Presentacion() {
     }
@@ -90,44 +103,47 @@ public class Presentacion {
     public static void aplicarNuevaPlaylist(JDialog dialogo) {
         aplicarDialogo(dialogo, "Nueva Playlist");
     }
-    
+
     public static void aplicarPilaHistorial(JDialog dialogo) {
         aplicarDialogo(dialogo, "PilaHistorial");
     }
-    
+
     public static void aplicarVisualizacionArboles(JDialog dialogo) {
         aplicarDialogo(dialogo, "Visualizacion de arboles");
     }
-    
+
     public static void aplicarRecorrido(JDialog dialogo) {
         aplicarDialogo(dialogo, "Recorrido");
     }
-    
+
     public static void aplicarHistorial(JDialog dialogo) {
         aplicarDialogo(dialogo, "Historial General");
     }
-    
+
     public static void aplicarBusquedaEnArboles(JDialog dialogo) {
         aplicarDialogo(dialogo, "ABB vs AVL");
     }
-    
+
     public static void aplicarAdministrarPlaylist(JDialog dialogo) {
         aplicarDialogo(dialogo, "Administrar Playlist");
     }
-    
+
     public static void aplicarBibliotecaGeneral(JDialog dialogo) {
         aplicarDialogo(dialogo, "Biblioteca General");
     }
-    
+
     public static void aplicarEstadisticas(JDialog dialogo) {
         aplicarDialogo(dialogo, "Estadisticas");
     }
-    
+
     public static void aplicarArchivosPlaylist(JDialog dialogo) {
         aplicarDialogo(dialogo, "Importar / Exportar Playlists");
     }
 
     public static void refrescarToggle(JToggleButton toggle) {
+        toggle.setOpaque(true);
+        toggle.setBorderPainted(true);
+
         if (toggle.isSelected()) {
             toggle.setBackground(AZUL);
             toggle.setForeground(TEXTO_BLANCO);
@@ -182,12 +198,28 @@ public class Presentacion {
             estilizarBoton(boton);
         }
 
+        if (componente instanceof JCheckBox checkBox) {
+            estilizarCheckBox(checkBox);
+        }
+
         if (componente instanceof JLabel label) {
             estilizarLabel(label);
         }
 
         if (componente instanceof JTextField campoTexto) {
             estilizarCampoTexto(campoTexto);
+        }
+
+        if (componente instanceof JTextArea areaTexto) {
+            estilizarAreaTexto(areaTexto);
+        }
+
+        if (componente instanceof JComboBox<?> comboBox) {
+            estilizarComboBox(comboBox);
+        }
+
+        if (componente instanceof JTabbedPane tabbedPane) {
+            estilizarTabbedPane(tabbedPane);
         }
 
         if (componente instanceof JTable tabla) {
@@ -214,11 +246,18 @@ public class Presentacion {
 
         if (es(panel, "panReproduccion")) {
             panel.setBackground(PANEL_REPRODUCTOR);
-            panel.setBorder(new LineBorder(BORDE, 1, true));
+            panel.setBorder(new LineBorder(BORDE_FUERTE, 1, true));
             return;
         }
 
         if (es(panel, "panCanciones", "panPlaylist")) {
+            panel.setBackground(PANEL_SUAVE);
+            panel.setBorder(new LineBorder(BORDE, 1, true));
+            return;
+        }
+
+        if (nombreContiene(panel, "editar")
+                || es(panel, "panABB", "panAVL")) {
             panel.setBackground(PANEL_SUAVE);
             panel.setBorder(new LineBorder(BORDE, 1, true));
             return;
@@ -237,6 +276,20 @@ public class Presentacion {
         boton.setRolloverEnabled(true);
         boton.putClientProperty("JButton.buttonType", "roundRect");
 
+        if (es(boton, "btnEliminar", "btnEliminarPlaylist", "btnQuitar")
+                || nombreContiene(boton, "eliminar")
+                || nombreContiene(boton, "quitar")) {
+            aplicarEstiloBoton(
+                    boton,
+                    ROJO,
+                    ROJO_HOVER,
+                    ROJO_PRESS,
+                    TEXTO_BLANCO,
+                    ROJO_OSCURO
+            );
+            return;
+        }
+
         if (es(boton,
                 "btnCargar",
                 "btnGuardar",
@@ -244,11 +297,19 @@ public class Presentacion {
                 "btnAceptar",
                 "btnBiblioteca",
                 "btnReproducirLista",
-                "btnPlayPausa")
+                "btnPlayPausa",
+                "btnExportarPlaylist",
+                "btnImportarPlaylist",
+                "btnEncriptarArchivo",
+                "btnDesencriptarArchivo")
                 || nombreContiene(boton, "cargar")
                 || nombreContiene(boton, "guardar")
                 || nombreContiene(boton, "agregar")
-                || nombreContiene(boton, "aceptar")) {
+                || nombreContiene(boton, "aceptar")
+                || nombreContiene(boton, "exportar")
+                || nombreContiene(boton, "importar")
+                || nombreContiene(boton, "encriptar")
+                || nombreContiene(boton, "desencriptar")) {
 
             aplicarEstiloBoton(
                     boton,
@@ -261,8 +322,19 @@ public class Presentacion {
             return;
         }
 
-        if (es(boton, "btnBuscar")
-                || nombreContiene(boton, "buscar")) {
+        if (es(boton,
+                "btnBuscar",
+                "btnBuscarBiblioteca",
+                "btnBuscarPlaylist",
+                "btnComparar",
+                "btnRenombrar",
+                "btnEditar",
+                "btnAnterior",
+                "btnSiguiente")
+                || nombreContiene(boton, "buscar")
+                || nombreContiene(boton, "comparar")
+                || nombreContiene(boton, "renombrar")
+                || nombreContiene(boton, "editar")) {
 
             aplicarEstiloBoton(
                     boton,
@@ -275,12 +347,13 @@ public class Presentacion {
             return;
         }
 
-        if (es(boton, "btnAnterior", "btnSiguiente")) {
+        if (nombreContiene(boton, "examinar")
+                || nombreContiene(boton, "seleccionar")) {
             aplicarEstiloBoton(
                     boton,
-                    AZUL_SUAVE,
-                    AZUL_SUAVE_HOVER,
-                    AZUL_SUAVE_PRESS,
+                    CONTROL,
+                    CONTROL_HOVER,
+                    CONTROL_PRESS,
                     AZUL_OSCURO,
                     BORDE
             );
@@ -327,6 +400,7 @@ public class Presentacion {
         boton.putClientProperty("presentacion.normal", normal);
         boton.putClientProperty("presentacion.hover", hover);
         boton.putClientProperty("presentacion.press", press);
+        boton.putClientProperty("presentacion.texto", texto);
         boton.putClientProperty("presentacion.borde", borde);
 
         boton.setUI(new BasicButtonUI() {
@@ -338,18 +412,23 @@ public class Presentacion {
                 Color colorNormal = (Color) b.getClientProperty("presentacion.normal");
                 Color colorHover = (Color) b.getClientProperty("presentacion.hover");
                 Color colorPress = (Color) b.getClientProperty("presentacion.press");
+                Color colorTexto = (Color) b.getClientProperty("presentacion.texto");
                 Color colorBorde = (Color) b.getClientProperty("presentacion.borde");
 
                 Color fondo = colorNormal;
+                Color texto = colorTexto;
 
                 if (!b.isEnabled()) {
                     fondo = new Color(226, 232, 240);
+                    texto = TEXTO_SUAVE;
                     colorBorde = new Color(203, 213, 225);
                 } else if (modelo.isPressed()) {
                     fondo = colorPress;
                 } else if (modelo.isRollover()) {
                     fondo = colorHover;
                 }
+
+                b.setForeground(texto);
 
                 Graphics2D g2d = (Graphics2D) g.create();
 
@@ -378,11 +457,17 @@ public class Presentacion {
     private static void estilizarToggle(JToggleButton toggle) {
         toggle.setFocusPainted(false);
         toggle.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        toggle.setOpaque(true);
-        toggle.setBorderPainted(true);
         toggle.putClientProperty("JButton.buttonType", "roundRect");
 
         refrescarToggle(toggle);
+    }
+
+    private static void estilizarCheckBox(JCheckBox checkBox) {
+        checkBox.setOpaque(false);
+        checkBox.setForeground(TEXTO);
+        checkBox.setBackground(PANEL);
+        checkBox.setFocusPainted(false);
+        checkBox.setCursor(new Cursor(Cursor.HAND_CURSOR));
     }
 
     private static void estilizarLabel(JLabel label) {
@@ -400,7 +485,14 @@ public class Presentacion {
             return;
         }
 
-        if (es(label, "lblNombrePlaylist", "lblTituloPlaylist", "lblNuevaPlaylist", "lblPilaHistorial", "lblCargandoMusicas")
+        if (es(label,
+                "lblNombrePlaylist",
+                "lblTituloPlaylist",
+                "lblNuevaPlaylist",
+                "lblPilaHistorial",
+                "lblCargandoMusicas",
+                "lblArboles",
+                "lblArboles1")
                 || nombreContiene(label, "nombreplaylist")
                 || nombreContiene(label, "nuevaplaylist")) {
             label.setHorizontalAlignment(SwingConstants.CENTER);
@@ -408,16 +500,22 @@ public class Presentacion {
             return;
         }
 
-        if (nombreEmpieza(label, "lblTxt")) {
+        if (nombreEmpieza(label, "lblTxt")
+                || es(label,
+                        "lblTiempoActual",
+                        "lblDuracion",
+                        "lblZoom",
+                        "lblRaizABB",
+                        "lblRaizAVL",
+                        "lblCantidadABB",
+                        "lblCantidadAVL")) {
             label.setForeground(TEXTO_SUAVE);
             label.setVerticalAlignment(SwingConstants.CENTER);
             return;
         }
 
-        if (es(label, "lblTiempoActual", "lblDuracion")) {
-            label.setForeground(TEXTO_SUAVE);
+        if (nombreEmpieza(label, "lbl") && !es(label, "lblPortada")) {
             label.setVerticalAlignment(SwingConstants.CENTER);
-            return;
         }
 
         if (es(label, "lblPortada")) {
@@ -431,6 +529,7 @@ public class Presentacion {
         campoTexto.setBackground(PANEL_INTERNO);
         campoTexto.setForeground(TEXTO);
         campoTexto.setCaretColor(AZUL);
+        campoTexto.setDisabledTextColor(TEXTO_SUAVE);
         campoTexto.setBorder(new LineBorder(BORDE, 1, true));
 
         if (es(campoTexto, "txtNombre", "txtNombrePlaylist", "txtPlaylist")
@@ -440,18 +539,56 @@ public class Presentacion {
         }
     }
 
+    private static void estilizarAreaTexto(JTextArea areaTexto) {
+        areaTexto.setBackground(PANEL_INTERNO);
+        areaTexto.setForeground(TEXTO);
+        areaTexto.setCaretColor(AZUL);
+        areaTexto.setDisabledTextColor(TEXTO_SUAVE);
+        areaTexto.setSelectedTextColor(TEXTO_BLANCO);
+        areaTexto.setSelectionColor(AZUL);
+        areaTexto.setBorder(new LineBorder(BORDE_SUAVE, 1, true));
+
+        if (nombreContiene(areaTexto, "ruta")) {
+            areaTexto.setForeground(TEXTO_SUAVE);
+            areaTexto.setBackground(new Color(250, 252, 255));
+        }
+    }
+
+    private static void estilizarComboBox(JComboBox<?> comboBox) {
+        comboBox.setBackground(PANEL_INTERNO);
+        comboBox.setForeground(TEXTO);
+        comboBox.setBorder(new LineBorder(BORDE, 1, true));
+        comboBox.setFocusable(false);
+        comboBox.setCursor(new Cursor(Cursor.HAND_CURSOR));
+    }
+
+    private static void estilizarTabbedPane(JTabbedPane tabbedPane) {
+        tabbedPane.setOpaque(true);
+        tabbedPane.setBackground(PANEL);
+        tabbedPane.setForeground(TEXTO);
+        tabbedPane.setBorder(new LineBorder(BORDE_SUAVE, 1, true));
+
+        for (int i = 0; i < tabbedPane.getTabCount(); i++) {
+            tabbedPane.setBackgroundAt(i, PANEL_SUAVE);
+            tabbedPane.setForegroundAt(i, TEXTO);
+        }
+    }
+
     private static void estilizarTabla(JTable tabla) {
         tabla.setBackground(PANEL_INTERNO);
         tabla.setForeground(TEXTO);
         tabla.setSelectionBackground(AZUL);
         tabla.setSelectionForeground(TEXTO_BLANCO);
         tabla.setGridColor(BORDE_SUAVE);
-        tabla.setShowGrid(false);
+        tabla.setShowHorizontalLines(true);
+        tabla.setShowVerticalLines(false);
         tabla.setFillsViewportHeight(true);
+        tabla.setFocusable(false);
 
         JTableHeader header = tabla.getTableHeader();
 
         if (header != null) {
+            header.setOpaque(true);
             header.setBackground(PANEL_SUAVE);
             header.setForeground(TEXTO);
             header.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, BORDE));
@@ -485,6 +622,10 @@ public class Presentacion {
                     componente.setForeground(TEXTO);
                 }
 
+                if (componente instanceof JComponent jComponent) {
+                    jComponent.setBorder(BorderFactory.createEmptyBorder(0, 4, 0, 4));
+                }
+
                 return componente;
             }
         });
@@ -493,6 +634,20 @@ public class Presentacion {
     private static void estilizarScrollPane(JScrollPane scrollPane) {
         scrollPane.setBorder(new LineBorder(BORDE, 1, true));
         scrollPane.getViewport().setBackground(PANEL_INTERNO);
+        scrollPane.setBackground(PANEL_INTERNO);
+
+        estilizarBarraScroll(scrollPane.getVerticalScrollBar());
+        estilizarBarraScroll(scrollPane.getHorizontalScrollBar());
+    }
+
+    private static void estilizarBarraScroll(JScrollBar barra) {
+        if (barra == null) {
+            return;
+        }
+
+        barra.setBackground(PANEL_SUAVE);
+        barra.setForeground(AZUL);
+        barra.setUnitIncrement(12);
     }
 
     private static void estilizarSlider(JSlider slider) {
@@ -505,6 +660,7 @@ public class Presentacion {
     }
 
     private static void estilizarMenu(JMenuBar menuBar) {
+        menuBar.setOpaque(true);
         menuBar.setBackground(PANEL);
         menuBar.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, BORDE));
 
@@ -515,6 +671,7 @@ public class Presentacion {
                 menu.setOpaque(true);
                 menu.setBackground(PANEL);
                 menu.setForeground(TEXTO);
+                menu.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
                 for (int j = 0; j < menu.getItemCount(); j++) {
                     JMenuItem item = menu.getItem(j);
@@ -523,6 +680,8 @@ public class Presentacion {
                         item.setOpaque(true);
                         item.setBackground(PANEL_INTERNO);
                         item.setForeground(TEXTO);
+                        item.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, BORDE_SUAVE));
+                        item.setCursor(new Cursor(Cursor.HAND_CURSOR));
                     }
                 }
             }
