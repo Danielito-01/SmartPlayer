@@ -89,12 +89,11 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         tglContinua = new javax.swing.JToggleButton();
         lblDuracion = new javax.swing.JLabel();
         jmbMenu = new javax.swing.JMenuBar();
-        menuAdministrador = new javax.swing.JMenu();
+        menuAdministrar = new javax.swing.JMenu();
         jmiCargarMusicas = new javax.swing.JMenuItem();
         jmiHistorial = new javax.swing.JMenuItem();
         menuPlaylist = new javax.swing.JMenu();
         jmiNueva = new javax.swing.JMenuItem();
-        jmiTodas = new javax.swing.JMenuItem();
         menuRequisitos = new javax.swing.JMenu();
         jmiPilaHistorial = new javax.swing.JMenuItem();
         jmiBusquedaEnArboles = new javax.swing.JMenuItem();
@@ -473,26 +472,23 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        menuAdministrador.setText("Administrador");
+        menuAdministrar.setText("Administrar");
 
         jmiCargarMusicas.setText("Cargar musicas");
         jmiCargarMusicas.addActionListener(this::jmiCargarMusicasActionPerformed);
-        menuAdministrador.add(jmiCargarMusicas);
+        menuAdministrar.add(jmiCargarMusicas);
 
         jmiHistorial.setText("Historial");
         jmiHistorial.addActionListener(this::jmiHistorialActionPerformed);
-        menuAdministrador.add(jmiHistorial);
+        menuAdministrar.add(jmiHistorial);
 
-        jmbMenu.add(menuAdministrador);
+        jmbMenu.add(menuAdministrar);
 
         menuPlaylist.setText("Playlists");
 
         jmiNueva.setText("Nueva");
         jmiNueva.addActionListener(this::jmiNuevaActionPerformed);
         menuPlaylist.add(jmiNueva);
-
-        jmiTodas.setText("Todas");
-        menuPlaylist.add(jmiTodas);
 
         jmbMenu.add(menuPlaylist);
 
@@ -1447,7 +1443,6 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jmiNueva;
     private javax.swing.JMenuItem jmiPilaHistorial;
     private javax.swing.JMenuItem jmiRecorridos;
-    private javax.swing.JMenuItem jmiTodas;
     private javax.swing.JMenuItem jmiVisualizacionArboles;
     private javax.swing.JLabel lblAlbum;
     private javax.swing.JLabel lblAnio;
@@ -1465,7 +1460,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel lblTxtArtista;
     private javax.swing.JLabel lblTxtGenero;
     private javax.swing.JLabel lblTxtTamanio;
-    private javax.swing.JMenu menuAdministrador;
+    private javax.swing.JMenu menuAdministrar;
     private javax.swing.JMenu menuPlaylist;
     private javax.swing.JMenu menuRequisitos;
     private javax.swing.JPopupMenu pMenuCola;

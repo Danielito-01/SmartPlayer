@@ -36,9 +36,9 @@
     </Container>
     <Menu class="javax.swing.JMenuBar" name="jmbMenu">
       <SubComponents>
-        <Menu class="javax.swing.JMenu" name="menuAdministrador">
+        <Menu class="javax.swing.JMenu" name="menuAdministrar">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Administrador"/>
+            <Property name="text" type="java.lang.String" value="Administrar"/>
           </Properties>
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jmiCargarMusicas">
@@ -71,11 +71,6 @@
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmiNuevaActionPerformed"/>
               </Events>
-            </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="jmiTodas">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Todas"/>
-              </Properties>
             </MenuItem>
           </SubComponents>
         </Menu>
