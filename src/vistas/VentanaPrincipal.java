@@ -67,6 +67,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         btnReproducirLista = new javax.swing.JButton();
         txtBusqueda = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
+        lblDuracionLista = new javax.swing.JLabel();
         panReproduccion = new javax.swing.JPanel();
         lblNombreMusica = new javax.swing.JLabel();
         lblTxtArtista = new javax.swing.JLabel();
@@ -230,6 +231,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jButton1.setActionCommand("btnBusqueda");
         jButton1.addActionListener(this::jButton1ActionPerformed);
 
+        lblDuracionLista.setFont(new java.awt.Font("Segoe UI", 3, 10)); // NOI18N
+        lblDuracionLista.setText("00 hrs 00 min");
+
         javax.swing.GroupLayout panCancionesLayout = new javax.swing.GroupLayout(panCanciones);
         panCanciones.setLayout(panCancionesLayout);
         panCancionesLayout.setHorizontalGroup(
@@ -238,14 +242,17 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(panCancionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panCancionesLayout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGap(0, 1, Short.MAX_VALUE)
                         .addComponent(btnReproducirLista, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(lblTituloLista, javax.swing.GroupLayout.DEFAULT_SIZE, 338, Short.MAX_VALUE)
                     .addComponent(scpMusicas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(panCancionesLayout.createSequentialGroup()
-                        .addComponent(txtBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(panCancionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(lblTituloLista, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(txtBusqueda, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(panCancionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblDuracionLista, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -253,7 +260,9 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             panCancionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panCancionesLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(lblTituloLista, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(panCancionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lblTituloLista, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblDuracionLista, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(panCancionesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE)
@@ -669,6 +678,8 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         if (lista == null) {
             listaSeleccionada = biblioteca.getBiblioteca();
+            lblTituloLista.setText("BIBLIOTECA");
+            lblDuracionLista.setText(biblioteca.getBiblioteca().getDuracionTotalFormateada());
         } else {
             listaSeleccionada = lista;
         }
@@ -708,6 +719,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         listaSeleccionada = biblioteca.getBiblioteca();
         cargarTablaMusicas(listaSeleccionada);
         lblTituloLista.setText("BIBLIOTECA");
+        lblDuracionLista.setText(biblioteca.getBiblioteca().getDuracionTotalFormateada());
 
         if (listaSeleccionada == listaReproduciendo) {
             musicaSeleccionada = musicaReproduciendo;
@@ -728,6 +740,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         listaSeleccionada = playlist.getPlaylist();
         cargarTablaMusicas(listaSeleccionada);
         lblTituloLista.setText(playlist.getNombre());
+        lblDuracionLista.setText(playlist.getPlaylist().getDuracionTotalFormateada());
 
         if (listaSeleccionada == listaReproduciendo) {
             musicaSeleccionada = musicaReproduciendo;
@@ -1072,6 +1085,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
             if (playlist.getPlaylist() == listaSeleccionada) {
                 seleccionarFilaPorId(tblPlaylist, playlist.getId());
                 lblTituloLista.setText(playlist.getNombre());
+                lblDuracionLista.setText(playlist.getPlaylist().getDuracionTotalFormateada());
                 break;
             }
         }
@@ -1195,10 +1209,12 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 if (listaSeleccionada == listaPlaylistAntes) {
                     listaSeleccionada = biblioteca.getBiblioteca();
                     lblTituloLista.setText("BIBLIOTECA");
+                    lblDuracionLista.setText(biblioteca.getBiblioteca().getDuracionTotalFormateada());
                 }
             } else if (playlistDespues != null) {
                 if (listaSeleccionada == playlistDespues.getPlaylist()) {
                     lblTituloLista.setText(playlistDespues.getNombre());
+                    lblDuracionLista.setText(playlistDespues.getPlaylist().getDuracionTotalFormateada());
                 }
 
                 if (listaReproduciendo == playlistDespues.getPlaylist()
@@ -1600,6 +1616,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JLabel lblArtista;
     private javax.swing.JLabel lblCola;
     private javax.swing.JLabel lblDuracion;
+    private javax.swing.JLabel lblDuracionLista;
     private javax.swing.JLabel lblGenero;
     private javax.swing.JLabel lblNombreMusica;
     private javax.swing.JLabel lblPortada;

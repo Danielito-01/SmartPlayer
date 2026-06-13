@@ -228,4 +228,84 @@ public class ListaMusicas {
     private String normalizar(String texto) {
         return texto == null ? "" : texto.trim().toLowerCase();
     }
+    
+    public int getDuracionTotal() {
+        int total = 0;
+
+        for (Musica musica : listaMusicas()) {
+            total += musica.getDuracion();
+        }
+
+        return total;
+    }
+
+    public long getTamanioTotal() {
+        long total = 0;
+
+        for (Musica musica : listaMusicas()) {
+            total += musica.getTamanio();
+        }
+
+        return total;
+    }
+
+    public double getPromedioDuracion() {
+        if (estaVacia()) {
+            return 0;
+        }
+
+        return (double) getDuracionTotal() / cantidad;
+    }
+
+    public String getDuracionTotalFormateada() {
+        return formatearDuracionTexto(getDuracionTotal());
+    }
+
+    public String getPromedioDuracionFormateado() {
+        return formatearDuracionTexto((int) Math.round(getPromedioDuracion()));
+    }
+
+    public String getTamanioTotalFormateado() {
+        return formatearTamanio(getTamanioTotal());
+    }
+
+    public double getTamanioTotalMB() {
+        return getTamanioTotal() / 1024.0 / 1024.0;
+    }
+
+    public double getTamanioTotalGB() {
+        return getTamanioTotalMB() / 1024.0;
+    }
+
+    private String formatearDuracionTexto(int segundosTotales) {
+        int horas = segundosTotales / 3600;
+        int minutos = (segundosTotales % 3600) / 60;
+        int segundos = segundosTotales % 60;
+
+        if (horas > 0) {
+            return horas + " hrs " + minutos + " min";
+        }
+
+        return minutos + " min " + segundos + " seg";
+    }
+
+    private String formatearTamanio(long bytes) {
+        double kb = bytes / 1024.0;
+        double mb = kb / 1024.0;
+        double gb = mb / 1024.0;
+
+        if (gb >= 1) {
+            return String.format("%.2f GB", gb);
+        }
+
+        if (mb >= 1) {
+            return String.format("%.2f MB", mb);
+        }
+
+        if (kb >= 1) {
+            return String.format("%.2f KB", kb);
+        }
+
+        return bytes + " B";
+    }
 }
