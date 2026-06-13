@@ -94,6 +94,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jmiHistorial = new javax.swing.JMenuItem();
         menuPlaylist = new javax.swing.JMenu();
         jmiNueva = new javax.swing.JMenuItem();
+        jmiAdministrar = new javax.swing.JMenuItem();
         menuRequisitos = new javax.swing.JMenu();
         jmiPilaHistorial = new javax.swing.JMenuItem();
         jmiBusquedaEnArboles = new javax.swing.JMenuItem();
@@ -489,6 +490,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jmiNueva.setText("Nueva");
         jmiNueva.addActionListener(this::jmiNuevaActionPerformed);
         menuPlaylist.add(jmiNueva);
+
+        jmiAdministrar.setText("Administrar");
+        jmiAdministrar.addActionListener(this::jmiAdministrarActionPerformed);
+        menuPlaylist.add(jmiAdministrar);
 
         jmbMenu.add(menuPlaylist);
 
@@ -1052,6 +1057,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         for (Playlist playlist : biblioteca.getPlaylists()) {
             if (playlist.getPlaylist() == listaSeleccionada) {
                 seleccionarFilaPorId(tblPlaylist, playlist.getId());
+                lblTituloLista.setText(playlist.getNombre());
                 break;
             }
         }
@@ -1158,6 +1164,84 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         }
 
         return null;
+    }
+    
+    private void manejarPlaylistEliminada(ListaMusicas listaEliminada) {
+        if (listaEliminada == null) {
+            return;
+        }
+
+        boolean eraListaSeleccionada = listaSeleccionada == listaEliminada;
+        boolean eraListaReproduciendo = listaReproduciendo == listaEliminada;
+
+        if (eraListaReproduciendo) {
+            reproductor.detener();
+
+            listaReproduciendo = null;
+            musicaReproduciendo = null;
+            musicaSeleccionada = null;
+            reproduciendoDesdeCola = false;
+
+            btnPlayPausa.setText("▶");
+            lblTiempoActual.setText("00:00");
+            duracionActualSegundos = 0;
+
+            actualizandoSlider = true;
+            sldProgreso.setValue(0);
+            actualizandoSlider = false;
+        }
+
+        if (eraListaSeleccionada) {
+            listaSeleccionada = biblioteca.getBiblioteca();
+            lblTituloLista.setText("BIBLIOTECA");
+        }
+
+        cargarTablaMusicas(listaSeleccionada);
+        cargarTablaPlaylists();
+        cargarTablaCola();
+        actualizarVistaReproduccion();
+    }
+    
+    private void manejarCambiosPlaylist(Playlist playlist) {
+        if (playlist == null) {
+            return;
+        }
+
+        if (listaReproduciendo != playlist.getPlaylist()) {
+            return;
+        }
+
+        if (musicaReproduciendo == null) {
+            return;
+        }
+
+        if (playlist.contieneMusica(musicaReproduciendo)) {
+            return;
+        }
+
+        reproductor.detener();
+
+        musicaReproduciendo = null;
+        musicaSeleccionada = null;
+        reproduciendoDesdeCola = false;
+
+        btnPlayPausa.setText("▶");
+        lblTiempoActual.setText("00:00");
+        duracionActualSegundos = 0;
+
+        actualizandoSlider = true;
+        sldProgreso.setValue(0);
+        actualizandoSlider = false;
+
+        cargarTablaMusicas(playlist.getPlaylist());
+        cargarTablaCola();
+        actualizarVistaReproduccion();
+
+        JOptionPane.showMessageDialog(
+                this,
+                "La música que se estaba reproduciendo fue quitada de la playlist.\n"
+                + "La reproducción se detuvo."
+        );
     }
     
     private void jmiCargarMusicasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiCargarMusicasActionPerformed
@@ -1428,6 +1512,31 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         refrescar();
     }//GEN-LAST:event_jmiHistorialActionPerformed
 
+    private void jmiAdministrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiAdministrarActionPerformed
+        int idPlaylist = idSeleccion(tblPlaylist);
+
+        if (idPlaylist <= 0) {
+            JOptionPane.showMessageDialog(this, "Selecciona una Playlist para administrar");
+            return;
+        }
+
+        Playlist playlistAntes = biblioteca.buscarPlaylistPorId(idPlaylist);
+        ListaMusicas listaPlaylistAntes = playlistAntes == null ? null : playlistAntes.getPlaylist();
+
+        DialogoAdministrarPlaylist dialogo = new DialogoAdministrarPlaylist(this, true, idPlaylist);
+        dialogo.setVisible(true);
+
+        Playlist playlistDespues = biblioteca.buscarPlaylistPorId(idPlaylist);
+
+        if (playlistDespues == null) {
+            manejarPlaylistEliminada(listaPlaylistAntes);
+        } else {
+            manejarCambiosPlaylist(playlistDespues);
+        }
+
+        refrescar();
+    }//GEN-LAST:event_jmiAdministrarActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem agregarACola;
     private javax.swing.JButton btnAnterior;
@@ -1437,6 +1546,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton btnSiguiente;
     private javax.swing.JButton jButton1;
     private javax.swing.JMenuBar jmbMenu;
+    private javax.swing.JMenuItem jmiAdministrar;
     private javax.swing.JMenuItem jmiBusquedaEnArboles;
     private javax.swing.JMenuItem jmiCargarMusicas;
     private javax.swing.JMenuItem jmiHistorial;

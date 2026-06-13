@@ -110,6 +110,10 @@ public class Presentacion {
     public static void aplicarBusquedaEnArboles(JDialog dialogo) {
         aplicarDialogo(dialogo, "ABB vs AVL");
     }
+    
+    public static void aplicarAdministrarPlaylist(JDialog dialogo) {
+        aplicarDialogo(dialogo, "Administrar Playlist");
+    }
 
     public static void refrescarToggle(JToggleButton toggle) {
         if (toggle.isSelected()) {

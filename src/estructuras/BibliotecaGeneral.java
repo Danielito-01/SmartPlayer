@@ -454,6 +454,205 @@ public final class BibliotecaGeneral {
         return "Playlist creada correctamente.\n"
                 + "Nombre: " + playlist.getNombre();
     }
+    
+    public String eliminarPlaylist(int idPlaylist) {
+        Playlist playlist = buscarPlaylistPorId(idPlaylist);
+
+        if (playlist == null) {
+            historial.registrarEliminacionPlaylist(
+                    idPlaylist,
+                    "No encontrada",
+                    0,
+                    false,
+                    "Playlist no encontrada"
+            );
+
+            return "No se pudo eliminar la playlist.\n"
+                    + "Motivo: Playlist no encontrada.";
+        }
+
+        String nombre = playlist.getNombre();
+        int cantidadMusicas = playlist.getCantidad();
+
+        boolean eliminada = playlists.remove(playlist);
+
+        historial.registrarEliminacionPlaylist(
+                playlist.getId(),
+                nombre,
+                cantidadMusicas,
+                eliminada,
+                eliminada
+                        ? "Playlist eliminada correctamente"
+                        : "No se pudo eliminar la playlist"
+        );
+
+        if (!eliminada) {
+            return "No se pudo eliminar la playlist.";
+        }
+
+        return "Playlist eliminada correctamente.\n"
+                + "Nombre: " + nombre + "\n"
+                + "Músicas que tenía: " + cantidadMusicas;
+    }
+    
+    public String quitarMusicasDePlaylist(int idPlaylist, List<Musica> musicas) {
+        Playlist playlist = buscarPlaylistPorId(idPlaylist);
+
+        if (playlist == null) {
+            int recibidas = musicas == null ? 0 : musicas.size();
+
+            historial.registrarMusicasQuitadasDePlaylist(
+                    idPlaylist,
+                    "No encontrada",
+                    musicas,
+                    0,
+                    recibidas,
+                    false,
+                    "Playlist no encontrada"
+            );
+
+            return "No se pudieron quitar músicas.\n"
+                    + "Motivo: Playlist no encontrada.";
+        }
+
+        int recibidas = musicas == null ? 0 : musicas.size();
+        int quitadas = 0;
+        int noEncontradas = 0;
+        int invalidas = 0;
+
+        Set<Integer> idsProcesados = new HashSet<>();
+
+        if (musicas != null) {
+            for (Musica musica : musicas) {
+                if (musica == null || musica.getId() <= 0) {
+                    invalidas++;
+                    continue;
+                }
+
+                if (!idsProcesados.add(musica.getId())) {
+                    noEncontradas++;
+                    continue;
+                }
+
+                if (!playlist.contieneMusica(musica)) {
+                    noEncontradas++;
+                    continue;
+                }
+
+                if (playlist.eliminarMusica(musica)) {
+                    quitadas++;
+                } else {
+                    noEncontradas++;
+                }
+            }
+        }
+
+        historial.registrarMusicasQuitadasDePlaylist(
+                playlist.getId(),
+                playlist.getNombre(),
+                musicas,
+                quitadas,
+                noEncontradas + invalidas,
+                true,
+                "Proceso terminado"
+        );
+
+        return "Músicas quitadas de la playlist.\n"
+                + "Playlist: " + playlist.getNombre() + "\n"
+                + "Recibidas: " + recibidas + "\n"
+                + "Quitadas: " + quitadas + "\n"
+                + "No encontradas: " + noEncontradas + "\n"
+                + "Inválidas: " + invalidas;
+    }
+    
+    public String renombrarPlaylist(int idPlaylist, String nuevoNombre) {
+        Playlist playlist = buscarPlaylistPorId(idPlaylist);
+
+        if (playlist == null) {
+            historial.registrarEdicionPlaylist(
+                    idPlaylist,
+                    "No encontrada",
+                    nuevoNombre,
+                    false,
+                    "Playlist no encontrada"
+            );
+
+            return "No se pudo renombrar la playlist.\n"
+                    + "Motivo: Playlist no encontrada.";
+        }
+
+        String nombreAnterior = playlist.getNombre();
+
+        if (nuevoNombre == null || nuevoNombre.trim().isEmpty()) {
+            historial.registrarEdicionPlaylist(
+                    playlist.getId(),
+                    nombreAnterior,
+                    "",
+                    false,
+                    "Nombre inválido"
+            );
+
+            return "No se pudo renombrar la playlist.\n"
+                    + "Motivo: Nombre inválido.";
+        }
+
+        String nombreNuevo = nuevoNombre.trim();
+
+        if (nombreAnterior.equalsIgnoreCase(nombreNuevo)) {
+            historial.registrarEdicionPlaylist(
+                    playlist.getId(),
+                    nombreAnterior,
+                    nombreNuevo,
+                    false,
+                    "El nombre es el mismo; no se realizaron cambios"
+            );
+
+            return "La playlist ya tiene ese nombre.\n"
+                    + "No se realizaron cambios.";
+        }
+
+        if (existeOtraPlaylistConNombre(playlist.getId(), nombreNuevo)) {
+            historial.registrarEdicionPlaylist(
+                    playlist.getId(),
+                    nombreAnterior,
+                    nombreNuevo,
+                    false,
+                    "Ya existe otra playlist con ese nombre"
+            );
+
+            return "No se pudo renombrar la playlist.\n"
+                    + "Motivo: Ya existe otra playlist con ese nombre.";
+        }
+
+        playlist.setNombre(nombreNuevo);
+
+        historial.registrarEdicionPlaylist(
+                playlist.getId(),
+                nombreAnterior,
+                playlist.getNombre(),
+                true,
+                "Playlist renombrada correctamente"
+        );
+
+        return "Playlist renombrada correctamente.\n"
+                + "Antes: " + nombreAnterior + "\n"
+                + "Ahora: " + playlist.getNombre();
+    }
+    
+    private boolean existeOtraPlaylistConNombre(int idPlaylistActual, String nombre) {
+        if (nombre == null || nombre.trim().isEmpty()) {
+            return false;
+        }
+
+        String nombreBuscado = nombre.trim();
+        for (Playlist playlist : playlists) {
+            if (playlist.getId() != idPlaylistActual
+                    && playlist.getNombre().equalsIgnoreCase(nombreBuscado)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public String agregarMusicasAPlaylist(int idPlaylist, List<Musica> musicas) {
         Playlist playlist = buscarPlaylistPorId(idPlaylist);
@@ -547,11 +746,7 @@ public final class BibliotecaGeneral {
         return ruta.trim().toLowerCase();
     }
 
-    private void agregarSinDuplicar(
-            List<Musica> destino,
-            Set<Integer> idsAgregados,
-            List<Musica> origen
-    ) {
+    private void agregarSinDuplicar(List<Musica> destino, Set<Integer> idsAgregados, List<Musica> origen) {
         if (origen == null) {
             return;
         }
