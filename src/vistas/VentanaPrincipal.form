@@ -43,7 +43,7 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="jmiCargarMusicas">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Cargar musicas"/>
+                <Property name="text" type="java.lang.String" value="Cargar Musicas"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmiCargarMusicasActionPerformed"/>
@@ -71,6 +71,14 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem1ActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="jMenuItem2">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Archivos Playlist"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem2ActionPerformed"/>
               </Events>
             </MenuItem>
           </SubComponents>
@@ -113,7 +121,7 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jmiBusquedaEnArboles">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Busqueda en Arboles"/>
+                <Property name="text" type="java.lang.String" value="Busqueda En Arboles"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jmiBusquedaEnArbolesActionPerformed"/>

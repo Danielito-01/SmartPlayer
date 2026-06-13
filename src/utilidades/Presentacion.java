@@ -122,6 +122,10 @@ public class Presentacion {
     public static void aplicarEstadisticas(JDialog dialogo) {
         aplicarDialogo(dialogo, "Estadisticas");
     }
+    
+    public static void aplicarArchivosPlaylist(JDialog dialogo) {
+        aplicarDialogo(dialogo, "Importar / Exportar Playlists");
+    }
 
     public static void refrescarToggle(JToggleButton toggle) {
         if (toggle.isSelected()) {

@@ -95,6 +95,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jmiBiblioteca = new javax.swing.JMenuItem();
         jmiHistorial = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
         menuPlaylist = new javax.swing.JMenu();
         jmiNueva = new javax.swing.JMenuItem();
         jmiAdministrar = new javax.swing.JMenuItem();
@@ -486,7 +487,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
         menuAdministrar.setText("Administrar");
 
-        jmiCargarMusicas.setText("Cargar musicas");
+        jmiCargarMusicas.setText("Cargar Musicas");
         jmiCargarMusicas.addActionListener(this::jmiCargarMusicasActionPerformed);
         menuAdministrar.add(jmiCargarMusicas);
 
@@ -501,6 +502,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jMenuItem1.setText("Estadisticas");
         jMenuItem1.addActionListener(this::jMenuItem1ActionPerformed);
         menuAdministrar.add(jMenuItem1);
+
+        jMenuItem2.setText("Archivos Playlist");
+        jMenuItem2.addActionListener(this::jMenuItem2ActionPerformed);
+        menuAdministrar.add(jMenuItem2);
 
         jmbMenu.add(menuAdministrar);
 
@@ -522,7 +527,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jmiPilaHistorial.addActionListener(this::jmiPilaHistorialActionPerformed);
         menuRequisitos.add(jmiPilaHistorial);
 
-        jmiBusquedaEnArboles.setText("Busqueda en Arboles");
+        jmiBusquedaEnArboles.setText("Busqueda En Arboles");
         jmiBusquedaEnArboles.addActionListener(this::jmiBusquedaEnArbolesActionPerformed);
         menuRequisitos.add(jmiBusquedaEnArboles);
 
@@ -1604,6 +1609,12 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         refrescar();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        DialogoArchivosPlaylist dialogo = new DialogoArchivosPlaylist(this, true);
+        dialogo.setVisible(true);
+        refrescar();
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem agregarACola;
     private javax.swing.JButton btnAnterior;
@@ -1613,6 +1624,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton btnSiguiente;
     private javax.swing.JButton jButton1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuBar jmbMenu;
     private javax.swing.JMenuItem jmiAdministrar;
     private javax.swing.JMenuItem jmiBiblioteca;
