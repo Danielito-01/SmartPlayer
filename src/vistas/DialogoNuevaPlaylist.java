@@ -222,7 +222,9 @@ public class DialogoNuevaPlaylist extends javax.swing.JDialog {
             return;
         }
 
-        if (biblioteca.existePlaylist(nombrePlaylist)) {
+        String nombre = nombrePlaylist.trim();
+
+        if (biblioteca.existePlaylist(nombre)) {
             JOptionPane.showMessageDialog(this, "Ya existe una playlist con ese nombre.");
             return;
         }
@@ -240,8 +242,8 @@ public class DialogoNuevaPlaylist extends javax.swing.JDialog {
             }
         }
 
-        String mensajeCreacion = biblioteca.crearPlaylist(nombrePlaylist);
-        Playlist playlistCreada = biblioteca.buscarPlaylistPorNombre(nombrePlaylist);
+        String mensajeCreacion = biblioteca.crearPlaylist(nombre);
+        Playlist playlistCreada = biblioteca.buscarPlaylistPorNombre(nombre);
 
         if (playlistCreada == null) {
             JOptionPane.showMessageDialog(
@@ -250,6 +252,17 @@ public class DialogoNuevaPlaylist extends javax.swing.JDialog {
                     "Playlist",
                     JOptionPane.ERROR_MESSAGE
             );
+            return;
+        }
+
+        if (seleccionadas.isEmpty()) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    mensajeCreacion + "\n\nLa playlist se guardó vacía.",
+                    "Playlist",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+            dispose();
             return;
         }
 
