@@ -91,6 +91,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jmbMenu = new javax.swing.JMenuBar();
         menuAdministrar = new javax.swing.JMenu();
         jmiCargarMusicas = new javax.swing.JMenuItem();
+        jmiBiblioteca = new javax.swing.JMenuItem();
         jmiHistorial = new javax.swing.JMenuItem();
         menuPlaylist = new javax.swing.JMenu();
         jmiNueva = new javax.swing.JMenuItem();
@@ -478,6 +479,10 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         jmiCargarMusicas.setText("Cargar musicas");
         jmiCargarMusicas.addActionListener(this::jmiCargarMusicasActionPerformed);
         menuAdministrar.add(jmiCargarMusicas);
+
+        jmiBiblioteca.setText("Biblioteca General");
+        jmiBiblioteca.addActionListener(this::jmiBibliotecaActionPerformed);
+        menuAdministrar.add(jmiBiblioteca);
 
         jmiHistorial.setText("Historial");
         jmiHistorial.addActionListener(this::jmiHistorialActionPerformed);
@@ -1537,6 +1542,12 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         refrescar();
     }//GEN-LAST:event_jmiAdministrarActionPerformed
 
+    private void jmiBibliotecaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiBibliotecaActionPerformed
+        DialogoBibliotecaGeneral dialogo = new DialogoBibliotecaGeneral(this, true);
+        dialogo.setVisible(true);
+        refrescar();
+    }//GEN-LAST:event_jmiBibliotecaActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem agregarACola;
     private javax.swing.JButton btnAnterior;
@@ -1547,6 +1558,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JMenuBar jmbMenu;
     private javax.swing.JMenuItem jmiAdministrar;
+    private javax.swing.JMenuItem jmiBiblioteca;
     private javax.swing.JMenuItem jmiBusquedaEnArboles;
     private javax.swing.JMenuItem jmiCargarMusicas;
     private javax.swing.JMenuItem jmiHistorial;

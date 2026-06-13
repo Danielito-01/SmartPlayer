@@ -114,6 +114,10 @@ public class Presentacion {
     public static void aplicarAdministrarPlaylist(JDialog dialogo) {
         aplicarDialogo(dialogo, "Administrar Playlist");
     }
+    
+    public static void aplicarBibliotecaGeneral(JDialog dialogo) {
+        aplicarDialogo(dialogo, "Biblioteca General");
+    }
 
     public static void refrescarToggle(JToggleButton toggle) {
         if (toggle.isSelected()) {
