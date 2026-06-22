@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Set;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileSystemView;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
@@ -22,28 +21,28 @@ import org.jaudiotagger.tag.TagException;
 public class GestorCargaDeMusicas {
 
     public static List<File> seleccionarArchivos(java.awt.Component parent) {
-        FileSystemView vistaSistema = FileSystemView.getFileSystemView();
-        File escritorioWindows = vistaSistema.getHomeDirectory();
-        JFileChooser explorador = new JFileChooser(escritorioWindows, vistaSistema);
-        explorador.setCurrentDirectory(escritorioWindows);
-        explorador.rescanCurrentDirectory();
+        JFileChooser explorador = new JFileChooser();
         explorador.setMultiSelectionEnabled(true);
         explorador.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-        explorador.setAcceptAllFileFilterUsed(false);
+        explorador.setAcceptAllFileFilterUsed(true);
+
         explorador.setFileFilter(new FileFilter() {
             @Override
             public boolean accept(File archivo) {
                 return archivo.isDirectory() || esMp3(archivo);
             }
+
             @Override
             public String getDescription() {
-                return ".mp3";
+                return "Archivos MP3 (*.mp3)";
             }
         });
+
         int resultado = explorador.showOpenDialog(parent);
         if (resultado != JFileChooser.APPROVE_OPTION) {
             return new ArrayList<>();
         }
+
         Set<String> rutasUnicas = new LinkedHashSet<>();
         File[] archivosSeleccionados = explorador.getSelectedFiles();
         for (File archivo : archivosSeleccionados) {
@@ -56,6 +55,7 @@ public class GestorCargaDeMusicas {
                 agregarRutaUnica(archivo, rutasUnicas);
             }
         }
+
         List<File> archivosMp3 = new ArrayList<>();
         for (String ruta : rutasUnicas) {
             archivosMp3.add(new File(ruta));
